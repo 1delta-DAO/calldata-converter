@@ -93,7 +93,7 @@ jobs:
             LIB_CHANGED=true
           else
             # Check if files differ
-            if ! diff -r -q calldatalib-package/dist .tmp_prev_lib > /dev/null 2>&1; then
+            if ! diff -r -q calldatalib-package/dist .tmp_prev_lib/dist; then
               echo "Library content has changed"
               LIB_CHANGED=true
             else
