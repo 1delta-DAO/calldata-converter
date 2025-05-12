@@ -13,6 +13,11 @@ export declare enum DodoSelector {
     SELL_BASE = 0,
     SELL_QUOTE = 1
 }
+export declare enum WrapOperation {
+    NATIVE = 0,
+    ERC4626_DEPOSIT = 1,
+    ERC4626_REDEEM = 2
+}
 export declare enum TransferIds {
     TRANSFER_FROM = 0,
     SWEEP = 1,
@@ -92,7 +97,7 @@ export declare enum DexTypeMappings {
     DODO_ID = 150,
     SYNC_SWAP_ID = 160,
     ERC4626_ID = 253,
-    NATIVE_WRAP_ID = 254
+    ASSET_WRAP_ID = 254
 }
 export declare enum DexForkMappings {
     UNISWAP_V3 = 0,
@@ -135,6 +140,7 @@ export declare function encodeGmxStyleSwap(currentData: Hex, tokenOut: Address, 
 export declare function encodeKtxStyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, pool: Address, cfg: any): Hex;
 export declare function encodeCurveStyleSwap(tokenOut: Address, receiver: Address, pool: Address, indexIn: bigint, indexOut: bigint, selectorId: bigint, cfg: any): Hex;
 export declare function encodeCurveNGStyleSwap(tokenOut: Address, receiver: Address, pool: Address, indexIn: bigint, indexOut: bigint, selectorId: bigint, cfg: any): Hex;
+export declare function encodeWrapperSwap(currentData: Hex, assetOut: Address, receiver: Address, operation: any, cfg: any): Hex;
 export declare function encodeNextGenDexSettle(singleton: Address, nativeAmount: bigint): Hex;
 export declare function encodeNextGenDexSettleBalancer(singleton: Address, asset: Address, amountHint: bigint): Hex;
 export declare function encodeTransferIn(asset: Address, receiver: Address, amount: bigint): Hex;

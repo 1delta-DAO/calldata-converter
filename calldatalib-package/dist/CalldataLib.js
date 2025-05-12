@@ -18,6 +18,12 @@ export var DodoSelector;
     DodoSelector[DodoSelector["SELL_BASE"] = 0] = "SELL_BASE";
     DodoSelector[DodoSelector["SELL_QUOTE"] = 1] = "SELL_QUOTE";
 })(DodoSelector || (DodoSelector = {}));
+export var WrapOperation;
+(function (WrapOperation) {
+    WrapOperation[WrapOperation["NATIVE"] = 0] = "NATIVE";
+    WrapOperation[WrapOperation["ERC4626_DEPOSIT"] = 1] = "ERC4626_DEPOSIT";
+    WrapOperation[WrapOperation["ERC4626_REDEEM"] = 2] = "ERC4626_REDEEM";
+})(WrapOperation || (WrapOperation = {}));
 export var TransferIds;
 (function (TransferIds) {
     TransferIds[TransferIds["TRANSFER_FROM"] = 0] = "TRANSFER_FROM";
@@ -107,7 +113,7 @@ export var DexTypeMappings;
     DexTypeMappings[DexTypeMappings["DODO_ID"] = 150] = "DODO_ID";
     DexTypeMappings[DexTypeMappings["SYNC_SWAP_ID"] = 160] = "SYNC_SWAP_ID";
     DexTypeMappings[DexTypeMappings["ERC4626_ID"] = 253] = "ERC4626_ID";
-    DexTypeMappings[DexTypeMappings["NATIVE_WRAP_ID"] = 254] = "NATIVE_WRAP_ID";
+    DexTypeMappings[DexTypeMappings["ASSET_WRAP_ID"] = 254] = "ASSET_WRAP_ID";
 })(DexTypeMappings || (DexTypeMappings = {}));
 export var DexForkMappings;
 (function (DexForkMappings) {
@@ -253,6 +259,9 @@ export function encodeCurveNGStyleSwap(tokenOut, receiver, pool, indexIn, indexO
     if (cfg === DexPayConfig.FLASH)
         throw new Error("FlashnotyetsupportedforCurve");
     return encodePacked(['address', 'address', 'uint8', 'address', 'uint8', 'uint8', 'uint8', 'uint16'], [tokenOut, receiver, uint8(DexTypeMappings.CURVE_RECEIVED_ID), pool, uint8(indexIn), uint8(indexOut), uint8(selectorId), uint16(uint256(cfg))]);
+}
+export function encodeWrapperSwap(currentData, assetOut, receiver, operation, cfg) {
+    return encodePacked(['bytes', 'address', 'address', 'uint8', 'uint8', 'uint8'], [currentData, assetOut, receiver, uint8(DexTypeMappings.ASSET_WRAP_ID), uint8(uint256(operation)), uint8(uint256(cfg))]);
 }
 export function encodeNextGenDexSettle(singleton, nativeAmount) {
     return encodePacked(['uint8', 'uint8', 'address', 'uint128'], [uint8(ComposerCommands.GEN_2025_SINGELTONS), uint8(Gen2025ActionIds.UNI_V4_SETTLE), singleton, uint128(nativeAmount)]);

@@ -19,6 +19,12 @@ export enum DodoSelector {
   SELL_QUOTE = 1,
 }
 
+export enum WrapOperation {
+  NATIVE = 0,
+  ERC4626_DEPOSIT = 1,
+  ERC4626_REDEEM = 2,
+}
+
 export enum TransferIds {
   TRANSFER_FROM = 0,
   SWEEP = 1,
@@ -107,7 +113,7 @@ export enum DexTypeMappings {
   DODO_ID = 150,
   SYNC_SWAP_ID = 160,
   ERC4626_ID = 253,
-  NATIVE_WRAP_ID = 254
+  ASSET_WRAP_ID = 254
 }
 
 export enum DexForkMappings {
@@ -216,6 +222,9 @@ if(cfg===DexPayConfig.FLASH)throw new Error("FlashnotyetsupportedforCurve");retu
 
 export function encodeCurveNGStyleSwap(tokenOut: Address, receiver: Address, pool: Address, indexIn: bigint, indexOut: bigint, selectorId: bigint, cfg: any): Hex {
 if(cfg===DexPayConfig.FLASH)throw new Error("FlashnotyetsupportedforCurve");return  encodePacked(['address', 'address', 'uint8', 'address', 'uint8', 'uint8', 'uint8', 'uint16'], [tokenOut, receiver, uint8(DexTypeMappings.CURVE_RECEIVED_ID), pool, uint8(indexIn), uint8(indexOut), uint8(selectorId), uint16(uint256(cfg))]);}
+
+export function encodeWrapperSwap(currentData: Hex, assetOut: Address, receiver: Address, operation: any, cfg: any): Hex {
+return  encodePacked(['bytes', 'address', 'address', 'uint8', 'uint8', 'uint8'], [currentData, assetOut, receiver, uint8(DexTypeMappings.ASSET_WRAP_ID), uint8(uint256(operation)), uint8(uint256(cfg))]);}
 
 export function encodeNextGenDexSettle(singleton: Address, nativeAmount: bigint): Hex {
 return  encodePacked(['uint8', 'uint8', 'address', 'uint128'], [uint8(ComposerCommands.GEN_2025_SINGELTONS), uint8(Gen2025ActionIds.UNI_V4_SETTLE), singleton, uint128(nativeAmount)]);}
