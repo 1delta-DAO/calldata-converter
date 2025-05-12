@@ -1,6 +1,6 @@
 import { type Hex, encodePacked as abiEncodePacked, type Address } from "viem";
 
-export const _PRE_PARAM = 1n << 127n;
+export const _NATIVE_FLAG = 1n << 127n;
 export const _SHARES_MASK = 1n << 126n;
 export const _UNSAFE_AMOUNT = 1n << 125n;
 
@@ -50,11 +50,13 @@ export function encodePacked(types: string[], values: any[]): Hex {
 export function generateAmountBitmap(
   amount: bigint,
   useShares: boolean,
-  unsafe: boolean
+  unsafe: boolean,
+  native: boolean
 ): bigint {
   let am = amount;
   if (useShares) am = uint128((am & ~BigInt(_SHARES_MASK)) | _SHARES_MASK);
   if (unsafe) am = uint128((am & ~BigInt(_UNSAFE_AMOUNT)) | _UNSAFE_AMOUNT);
+  if (native) am = uint128((am & ~BigInt(_NATIVE_FLAG)) | _NATIVE_FLAG);
   return am;
 }
 
