@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { zeroAddress } from "viem";
-import { encodePacked, uint128, uint8, uint112, uint16, uint256, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, } from "./utils.js";
+import { encodePacked, uint128, uint8, uint112, uint16, uint256, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, } from "./utils";
 export var SweepType;
 (function (SweepType) {
     SweepType[SweepType["VALIDATE"] = 0] = "VALIDATE";
