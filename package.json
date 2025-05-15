@@ -4,7 +4,7 @@
   "scripts": {
     "start": "forge install && bun run ./src/cli.ts --run-tests",
     "test": "forge install && bun test",
-    "build": "forge install && bun build --target bun ./src/cli.ts --outdir ./dist",
+    "build": "forge install && bun build --target node --production ./src/cli.ts --outdir ./dist",
     "prepare-package": "forge install && bun run src/preparePackage.ts",
     "pack": "forge install && bun run start && bun run prepare-package"
   },
