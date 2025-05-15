@@ -7,7 +7,7 @@ if (!fs.existsSync(PACKAGE_SRC_DIR)) {
   fs.mkdirSync(PACKAGE_SRC_DIR, { recursive: true });
 }
 
-const indexContent = `export * from './${LIB_NAME}';\nexport * from './utils';`;
+const indexContent = `export * from './${LIB_NAME}.js';\nexport * from './utils.js';`;
 fs.writeFileSync(path.join(PACKAGE_SRC_DIR, "index.ts"), indexContent);
 
 const utilsPath = path.resolve("./src/utils.ts");
