@@ -15,7 +15,7 @@ import {
 	bytes,
 	getMorphoCollateral,
 	getMorphoLoanAsset,
-} from "./utils";
+} from "./utils.js";
 export enum SweepType {
 	VALIDATE = 0,
 	AMOUNT = 1,
