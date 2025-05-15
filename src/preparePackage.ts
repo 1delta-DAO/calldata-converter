@@ -23,7 +23,10 @@ const calldataLibPath = path.join(OUTPUT_DIR, `${LIB_NAME}.ts`);
 if (fs.existsSync(calldataLibPath)) {
   let content = fs.readFileSync(calldataLibPath, "utf8");
   // Update the import path for utils.ts
-  content = content.replace(/from "..\/..\/src\/utils.ts"/, 'from "./utils"');
+  content = content.replace(
+    /from "..\/..\/src\/utils.ts"/,
+    'from "./utils.js"'
+  );
 
   // Write the modified file
   fs.writeFileSync(
