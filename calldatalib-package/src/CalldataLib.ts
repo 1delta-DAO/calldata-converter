@@ -95,6 +95,7 @@ export enum Gen2025ActionIds {
 export enum ComposerCommands {
 	SWAPS = 0x10,
 	EXT_CALL = 0x20,
+	EXT_TRY_CALL = 0x21,
 	LENDING = 0x30,
 	TRANSFERS = 0x40,
 	PERMIT = 0x50,
@@ -140,10 +141,39 @@ export enum DexForkMappings {
 	UNISWAP_V2 = 0,
 }
 
-export function encodeExternalCall(target: Address, value: bigint, data: Hex): Hex {
+export function encodeExternalCall(target: Address, value: bigint, useSelfBalance: boolean, data: Hex): Hex {
 	return encodePacked(
-		["uint8", "address", "uint112", "uint16", "bytes"],
-		[uint8(ComposerCommands.EXT_CALL), target, uint112(value), uint16(data.length / 2 - 1), data],
+		["uint8", "address", "uint128", "uint16", "bytes"],
+		[
+			uint8(ComposerCommands.EXT_CALL),
+			target,
+			generateAmountBitmap(uint128(value), false, false, useSelfBalance),
+			uint16(data.length / 2 - 1),
+			data,
+		],
+	);
+}
+
+export function encodeTryExternalCall(
+	target: Address,
+	value: bigint,
+	useSelfBalance: boolean,
+	rOnFailure: boolean,
+	data: Hex,
+	catchData: Hex,
+): Hex {
+	return encodePacked(
+		["uint8", "address", "uint128", "uint16", "bytes", "uint8", "uint16", "bytes"],
+		[
+			uint8(ComposerCommands.EXT_TRY_CALL),
+			target,
+			generateAmountBitmap(uint128(value), false, false, useSelfBalance),
+			uint16(data.length / 2 - 1),
+			data,
+			uint8(rOnFailure ? 0 : 1),
+			uint16(catchData.length / 2 - 1),
+			catchData,
+		],
 	);
 }
 
@@ -532,7 +562,7 @@ export function encodeBalancerV2StyleSwap(
 ): Hex {
 	if (cfg === DexPayConfig.FLASH) throw new Error("Invalidconfigforv2swap");
 	return encodePacked(
-		["bytes", "address", "address", "uint8", "bytes32", "address", "uint16"],
+		["bytes", "address", "address", "uint8", "bytes32", "address", "uint8"],
 		[
 			currentData,
 			tokenOut,
@@ -540,7 +570,7 @@ export function encodeBalancerV2StyleSwap(
 			uint8(DexTypeMappings.BALANCER_V2_ID),
 			poolId,
 			balancerVault,
-			uint16(uint256(cfg)),
+			uint8(uint256(cfg)),
 		],
 	);
 }
@@ -569,8 +599,8 @@ export function encodeSyncSwapStyleSwap(
 ): Hex {
 	if (cfg === DexPayConfig.FLASH) throw new Error("Invalidconfigforv2swap");
 	return encodePacked(
-		["bytes", "address", "address", "uint8", "address", "uint16"],
-		[currentData, tokenOut, receiver, uint8(DexTypeMappings.SYNC_SWAP_ID), pool, uint16(uint256(cfg))],
+		["bytes", "address", "address", "uint8", "address", "uint8"],
+		[currentData, tokenOut, receiver, uint8(DexTypeMappings.SYNC_SWAP_ID), pool, uint8(uint256(cfg))],
 	);
 }
 

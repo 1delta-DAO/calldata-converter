@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.DexForkMappings = exports.DexTypeMappings = exports.BridgeIds = exports.ComposerCommands = exports.Gen2025ActionIds = exports.ERC4626Ids = exports.FlashLoanIds = exports.LenderOps = exports.LenderIds = exports.PermitIds = exports.TransferIds = exports.WrapOperation = exports.DodoSelector = exports.DexPayConfig = exports.SweepType = void 0;
 exports.encodeExternalCall = encodeExternalCall;
+exports.encodeTryExternalCall = encodeTryExternalCall;
 exports.encodeStargateV2Bridge = encodeStargateV2Bridge;
 exports.encodeStargateV2BridgePartial = encodeStargateV2BridgePartial;
 exports.encodeStargateV2BridgeSimpleTaxi = encodeStargateV2BridgeSimpleTaxi;
@@ -152,6 +153,7 @@ var ComposerCommands;
 (function (ComposerCommands) {
     ComposerCommands[ComposerCommands["SWAPS"] = 16] = "SWAPS";
     ComposerCommands[ComposerCommands["EXT_CALL"] = 32] = "EXT_CALL";
+    ComposerCommands[ComposerCommands["EXT_TRY_CALL"] = 33] = "EXT_TRY_CALL";
     ComposerCommands[ComposerCommands["LENDING"] = 48] = "LENDING";
     ComposerCommands[ComposerCommands["TRANSFERS"] = 64] = "TRANSFERS";
     ComposerCommands[ComposerCommands["PERMIT"] = 80] = "PERMIT";
@@ -196,8 +198,26 @@ var DexForkMappings;
     DexForkMappings[DexForkMappings["BALANCER_V3"] = 0] = "BALANCER_V3";
     DexForkMappings[DexForkMappings["UNISWAP_V2"] = 0] = "UNISWAP_V2";
 })(DexForkMappings || (exports.DexForkMappings = DexForkMappings = {}));
-function encodeExternalCall(target, value, data) {
-    return (0, utils_js_1.encodePacked)(["uint8", "address", "uint112", "uint16", "bytes"], [(0, utils_js_1.uint8)(ComposerCommands.EXT_CALL), target, (0, utils_js_1.uint112)(value), (0, utils_js_1.uint16)(data.length / 2 - 1), data]);
+function encodeExternalCall(target, value, useSelfBalance, data) {
+    return (0, utils_js_1.encodePacked)(["uint8", "address", "uint128", "uint16", "bytes"], [
+        (0, utils_js_1.uint8)(ComposerCommands.EXT_CALL),
+        target,
+        (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(value), false, false, useSelfBalance),
+        (0, utils_js_1.uint16)(data.length / 2 - 1),
+        data,
+    ]);
+}
+function encodeTryExternalCall(target, value, useSelfBalance, rOnFailure, data, catchData) {
+    return (0, utils_js_1.encodePacked)(["uint8", "address", "uint128", "uint16", "bytes", "uint8", "uint16", "bytes"], [
+        (0, utils_js_1.uint8)(ComposerCommands.EXT_TRY_CALL),
+        target,
+        (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(value), false, false, useSelfBalance),
+        (0, utils_js_1.uint16)(data.length / 2 - 1),
+        data,
+        (0, utils_js_1.uint8)(rOnFailure ? 0 : 1),
+        (0, utils_js_1.uint16)(catchData.length / 2 - 1),
+        catchData,
+    ]);
 }
 function encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, refundReceiver, amount, slippage, fee, isBusMode, isNative, composeMsg, extraOptions) {
     const partialData = encodeStargateV2BridgePartial(amount, slippage, fee, isBusMode, isNative, composeMsg, extraOptions);
@@ -398,14 +418,14 @@ function encodeUniswapV4StyleSwap(currentData, tokenOut, receiver, manager, fee,
 function encodeBalancerV2StyleSwap(currentData, tokenOut, receiver, poolId, balancerVault, cfg) {
     if (cfg === DexPayConfig.FLASH)
         throw new Error("Invalidconfigforv2swap");
-    return (0, utils_js_1.encodePacked)(["bytes", "address", "address", "uint8", "bytes32", "address", "uint16"], [
+    return (0, utils_js_1.encodePacked)(["bytes", "address", "address", "uint8", "bytes32", "address", "uint8"], [
         currentData,
         tokenOut,
         receiver,
         (0, utils_js_1.uint8)(DexTypeMappings.BALANCER_V2_ID),
         poolId,
         balancerVault,
-        (0, utils_js_1.uint16)((0, utils_js_1.uint256)(cfg)),
+        (0, utils_js_1.uint8)((0, utils_js_1.uint256)(cfg)),
     ]);
 }
 function encodeLbStyleSwap(currentData, tokenOut, receiver, pool, swapForY, cfg) {
@@ -416,7 +436,7 @@ function encodeLbStyleSwap(currentData, tokenOut, receiver, pool, swapForY, cfg)
 function encodeSyncSwapStyleSwap(currentData, tokenOut, receiver, pool, cfg) {
     if (cfg === DexPayConfig.FLASH)
         throw new Error("Invalidconfigforv2swap");
-    return (0, utils_js_1.encodePacked)(["bytes", "address", "address", "uint8", "address", "uint16"], [currentData, tokenOut, receiver, (0, utils_js_1.uint8)(DexTypeMappings.SYNC_SWAP_ID), pool, (0, utils_js_1.uint16)((0, utils_js_1.uint256)(cfg))]);
+    return (0, utils_js_1.encodePacked)(["bytes", "address", "address", "uint8", "address", "uint8"], [currentData, tokenOut, receiver, (0, utils_js_1.uint8)(DexTypeMappings.SYNC_SWAP_ID), pool, (0, utils_js_1.uint8)((0, utils_js_1.uint256)(cfg))]);
 }
 function encodeUniswapV3StyleSwap(currentData, tokenOut, receiver, forkId, pool, feeTier, cfg, flashCalldata) {
     if ((0, utils_js_1.uint256)(cfg) < 2 && flashCalldata.length / 2 - 1 > 2)

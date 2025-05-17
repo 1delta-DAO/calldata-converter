@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { zeroAddress } from "viem";
-import { encodePacked, uint128, uint8, uint112, uint16, uint256, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, } from "./utils.js";
+import { encodePacked, uint128, uint8, uint16, uint256, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, } from "./utils.js";
 export var SweepType;
 (function (SweepType) {
     SweepType[SweepType["VALIDATE"] = 0] = "VALIDATE";
@@ -81,6 +81,7 @@ export var ComposerCommands;
 (function (ComposerCommands) {
     ComposerCommands[ComposerCommands["SWAPS"] = 16] = "SWAPS";
     ComposerCommands[ComposerCommands["EXT_CALL"] = 32] = "EXT_CALL";
+    ComposerCommands[ComposerCommands["EXT_TRY_CALL"] = 33] = "EXT_TRY_CALL";
     ComposerCommands[ComposerCommands["LENDING"] = 48] = "LENDING";
     ComposerCommands[ComposerCommands["TRANSFERS"] = 64] = "TRANSFERS";
     ComposerCommands[ComposerCommands["PERMIT"] = 80] = "PERMIT";
@@ -125,8 +126,26 @@ export var DexForkMappings;
     DexForkMappings[DexForkMappings["BALANCER_V3"] = 0] = "BALANCER_V3";
     DexForkMappings[DexForkMappings["UNISWAP_V2"] = 0] = "UNISWAP_V2";
 })(DexForkMappings || (DexForkMappings = {}));
-export function encodeExternalCall(target, value, data) {
-    return encodePacked(["uint8", "address", "uint112", "uint16", "bytes"], [uint8(ComposerCommands.EXT_CALL), target, uint112(value), uint16(data.length / 2 - 1), data]);
+export function encodeExternalCall(target, value, useSelfBalance, data) {
+    return encodePacked(["uint8", "address", "uint128", "uint16", "bytes"], [
+        uint8(ComposerCommands.EXT_CALL),
+        target,
+        generateAmountBitmap(uint128(value), false, false, useSelfBalance),
+        uint16(data.length / 2 - 1),
+        data,
+    ]);
+}
+export function encodeTryExternalCall(target, value, useSelfBalance, rOnFailure, data, catchData) {
+    return encodePacked(["uint8", "address", "uint128", "uint16", "bytes", "uint8", "uint16", "bytes"], [
+        uint8(ComposerCommands.EXT_TRY_CALL),
+        target,
+        generateAmountBitmap(uint128(value), false, false, useSelfBalance),
+        uint16(data.length / 2 - 1),
+        data,
+        uint8(rOnFailure ? 0 : 1),
+        uint16(catchData.length / 2 - 1),
+        catchData,
+    ]);
 }
 export function encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, refundReceiver, amount, slippage, fee, isBusMode, isNative, composeMsg, extraOptions) {
     const partialData = encodeStargateV2BridgePartial(amount, slippage, fee, isBusMode, isNative, composeMsg, extraOptions);
@@ -327,14 +346,14 @@ export function encodeUniswapV4StyleSwap(currentData, tokenOut, receiver, manage
 export function encodeBalancerV2StyleSwap(currentData, tokenOut, receiver, poolId, balancerVault, cfg) {
     if (cfg === DexPayConfig.FLASH)
         throw new Error("Invalidconfigforv2swap");
-    return encodePacked(["bytes", "address", "address", "uint8", "bytes32", "address", "uint16"], [
+    return encodePacked(["bytes", "address", "address", "uint8", "bytes32", "address", "uint8"], [
         currentData,
         tokenOut,
         receiver,
         uint8(DexTypeMappings.BALANCER_V2_ID),
         poolId,
         balancerVault,
-        uint16(uint256(cfg)),
+        uint8(uint256(cfg)),
     ]);
 }
 export function encodeLbStyleSwap(currentData, tokenOut, receiver, pool, swapForY, cfg) {
@@ -345,7 +364,7 @@ export function encodeLbStyleSwap(currentData, tokenOut, receiver, pool, swapFor
 export function encodeSyncSwapStyleSwap(currentData, tokenOut, receiver, pool, cfg) {
     if (cfg === DexPayConfig.FLASH)
         throw new Error("Invalidconfigforv2swap");
-    return encodePacked(["bytes", "address", "address", "uint8", "address", "uint16"], [currentData, tokenOut, receiver, uint8(DexTypeMappings.SYNC_SWAP_ID), pool, uint16(uint256(cfg))]);
+    return encodePacked(["bytes", "address", "address", "uint8", "address", "uint8"], [currentData, tokenOut, receiver, uint8(DexTypeMappings.SYNC_SWAP_ID), pool, uint8(uint256(cfg))]);
 }
 export function encodeUniswapV3StyleSwap(currentData, tokenOut, receiver, forkId, pool, feeTier, cfg, flashCalldata) {
     if (uint256(cfg) < 2 && flashCalldata.length / 2 - 1 > 2)

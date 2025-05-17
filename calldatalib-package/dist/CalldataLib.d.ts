@@ -67,6 +67,7 @@ export declare enum Gen2025ActionIds {
 export declare enum ComposerCommands {
     SWAPS = 16,
     EXT_CALL = 32,
+    EXT_TRY_CALL = 33,
     LENDING = 48,
     TRANSFERS = 64,
     PERMIT = 80,
@@ -108,7 +109,8 @@ export declare enum DexForkMappings {
     BALANCER_V3 = 0,
     UNISWAP_V2 = 0
 }
-export declare function encodeExternalCall(target: Address, value: bigint, data: Hex): Hex;
+export declare function encodeExternalCall(target: Address, value: bigint, useSelfBalance: boolean, data: Hex): Hex;
+export declare function encodeTryExternalCall(target: Address, value: bigint, useSelfBalance: boolean, rOnFailure: boolean, data: Hex, catchData: Hex): Hex;
 export declare function encodeStargateV2Bridge(asset: Address, stargatePool: Address, dstEid: number, receiver: Hex, refundReceiver: Address, amount: bigint, slippage: number, fee: bigint, isBusMode: boolean, isNative: boolean, composeMsg: Hex, extraOptions: Hex): Hex;
 export declare function encodeStargateV2BridgePartial(amount: bigint, slippage: number, fee: bigint, isBusMode: boolean, isNative: boolean, composeMsg: Hex, extraOptions: Hex): Hex;
 export declare function encodeStargateV2BridgeSimpleTaxi(asset: Address, stargatePool: Address, dstEid: number, receiver: Hex, refundReceiver: Address, amount: bigint, isNative: boolean, slippage: number, fee: bigint): Hex;
