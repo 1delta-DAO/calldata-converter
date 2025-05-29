@@ -4,6 +4,7 @@ exports.DexForkMappings = exports.DexTypeMappings = exports.BridgeIds = exports.
 exports.encodeExternalCall = encodeExternalCall;
 exports.encodeTryExternalCall = encodeTryExternalCall;
 exports.encodeStargateV2Bridge = encodeStargateV2Bridge;
+exports.encodePermit = encodePermit;
 exports.encodeStargateV2BridgePartial = encodeStargateV2BridgePartial;
 exports.encodeStargateV2BridgeSimpleTaxi = encodeStargateV2BridgeSimpleTaxi;
 exports.encodeStargateV2BridgeSimpleBus = encodeStargateV2BridgeSimpleBus;
@@ -231,6 +232,9 @@ function encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, refundRec
         refundReceiver,
         partialData,
     ]);
+}
+function encodePermit(permitId, target, data) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "uint16", "bytes"], [(0, utils_js_1.uint8)(ComposerCommands.PERMIT), (0, utils_js_1.uint8)(permitId), target, (0, utils_js_1.uint16)(data.length / 2 - 1), data]);
 }
 function encodeStargateV2BridgePartial(amount, slippage, fee, isBusMode, isNative, composeMsg, extraOptions) {
     return (0, utils_js_1.encodePacked)(["uint128", "uint32", "uint128", "uint8", "uint16", "uint16", "bytes", "bytes"], [

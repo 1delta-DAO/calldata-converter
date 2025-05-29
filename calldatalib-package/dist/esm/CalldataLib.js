@@ -160,6 +160,9 @@ export function encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, re
         partialData,
     ]);
 }
+export function encodePermit(permitId, target, data) {
+    return encodePacked(["uint8", "uint8", "address", "uint16", "bytes"], [uint8(ComposerCommands.PERMIT), uint8(permitId), target, uint16(data.length / 2 - 1), data]);
+}
 export function encodeStargateV2BridgePartial(amount, slippage, fee, isBusMode, isNative, composeMsg, extraOptions) {
     return encodePacked(["uint128", "uint32", "uint128", "uint8", "uint16", "uint16", "bytes", "bytes"], [
         generateAmountBitmap(uint128(amount), false, false, isNative),

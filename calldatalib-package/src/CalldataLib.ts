@@ -215,6 +215,13 @@ export function encodeStargateV2Bridge(
 	);
 }
 
+export function encodePermit(permitId: bigint, target: Address, data: Hex): Hex {
+	return encodePacked(
+		["uint8", "uint8", "address", "uint16", "bytes"],
+		[uint8(ComposerCommands.PERMIT), uint8(permitId), target, uint16(data.length / 2 - 1), data],
+	);
+}
+
 export function encodeStargateV2BridgePartial(
 	amount: bigint,
 	slippage: number,

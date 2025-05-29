@@ -1,6 +1,6 @@
 {
   "name": "@1delta/calldatalib",
-  "version": "0.0.31",
+  "version": "0.0.32",
   "description": "Generated CalldataLib TypeScript functions for 1delta smart contracts",
   "type": "module",
   "main": "./dist/cjs/index.js",
