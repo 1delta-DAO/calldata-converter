@@ -116,8 +116,8 @@ export declare function encodePermit(permitId: bigint, target: Address, data: He
 export declare function encodeStargateV2BridgePartial(amount: bigint, slippage: number, fee: bigint, isBusMode: boolean, isNative: boolean, composeMsg: Hex, extraOptions: Hex): Hex;
 export declare function encodeStargateV2BridgeSimpleTaxi(asset: Address, stargatePool: Address, dstEid: number, receiver: Hex, refundReceiver: Address, amount: bigint, isNative: boolean, slippage: number, fee: bigint): Hex;
 export declare function encodeStargateV2BridgeSimpleBus(asset: Address, stargatePool: Address, dstEid: number, receiver: Hex, refundReceiver: Address, amount: bigint, isNative: boolean, slippage: number, fee: bigint): Hex;
-export declare function encodeAcrossBridgeToken(spokePool: Address, depositor: Address, sendingAssetId: Address, receivingAssetId: Address, amount: bigint, fixedFee: bigint, feePercentage: number, destinationChainId: number, receiver: Address, message: Hex): Hex;
-export declare function encodeAcrossBridgeNative(spokePool: Address, depositor: Address, sendingAssetId: Address, receivingAssetId: Address, amount: bigint, fixedFee: bigint, feePercentage: number, destinationChainId: number, receiver: Address, message: Hex): Hex;
+export declare function encodeAcrossBridgeToken(spokePool: Address, depositor: Address, sendingAssetId: Address, receivingAssetId: Hex, amount: bigint, fixedFee: bigint, feePercentage: number, destinationChainId: number, receiver: Hex, message: Hex): Hex;
+export declare function encodeAcrossBridgeNative(spokePool: Address, depositor: Address, sendingAssetId: Address, receivingAssetId: Hex, amount: bigint, fixedFee: bigint, feePercentage: number, destinationChainId: number, receiver: Hex, message: Hex): Hex;
 export declare function encodePermit2TransferFrom(token: Address, receiver: Address, amount: bigint): Hex;
 export declare function encodeNextGenDexUnlock(singleton: Address, id: bigint, d: Hex): Hex;
 export declare function encodeBalancerV3FlashLoan(singleton: Address, poolId: bigint, asset: Address, receiver: Address, amount: bigint, flashData: Hex): Hex;
