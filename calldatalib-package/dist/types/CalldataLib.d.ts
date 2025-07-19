@@ -162,7 +162,7 @@ export declare function encodeErc4646Withdraw(vault: Address, isShares: boolean,
 export declare function encodeMorphoWithdraw(market: Hex, isShares: boolean, assets: bigint, receiver: Address, morphoB: Address): Hex;
 export declare function encodeMorphoWithdrawCollateral(market: Hex, assets: bigint, receiver: Address, morphoB: Address): Hex;
 export declare function encodeMorphoBorrow(market: Hex, isShares: boolean, assets: bigint, receiver: Address, morphoB: Address): Hex;
-export declare function encodeMorphoRepay(market: Hex, isShares: boolean, unsafe: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
+export declare function encodeMorphoRepay(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
 export declare function encodeAaveDeposit(token: Address, amount: bigint, receiver: Address, pool: Address): Hex;
 export declare function encodeAaveBorrow(token: Address, amount: bigint, receiver: Address, mode: bigint, pool: Address): Hex;
 export declare function encodeAaveRepay(token: Address, amount: bigint, receiver: Address, mode: bigint, dToken: Address, pool: Address): Hex;
