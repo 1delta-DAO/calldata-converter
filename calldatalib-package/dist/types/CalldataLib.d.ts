@@ -78,7 +78,8 @@ export declare enum ComposerCommands {
 }
 export declare enum BridgeIds {
     STARGATE_V2 = 0,
-    ACROSS = 10
+    ACROSS = 10,
+    SQUID_ROUTER = 20
 }
 export declare enum DexTypeMappings {
     UNISWAP_V3_ID = 0,
@@ -118,6 +119,8 @@ export declare function encodeStargateV2BridgeSimpleTaxi(asset: Address, stargat
 export declare function encodeStargateV2BridgeSimpleBus(asset: Address, stargatePool: Address, dstEid: number, receiver: Hex, refundReceiver: Address, amount: bigint, isNative: boolean, slippage: number, fee: bigint): Hex;
 export declare function encodeAcrossBridgeToken(spokePool: Address, depositor: Address, sendingAssetId: Address, receivingAssetId: Hex, amount: bigint, fixedFee: bigint, feePercentage: number, destinationChainId: number, receiver: Hex, message: Hex): Hex;
 export declare function encodeAcrossBridgeNative(spokePool: Address, depositor: Address, sendingAssetId: Address, receivingAssetId: Hex, amount: bigint, fixedFee: bigint, feePercentage: number, destinationChainId: number, receiver: Hex, message: Hex): Hex;
+export declare function encodeSquidRouterCall(asset: Address, gateway: Address, bridgedTokenSymbol: Hex, amount: bigint, destinationChain: Hex, destinationAddress: Hex, payload: Hex, gasRefundRecipient: Address, enableExpress: boolean, nativeAmount: bigint): Hex;
+export declare function encodeSquidRouterCallPartial(asset: Address, gateway: Address, bridgedTokenSymbol: Hex, amount: bigint, destinationChain: Hex, destinationAddress: Hex, payload: Hex): Hex;
 export declare function encodePermit2TransferFrom(token: Address, receiver: Address, amount: bigint): Hex;
 export declare function encodeNextGenDexUnlock(singleton: Address, id: bigint, d: Hex): Hex;
 export declare function encodeBalancerV3FlashLoan(singleton: Address, poolId: bigint, asset: Address, receiver: Address, amount: bigint, flashData: Hex): Hex;

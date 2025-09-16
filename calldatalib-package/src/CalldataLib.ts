@@ -108,6 +108,7 @@ export enum ComposerCommands {
 export enum BridgeIds {
 	STARGATE_V2 = 0x00,
 	ACROSS = 0x0a,
+	SQUID_ROUTER = 0x14,
 }
 
 export enum DexTypeMappings {
@@ -392,6 +393,67 @@ export function encodeAcrossBridgeNative(
 		],
 	);
 	return bridgeData;
+}
+
+export function encodeSquidRouterCall(
+	asset: Address,
+	gateway: Address,
+	bridgedTokenSymbol: Hex,
+	amount: bigint,
+	destinationChain: Hex,
+	destinationAddress: Hex,
+	payload: Hex,
+	gasRefundRecipient: Address,
+	enableExpress: boolean,
+	nativeAmount: bigint,
+): Hex {
+	const partialData = encodeSquidRouterCallPartial(
+		asset,
+		gateway,
+		bridgedTokenSymbol,
+		amount,
+		destinationChain,
+		destinationAddress,
+		payload,
+	);
+	return encodePacked(
+		["bytes", "uint128", "address", "uint8", "bytes", "bytes", "bytes", "bytes"],
+		[
+			partialData,
+			uint128(nativeAmount),
+			gasRefundRecipient,
+			uint8(enableExpress ? 1 : 0),
+			bridgedTokenSymbol,
+			destinationChain,
+			destinationAddress,
+			payload,
+		],
+	);
+}
+
+export function encodeSquidRouterCallPartial(
+	asset: Address,
+	gateway: Address,
+	bridgedTokenSymbol: Hex,
+	amount: bigint,
+	destinationChain: Hex,
+	destinationAddress: Hex,
+	payload: Hex,
+): Hex {
+	return encodePacked(
+		["uint8", "uint8", "address", "address", "uint16", "uint16", "uint16", "uint16", "uint128"],
+		[
+			uint8(ComposerCommands.BRIDGING),
+			uint8(BridgeIds.SQUID_ROUTER),
+			gateway,
+			asset,
+			uint16(bridgedTokenSymbol.length / 2 - 1),
+			uint16(destinationChain.length / 2 - 1),
+			uint16(destinationAddress.length / 2 - 1),
+			uint16(payload.length / 2 - 1),
+			uint128(amount),
+		],
+	);
 }
 
 export function encodePermit2TransferFrom(token: Address, receiver: Address, amount: bigint): Hex {

@@ -10,6 +10,8 @@ exports.encodeStargateV2BridgeSimpleTaxi = encodeStargateV2BridgeSimpleTaxi;
 exports.encodeStargateV2BridgeSimpleBus = encodeStargateV2BridgeSimpleBus;
 exports.encodeAcrossBridgeToken = encodeAcrossBridgeToken;
 exports.encodeAcrossBridgeNative = encodeAcrossBridgeNative;
+exports.encodeSquidRouterCall = encodeSquidRouterCall;
+exports.encodeSquidRouterCallPartial = encodeSquidRouterCallPartial;
 exports.encodePermit2TransferFrom = encodePermit2TransferFrom;
 exports.encodeNextGenDexUnlock = encodeNextGenDexUnlock;
 exports.encodeBalancerV3FlashLoan = encodeBalancerV3FlashLoan;
@@ -167,6 +169,7 @@ var BridgeIds;
 (function (BridgeIds) {
     BridgeIds[BridgeIds["STARGATE_V2"] = 0] = "STARGATE_V2";
     BridgeIds[BridgeIds["ACROSS"] = 10] = "ACROSS";
+    BridgeIds[BridgeIds["SQUID_ROUTER"] = 20] = "SQUID_ROUTER";
 })(BridgeIds || (exports.BridgeIds = BridgeIds = {}));
 var DexTypeMappings;
 (function (DexTypeMappings) {
@@ -317,6 +320,32 @@ function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivin
         message,
     ]);
     return bridgeData;
+}
+function encodeSquidRouterCall(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload, gasRefundRecipient, enableExpress, nativeAmount) {
+    const partialData = encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload);
+    return (0, utils_js_1.encodePacked)(["bytes", "uint128", "address", "uint8", "bytes", "bytes", "bytes", "bytes"], [
+        partialData,
+        (0, utils_js_1.uint128)(nativeAmount),
+        gasRefundRecipient,
+        (0, utils_js_1.uint8)(enableExpress ? 1 : 0),
+        bridgedTokenSymbol,
+        destinationChain,
+        destinationAddress,
+        payload,
+    ]);
+}
+function encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint16", "uint16", "uint16", "uint16", "uint128"], [
+        (0, utils_js_1.uint8)(ComposerCommands.BRIDGING),
+        (0, utils_js_1.uint8)(BridgeIds.SQUID_ROUTER),
+        gateway,
+        asset,
+        (0, utils_js_1.uint16)(bridgedTokenSymbol.length / 2 - 1),
+        (0, utils_js_1.uint16)(destinationChain.length / 2 - 1),
+        (0, utils_js_1.uint16)(destinationAddress.length / 2 - 1),
+        (0, utils_js_1.uint16)(payload.length / 2 - 1),
+        (0, utils_js_1.uint128)(amount),
+    ]);
 }
 function encodePermit2TransferFrom(token, receiver, amount) {
     return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint128"], [(0, utils_js_1.uint8)(ComposerCommands.TRANSFERS), (0, utils_js_1.uint8)(TransferIds.PERMIT2_TRANSFER_FROM), token, receiver, (0, utils_js_1.uint128)(amount)]);

@@ -94,6 +94,7 @@ export var BridgeIds;
 (function (BridgeIds) {
     BridgeIds[BridgeIds["STARGATE_V2"] = 0] = "STARGATE_V2";
     BridgeIds[BridgeIds["ACROSS"] = 10] = "ACROSS";
+    BridgeIds[BridgeIds["SQUID_ROUTER"] = 20] = "SQUID_ROUTER";
 })(BridgeIds || (BridgeIds = {}));
 export var DexTypeMappings;
 (function (DexTypeMappings) {
@@ -244,6 +245,32 @@ export function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, r
         message,
     ]);
     return bridgeData;
+}
+export function encodeSquidRouterCall(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload, gasRefundRecipient, enableExpress, nativeAmount) {
+    const partialData = encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload);
+    return encodePacked(["bytes", "uint128", "address", "uint8", "bytes", "bytes", "bytes", "bytes"], [
+        partialData,
+        uint128(nativeAmount),
+        gasRefundRecipient,
+        uint8(enableExpress ? 1 : 0),
+        bridgedTokenSymbol,
+        destinationChain,
+        destinationAddress,
+        payload,
+    ]);
+}
+export function encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload) {
+    return encodePacked(["uint8", "uint8", "address", "address", "uint16", "uint16", "uint16", "uint16", "uint128"], [
+        uint8(ComposerCommands.BRIDGING),
+        uint8(BridgeIds.SQUID_ROUTER),
+        gateway,
+        asset,
+        uint16(bridgedTokenSymbol.length / 2 - 1),
+        uint16(destinationChain.length / 2 - 1),
+        uint16(destinationAddress.length / 2 - 1),
+        uint16(payload.length / 2 - 1),
+        uint128(amount),
+    ]);
 }
 export function encodePermit2TransferFrom(token, receiver, amount) {
     return encodePacked(["uint8", "uint8", "address", "address", "uint128"], [uint8(ComposerCommands.TRANSFERS), uint8(TransferIds.PERMIT2_TRANSFER_FROM), token, receiver, uint128(amount)]);
