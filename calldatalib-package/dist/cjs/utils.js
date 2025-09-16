@@ -53,14 +53,12 @@ function encodePacked(types, values) {
     }
     return (0, viem_1.encodePacked)(types, values);
 }
-function generateAmountBitmap(amount, useShares, unsafe, native) {
+function generateAmountBitmap(amount, useShares, native) {
     let am = amount;
-    if (useShares)
-        am = uint128((am & ~BigInt(exports._SHARES_MASK)) | exports._SHARES_MASK);
-    if (unsafe)
-        am = uint128((am & ~BigInt(exports._UNSAFE_AMOUNT)) | exports._UNSAFE_AMOUNT);
     if (native)
         am = uint128((am & ~BigInt(exports._NATIVE_FLAG)) | exports._NATIVE_FLAG);
+    if (useShares)
+        am = uint128((am & ~BigInt(exports._SHARES_MASK)) | exports._SHARES_MASK);
     return am;
 }
 function getMorphoCollateral(market) {

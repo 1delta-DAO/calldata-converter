@@ -35,14 +35,12 @@ export function encodePacked(types, values) {
     }
     return abiEncodePacked(types, values);
 }
-export function generateAmountBitmap(amount, useShares, unsafe, native) {
+export function generateAmountBitmap(amount, useShares, native) {
     let am = amount;
-    if (useShares)
-        am = uint128((am & ~BigInt(_SHARES_MASK)) | _SHARES_MASK);
-    if (unsafe)
-        am = uint128((am & ~BigInt(_UNSAFE_AMOUNT)) | _UNSAFE_AMOUNT);
     if (native)
         am = uint128((am & ~BigInt(_NATIVE_FLAG)) | _NATIVE_FLAG);
+    if (useShares)
+        am = uint128((am & ~BigInt(_SHARES_MASK)) | _SHARES_MASK);
     return am;
 }
 export function getMorphoCollateral(market) {

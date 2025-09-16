@@ -12,7 +12,7 @@ export declare function uint112(value: number | bigint): bigint;
 export declare function uint128(value: number | bigint): bigint;
 export declare function uint256(value: number | bigint): bigint;
 export declare function encodePacked(types: string[], values: any[]): Hex;
-export declare function generateAmountBitmap(amount: bigint, useShares: boolean, unsafe: boolean, native: boolean): bigint;
+export declare function generateAmountBitmap(amount: bigint, useShares: boolean, native: boolean): bigint;
 export declare function getMorphoCollateral(market: Hex): Address;
 export declare function getMorphoLoanAsset(market: Hex): Address;
 export declare function newbytes(length: number): Hex;
