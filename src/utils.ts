@@ -64,6 +64,10 @@ export function getMorphoLoanAsset(market: Hex): Address {
     return `0x${slice}` as Address
 }
 
+export function rightPadZero(address: Address): Hex {
+    return (address.toLowerCase() + "0".repeat(24)) as Hex
+}
+
 export function newbytes(length: number): Hex {
     return ("0x" + "0".repeat(length * 2)) as Hex
 }
