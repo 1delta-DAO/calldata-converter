@@ -257,7 +257,7 @@ function encodeStargateV2BridgeSimpleTaxi(asset, stargatePool, dstEid, receiver,
 function encodeStargateV2BridgeSimpleBus(asset, stargatePool, dstEid, receiver, refundReceiver, amount, isNative, slippage, fee) {
     return encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, refundReceiver, amount, slippage, fee, true, isNative, (0, utils_js_1.newbytes)(0), (0, utils_js_1.newbytes)(0));
 }
-function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, message) {
+function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, deadline, message) {
     const bridgeData = (0, utils_js_1.encodePacked)([
         "uint8",
         "uint8",
@@ -270,6 +270,7 @@ function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receiving
         "uint32",
         "uint32",
         "bytes32",
+        "uint32",
         "uint16",
         "bytes",
     ], [
@@ -284,12 +285,13 @@ function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receiving
         feePercentage,
         destinationChainId,
         receiver,
+        deadline,
         (0, utils_js_1.uint16)(message.length / 2 - 1),
         message,
     ]);
     return bridgeData;
 }
-function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, message) {
+function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, deadline, message) {
     const bridgeData = (0, utils_js_1.encodePacked)([
         "uint8",
         "uint8",
@@ -302,6 +304,7 @@ function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivin
         "uint32",
         "uint32",
         "bytes32",
+        "uint32",
         "uint16",
         "bytes",
     ], [
@@ -316,6 +319,7 @@ function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivin
         feePercentage,
         destinationChainId,
         receiver,
+        deadline,
         (0, utils_js_1.uint16)(message.length / 2 - 1),
         message,
     ]);

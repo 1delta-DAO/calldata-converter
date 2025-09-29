@@ -311,6 +311,7 @@ export function encodeAcrossBridgeToken(
 	feePercentage: number,
 	destinationChainId: number,
 	receiver: Hex,
+	deadline: number,
 	message: Hex,
 ): Hex {
 	const bridgeData = encodePacked(
@@ -326,6 +327,7 @@ export function encodeAcrossBridgeToken(
 			"uint32",
 			"uint32",
 			"bytes32",
+			"uint32",
 			"uint16",
 			"bytes",
 		],
@@ -341,6 +343,7 @@ export function encodeAcrossBridgeToken(
 			feePercentage,
 			destinationChainId,
 			receiver,
+			deadline,
 			uint16(message.length / 2 - 1),
 			message,
 		],
@@ -358,6 +361,7 @@ export function encodeAcrossBridgeNative(
 	feePercentage: number,
 	destinationChainId: number,
 	receiver: Hex,
+	deadline: number,
 	message: Hex,
 ): Hex {
 	const bridgeData = encodePacked(
@@ -373,6 +377,7 @@ export function encodeAcrossBridgeNative(
 			"uint32",
 			"uint32",
 			"bytes32",
+			"uint32",
 			"uint16",
 			"bytes",
 		],
@@ -388,6 +393,7 @@ export function encodeAcrossBridgeNative(
 			feePercentage,
 			destinationChainId,
 			receiver,
+			deadline,
 			uint16(message.length / 2 - 1),
 			message,
 		],

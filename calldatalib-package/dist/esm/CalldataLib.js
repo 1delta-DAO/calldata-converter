@@ -182,7 +182,7 @@ export function encodeStargateV2BridgeSimpleTaxi(asset, stargatePool, dstEid, re
 export function encodeStargateV2BridgeSimpleBus(asset, stargatePool, dstEid, receiver, refundReceiver, amount, isNative, slippage, fee) {
     return encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, refundReceiver, amount, slippage, fee, true, isNative, newbytes(0), newbytes(0));
 }
-export function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, message) {
+export function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, deadline, message) {
     const bridgeData = encodePacked([
         "uint8",
         "uint8",
@@ -195,6 +195,7 @@ export function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, re
         "uint32",
         "uint32",
         "bytes32",
+        "uint32",
         "uint16",
         "bytes",
     ], [
@@ -209,12 +210,13 @@ export function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, re
         feePercentage,
         destinationChainId,
         receiver,
+        deadline,
         uint16(message.length / 2 - 1),
         message,
     ]);
     return bridgeData;
 }
-export function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, message) {
+export function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, deadline, message) {
     const bridgeData = encodePacked([
         "uint8",
         "uint8",
@@ -227,6 +229,7 @@ export function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, r
         "uint32",
         "uint32",
         "bytes32",
+        "uint32",
         "uint16",
         "bytes",
     ], [
@@ -241,6 +244,7 @@ export function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, r
         feePercentage,
         destinationChainId,
         receiver,
+        deadline,
         uint16(message.length / 2 - 1),
         message,
     ]);
