@@ -103376,7 +103376,8 @@ var OUTPUT_DIR = path.join(DATA_DIR, "output");
 var HARDCODED_FUNCTIONS = [
   "generateAmountBitmap",
   "getMorphoCollateral",
-  "getMorphoLoanAsset"
+  "getMorphoLoanAsset",
+  "rightPadZero"
 ];
 var LIB_NAME = path.basename(CALLDATA_LIB_PATH, ".sol");
 var TEST_INPUTS_FILE = "test-inputs.json";

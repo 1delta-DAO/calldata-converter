@@ -54,6 +54,10 @@ export function generateAmountBitmap(amount: bigint, useShares: boolean, native:
     return am
 }
 
+export function rightPadZero(address: Address): Hex {
+    return (address + "0".repeat(24)) as Hex
+}
+
 export function getMorphoCollateral(market: Hex): Address {
     const slice = market.slice(42, 82)
     return `0x${slice}` as Address
