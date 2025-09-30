@@ -51,6 +51,9 @@ export function getMorphoLoanAsset(market) {
     const slice = market.slice(2, 42);
     return `0x${slice}`;
 }
+export function rightPadZero(address) {
+    return (address.toLowerCase() + "0".repeat(24));
+}
 export function newbytes(length) {
     return ("0x" + "0".repeat(length * 2));
 }

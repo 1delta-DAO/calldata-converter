@@ -12,6 +12,8 @@ exports.encodeAcrossBridgeToken = encodeAcrossBridgeToken;
 exports.encodeAcrossBridgeNative = encodeAcrossBridgeNative;
 exports.encodeSquidRouterCall = encodeSquidRouterCall;
 exports.encodeSquidRouterCallPartial = encodeSquidRouterCallPartial;
+exports.encodeGasZipBridge = encodeGasZipBridge;
+exports.encodeGasZipEvmBridge = encodeGasZipEvmBridge;
 exports.encodePermit2TransferFrom = encodePermit2TransferFrom;
 exports.encodeNextGenDexUnlock = encodeNextGenDexUnlock;
 exports.encodeBalancerV3FlashLoan = encodeBalancerV3FlashLoan;
@@ -170,6 +172,7 @@ var BridgeIds;
     BridgeIds[BridgeIds["STARGATE_V2"] = 0] = "STARGATE_V2";
     BridgeIds[BridgeIds["ACROSS"] = 10] = "ACROSS";
     BridgeIds[BridgeIds["SQUID_ROUTER"] = 20] = "SQUID_ROUTER";
+    BridgeIds[BridgeIds["GASZIP"] = 30] = "GASZIP";
 })(BridgeIds || (exports.BridgeIds = BridgeIds = {}));
 var DexTypeMappings;
 (function (DexTypeMappings) {
@@ -349,6 +352,26 @@ function encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol, amount
         (0, utils_js_1.uint16)(destinationAddress.length / 2 - 1),
         (0, utils_js_1.uint16)(payload.length / 2 - 1),
         (0, utils_js_1.uint128)(amount),
+    ]);
+}
+function encodeGasZipBridge(gasZipRouter, receiver, amount, destinationChainId) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "bytes32", "uint128", "uint256"], [
+        (0, utils_js_1.uint8)(ComposerCommands.BRIDGING),
+        (0, utils_js_1.uint8)(BridgeIds.GASZIP),
+        gasZipRouter,
+        receiver,
+        (0, utils_js_1.uint128)(amount),
+        destinationChainId,
+    ]);
+}
+function encodeGasZipEvmBridge(gasZipRouter, receiver, amount, destinationChainId) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "bytes32", "uint128", "uint256"], [
+        (0, utils_js_1.uint8)(ComposerCommands.BRIDGING),
+        (0, utils_js_1.uint8)(BridgeIds.GASZIP),
+        gasZipRouter,
+        (0, utils_js_1.rightPadZero)(receiver),
+        (0, utils_js_1.uint128)(amount),
+        destinationChainId,
     ]);
 }
 function encodePermit2TransferFrom(token, receiver, amount) {

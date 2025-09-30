@@ -54,10 +54,6 @@ export function generateAmountBitmap(amount: bigint, useShares: boolean, native:
     return am
 }
 
-export function rightPadZero(address: Address): Hex {
-    return (address + "0".repeat(24)) as Hex
-}
-
 export function getMorphoCollateral(market: Hex): Address {
     const slice = market.slice(42, 82)
     return `0x${slice}` as Address
@@ -66,6 +62,10 @@ export function getMorphoCollateral(market: Hex): Address {
 export function getMorphoLoanAsset(market: Hex): Address {
     const slice = market.slice(2, 42)
     return `0x${slice}` as Address
+}
+
+export function rightPadZero(address: Address): Hex {
+    return (address.toLowerCase() + "0".repeat(24)) as Hex
 }
 
 export function newbytes(length: number): Hex {

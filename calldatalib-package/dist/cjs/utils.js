@@ -14,6 +14,7 @@ exports.encodePacked = encodePacked;
 exports.generateAmountBitmap = generateAmountBitmap;
 exports.getMorphoCollateral = getMorphoCollateral;
 exports.getMorphoLoanAsset = getMorphoLoanAsset;
+exports.rightPadZero = rightPadZero;
 exports.newbytes = newbytes;
 exports.bytes = bytes;
 const viem_1 = require("viem");
@@ -68,6 +69,9 @@ function getMorphoCollateral(market) {
 function getMorphoLoanAsset(market) {
     const slice = market.slice(2, 42);
     return `0x${slice}`;
+}
+function rightPadZero(address) {
+    return (address.toLowerCase() + "0".repeat(24));
 }
 function newbytes(length) {
     return ("0x" + "0".repeat(length * 2));

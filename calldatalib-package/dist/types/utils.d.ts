@@ -15,5 +15,6 @@ export declare function encodePacked(types: string[], values: any[]): Hex;
 export declare function generateAmountBitmap(amount: bigint, useShares: boolean, native: boolean): bigint;
 export declare function getMorphoCollateral(market: Hex): Address;
 export declare function getMorphoLoanAsset(market: Hex): Address;
+export declare function rightPadZero(address: Address): Hex;
 export declare function newbytes(length: number): Hex;
 export declare function bytes(value: Hex): Hex;

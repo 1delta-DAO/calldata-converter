@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { zeroAddress } from "viem";
-import { encodePacked, uint128, uint8, uint16, uint256, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, } from "./utils.js";
+import { encodePacked, uint128, uint8, uint16, uint256, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, rightPadZero, } from "./utils.js";
 export var SweepType;
 (function (SweepType) {
     SweepType[SweepType["VALIDATE"] = 0] = "VALIDATE";
@@ -95,6 +95,7 @@ export var BridgeIds;
     BridgeIds[BridgeIds["STARGATE_V2"] = 0] = "STARGATE_V2";
     BridgeIds[BridgeIds["ACROSS"] = 10] = "ACROSS";
     BridgeIds[BridgeIds["SQUID_ROUTER"] = 20] = "SQUID_ROUTER";
+    BridgeIds[BridgeIds["GASZIP"] = 30] = "GASZIP";
 })(BridgeIds || (BridgeIds = {}));
 export var DexTypeMappings;
 (function (DexTypeMappings) {
@@ -274,6 +275,26 @@ export function encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol,
         uint16(destinationAddress.length / 2 - 1),
         uint16(payload.length / 2 - 1),
         uint128(amount),
+    ]);
+}
+export function encodeGasZipBridge(gasZipRouter, receiver, amount, destinationChainId) {
+    return encodePacked(["uint8", "uint8", "address", "bytes32", "uint128", "uint256"], [
+        uint8(ComposerCommands.BRIDGING),
+        uint8(BridgeIds.GASZIP),
+        gasZipRouter,
+        receiver,
+        uint128(amount),
+        destinationChainId,
+    ]);
+}
+export function encodeGasZipEvmBridge(gasZipRouter, receiver, amount, destinationChainId) {
+    return encodePacked(["uint8", "uint8", "address", "bytes32", "uint128", "uint256"], [
+        uint8(ComposerCommands.BRIDGING),
+        uint8(BridgeIds.GASZIP),
+        gasZipRouter,
+        rightPadZero(receiver),
+        uint128(amount),
+        destinationChainId,
     ]);
 }
 export function encodePermit2TransferFrom(token, receiver, amount) {

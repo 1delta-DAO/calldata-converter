@@ -15,6 +15,7 @@ import {
 	bytes,
 	getMorphoCollateral,
 	getMorphoLoanAsset,
+	rightPadZero,
 } from "./utils.js";
 export enum SweepType {
 	VALIDATE = 0,
@@ -109,6 +110,7 @@ export enum BridgeIds {
 	STARGATE_V2 = 0x00,
 	ACROSS = 0x0a,
 	SQUID_ROUTER = 0x14,
+	GASZIP = 0x1e,
 }
 
 export enum DexTypeMappings {
@@ -458,6 +460,44 @@ export function encodeSquidRouterCallPartial(
 			uint16(destinationAddress.length / 2 - 1),
 			uint16(payload.length / 2 - 1),
 			uint128(amount),
+		],
+	);
+}
+
+export function encodeGasZipBridge(
+	gasZipRouter: Address,
+	receiver: Hex,
+	amount: bigint,
+	destinationChainId: bigint,
+): Hex {
+	return encodePacked(
+		["uint8", "uint8", "address", "bytes32", "uint128", "uint256"],
+		[
+			uint8(ComposerCommands.BRIDGING),
+			uint8(BridgeIds.GASZIP),
+			gasZipRouter,
+			receiver,
+			uint128(amount),
+			destinationChainId,
+		],
+	);
+}
+
+export function encodeGasZipEvmBridge(
+	gasZipRouter: Address,
+	receiver: Address,
+	amount: bigint,
+	destinationChainId: bigint,
+): Hex {
+	return encodePacked(
+		["uint8", "uint8", "address", "bytes32", "uint128", "uint256"],
+		[
+			uint8(ComposerCommands.BRIDGING),
+			uint8(BridgeIds.GASZIP),
+			gasZipRouter,
+			rightPadZero(receiver),
+			uint128(amount),
+			destinationChainId,
 		],
 	);
 }
