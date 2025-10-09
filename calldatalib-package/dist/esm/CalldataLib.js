@@ -183,73 +183,41 @@ export function encodeStargateV2BridgeSimpleTaxi(asset, stargatePool, dstEid, re
 export function encodeStargateV2BridgeSimpleBus(asset, stargatePool, dstEid, receiver, refundReceiver, amount, isNative, slippage, fee) {
     return encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, refundReceiver, amount, slippage, fee, true, isNative, newbytes(0), newbytes(0));
 }
-export function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, deadline, message) {
-    const bridgeData = encodePacked([
-        "uint8",
-        "uint8",
-        "address",
-        "address",
-        "address",
-        "bytes32",
-        "uint128",
-        "uint128",
-        "uint32",
-        "uint32",
-        "bytes32",
-        "uint32",
-        "uint16",
-        "bytes",
-    ], [
-        uint8(ComposerCommands.BRIDGING),
-        uint8(BridgeIds.ACROSS),
-        spokePool,
-        depositor,
-        sendingAssetId,
-        receivingAssetId,
-        generateAmountBitmap(uint128(amount), false, false),
-        fixedFee,
-        feePercentage,
-        destinationChainId,
-        receiver,
-        deadline,
-        uint16(message.length / 2 - 1),
-        message,
+export function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message) {
+    return encodePacked(["bytes", "bytes"], [
+        encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, false),
+        encodeAcrossParams(fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message),
     ]);
-    return bridgeData;
 }
-export function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, deadline, message) {
-    const bridgeData = encodePacked([
-        "uint8",
-        "uint8",
-        "address",
-        "address",
-        "address",
-        "bytes32",
-        "uint128",
-        "uint128",
-        "uint32",
-        "uint32",
-        "bytes32",
-        "uint32",
-        "uint16",
-        "bytes",
-    ], [
+export function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message) {
+    return encodePacked(["bytes", "bytes"], [
+        encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, true),
+        encodeAcrossParams(fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message),
+    ]);
+}
+export function encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, isNative) {
+    return encodePacked(["uint8", "uint8", "address", "address", "address", "bytes32", "uint128"], [
         uint8(ComposerCommands.BRIDGING),
         uint8(BridgeIds.ACROSS),
         spokePool,
         depositor,
         sendingAssetId,
         receivingAssetId,
-        generateAmountBitmap(uint128(amount), false, true),
+        generateAmountBitmap(uint128(amount), false, isNative),
+    ]);
+}
+export function encodeAcrossParams(fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message) {
+    return encodePacked(["uint128", "uint32", "uint32", "uint8", "uint8", "bytes32", "uint32", "uint16", "bytes"], [
         fixedFee,
         feePercentage,
         destinationChainId,
+        fromTokenDecimals,
+        toTokenDecimals,
         receiver,
         deadline,
         uint16(message.length / 2 - 1),
         message,
     ]);
-    return bridgeData;
 }
 export function encodeSquidRouterCall(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload, gasRefundRecipient, enableExpress, nativeAmount) {
     const partialData = encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload);

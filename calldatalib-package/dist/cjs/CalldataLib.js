@@ -10,6 +10,8 @@ exports.encodeStargateV2BridgeSimpleTaxi = encodeStargateV2BridgeSimpleTaxi;
 exports.encodeStargateV2BridgeSimpleBus = encodeStargateV2BridgeSimpleBus;
 exports.encodeAcrossBridgeToken = encodeAcrossBridgeToken;
 exports.encodeAcrossBridgeNative = encodeAcrossBridgeNative;
+exports.encodeAcrossHeader = encodeAcrossHeader;
+exports.encodeAcrossParams = encodeAcrossParams;
 exports.encodeSquidRouterCall = encodeSquidRouterCall;
 exports.encodeSquidRouterCallPartial = encodeSquidRouterCallPartial;
 exports.encodeGasZipBridge = encodeGasZipBridge;
@@ -260,73 +262,41 @@ function encodeStargateV2BridgeSimpleTaxi(asset, stargatePool, dstEid, receiver,
 function encodeStargateV2BridgeSimpleBus(asset, stargatePool, dstEid, receiver, refundReceiver, amount, isNative, slippage, fee) {
     return encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, refundReceiver, amount, slippage, fee, true, isNative, (0, utils_js_1.newbytes)(0), (0, utils_js_1.newbytes)(0));
 }
-function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, deadline, message) {
-    const bridgeData = (0, utils_js_1.encodePacked)([
-        "uint8",
-        "uint8",
-        "address",
-        "address",
-        "address",
-        "bytes32",
-        "uint128",
-        "uint128",
-        "uint32",
-        "uint32",
-        "bytes32",
-        "uint32",
-        "uint16",
-        "bytes",
-    ], [
-        (0, utils_js_1.uint8)(ComposerCommands.BRIDGING),
-        (0, utils_js_1.uint8)(BridgeIds.ACROSS),
-        spokePool,
-        depositor,
-        sendingAssetId,
-        receivingAssetId,
-        (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(amount), false, false),
-        fixedFee,
-        feePercentage,
-        destinationChainId,
-        receiver,
-        deadline,
-        (0, utils_js_1.uint16)(message.length / 2 - 1),
-        message,
+function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message) {
+    return (0, utils_js_1.encodePacked)(["bytes", "bytes"], [
+        encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, false),
+        encodeAcrossParams(fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message),
     ]);
-    return bridgeData;
 }
-function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, receiver, deadline, message) {
-    const bridgeData = (0, utils_js_1.encodePacked)([
-        "uint8",
-        "uint8",
-        "address",
-        "address",
-        "address",
-        "bytes32",
-        "uint128",
-        "uint128",
-        "uint32",
-        "uint32",
-        "bytes32",
-        "uint32",
-        "uint16",
-        "bytes",
-    ], [
+function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message) {
+    return (0, utils_js_1.encodePacked)(["bytes", "bytes"], [
+        encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, true),
+        encodeAcrossParams(fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message),
+    ]);
+}
+function encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, isNative) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "address", "bytes32", "uint128"], [
         (0, utils_js_1.uint8)(ComposerCommands.BRIDGING),
         (0, utils_js_1.uint8)(BridgeIds.ACROSS),
         spokePool,
         depositor,
         sendingAssetId,
         receivingAssetId,
-        (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(amount), false, true),
+        (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(amount), false, isNative),
+    ]);
+}
+function encodeAcrossParams(fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message) {
+    return (0, utils_js_1.encodePacked)(["uint128", "uint32", "uint32", "uint8", "uint8", "bytes32", "uint32", "uint16", "bytes"], [
         fixedFee,
         feePercentage,
         destinationChainId,
+        fromTokenDecimals,
+        toTokenDecimals,
         receiver,
         deadline,
         (0, utils_js_1.uint16)(message.length / 2 - 1),
         message,
     ]);
-    return bridgeData;
 }
 function encodeSquidRouterCall(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload, gasRefundRecipient, enableExpress, nativeAmount) {
     const partialData = encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload);

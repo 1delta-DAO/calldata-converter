@@ -312,45 +312,28 @@ export function encodeAcrossBridgeToken(
 	fixedFee: bigint,
 	feePercentage: number,
 	destinationChainId: number,
+	fromTokenDecimals: number,
+	toTokenDecimals: number,
 	receiver: Hex,
 	deadline: number,
 	message: Hex,
 ): Hex {
-	const bridgeData = encodePacked(
+	return encodePacked(
+		["bytes", "bytes"],
 		[
-			"uint8",
-			"uint8",
-			"address",
-			"address",
-			"address",
-			"bytes32",
-			"uint128",
-			"uint128",
-			"uint32",
-			"uint32",
-			"bytes32",
-			"uint32",
-			"uint16",
-			"bytes",
-		],
-		[
-			uint8(ComposerCommands.BRIDGING),
-			uint8(BridgeIds.ACROSS),
-			spokePool,
-			depositor,
-			sendingAssetId,
-			receivingAssetId,
-			generateAmountBitmap(uint128(amount), false, false),
-			fixedFee,
-			feePercentage,
-			destinationChainId,
-			receiver,
-			deadline,
-			uint16(message.length / 2 - 1),
-			message,
+			encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, false),
+			encodeAcrossParams(
+				fixedFee,
+				feePercentage,
+				destinationChainId,
+				fromTokenDecimals,
+				toTokenDecimals,
+				receiver,
+				deadline,
+				message,
+			),
 		],
 	);
-	return bridgeData;
 }
 
 export function encodeAcrossBridgeNative(
@@ -362,27 +345,40 @@ export function encodeAcrossBridgeNative(
 	fixedFee: bigint,
 	feePercentage: number,
 	destinationChainId: number,
+	fromTokenDecimals: number,
+	toTokenDecimals: number,
 	receiver: Hex,
 	deadline: number,
 	message: Hex,
 ): Hex {
-	const bridgeData = encodePacked(
+	return encodePacked(
+		["bytes", "bytes"],
 		[
-			"uint8",
-			"uint8",
-			"address",
-			"address",
-			"address",
-			"bytes32",
-			"uint128",
-			"uint128",
-			"uint32",
-			"uint32",
-			"bytes32",
-			"uint32",
-			"uint16",
-			"bytes",
+			encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, true),
+			encodeAcrossParams(
+				fixedFee,
+				feePercentage,
+				destinationChainId,
+				fromTokenDecimals,
+				toTokenDecimals,
+				receiver,
+				deadline,
+				message,
+			),
 		],
+	);
+}
+
+export function encodeAcrossHeader(
+	spokePool: Address,
+	depositor: Address,
+	sendingAssetId: Address,
+	receivingAssetId: Hex,
+	amount: bigint,
+	isNative: boolean,
+): Hex {
+	return encodePacked(
+		["uint8", "uint8", "address", "address", "address", "bytes32", "uint128"],
 		[
 			uint8(ComposerCommands.BRIDGING),
 			uint8(BridgeIds.ACROSS),
@@ -390,17 +386,35 @@ export function encodeAcrossBridgeNative(
 			depositor,
 			sendingAssetId,
 			receivingAssetId,
-			generateAmountBitmap(uint128(amount), false, true),
+			generateAmountBitmap(uint128(amount), false, isNative),
+		],
+	);
+}
+
+export function encodeAcrossParams(
+	fixedFee: bigint,
+	feePercentage: number,
+	destinationChainId: number,
+	fromTokenDecimals: number,
+	toTokenDecimals: number,
+	receiver: Hex,
+	deadline: number,
+	message: Hex,
+): Hex {
+	return encodePacked(
+		["uint128", "uint32", "uint32", "uint8", "uint8", "bytes32", "uint32", "uint16", "bytes"],
+		[
 			fixedFee,
 			feePercentage,
 			destinationChainId,
+			fromTokenDecimals,
+			toTokenDecimals,
 			receiver,
 			deadline,
 			uint16(message.length / 2 - 1),
 			message,
 		],
 	);
-	return bridgeData;
 }
 
 export function encodeSquidRouterCall(
