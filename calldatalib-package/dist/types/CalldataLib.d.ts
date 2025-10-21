@@ -36,7 +36,8 @@ export declare enum LenderIds {
     UP_TO_AAVE_V2 = 2000,
     UP_TO_COMPOUND_V3 = 3000,
     UP_TO_COMPOUND_V2 = 4000,
-    UP_TO_MORPHO = 5000
+    UP_TO_MORPHO = 5000,
+    UP_TO_SILO_V2 = 6000
 }
 export declare enum LenderOps {
     DEPOSIT = 0,
@@ -87,6 +88,10 @@ export declare enum CompoundV2Selector {
     MINT = 1,
     REDEEM = 0,
     REDEEM_BEHALF = 1
+}
+export declare enum SiloV2CollateralType {
+    PROTECTED = 0,
+    COLLATERAL = 1
 }
 export declare enum DexTypeMappings {
     UNISWAP_V3_ID = 0,
@@ -190,6 +195,10 @@ export declare function encodeCompoundV3Borrow(token: Address, amount: bigint, r
 export declare function encodeCompoundV3Repay(token: Address, amount: bigint, receiver: Address, comet: Address): Hex;
 export declare function encodeCompoundV3Withdraw(token: Address, amount: bigint, receiver: Address, comet: Address, isBase: boolean): Hex;
 export declare function encodeCompoundV2Deposit(token: Address, amount: bigint, receiver: Address, cToken: Address, selectorId: number): Hex;
+export declare function encodeSiloV2Deposit(token: Address, amount: bigint, receiver: Address, silo: Address, collateralMode: number): Hex;
+export declare function encodeSiloV2Borrow(amount: bigint, receiver: Address, silo: Address): Hex;
 export declare function encodeCompoundV2Borrow(token: Address, amount: bigint, receiver: Address, cToken: Address): Hex;
 export declare function encodeCompoundV2Repay(token: Address, amount: bigint, receiver: Address, cToken: Address): Hex;
 export declare function encodeCompoundV2Withdraw(token: Address, amount: bigint, receiver: Address, cToken: Address, selectorId: number): Hex;
+export declare function encodeSiloV2Withdraw(amount: bigint, receiver: Address, silo: Address, collateralMode: number): Hex;
+export declare function encodeSiloV2Repay(token: Address, amount: bigint, receiver: Address, silo: Address): Hex;

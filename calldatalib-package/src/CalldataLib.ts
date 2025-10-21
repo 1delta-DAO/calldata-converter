@@ -63,6 +63,7 @@ export enum LenderIds {
 	UP_TO_COMPOUND_V3 = 3000,
 	UP_TO_COMPOUND_V2 = 4000,
 	UP_TO_MORPHO = 5000,
+	UP_TO_SILO_V2 = 6000,
 }
 
 export enum LenderOps {
@@ -120,6 +121,11 @@ export enum CompoundV2Selector {
 	MINT = 1,
 	REDEEM = 0,
 	REDEEM_BEHALF = 1,
+}
+
+export enum SiloV2CollateralType {
+	PROTECTED = 0,
+	COLLATERAL = 1,
 }
 
 export enum DexTypeMappings {
@@ -1101,7 +1107,7 @@ export function encodeMorphoDepositCollateral(
 			encodeApprove(getMorphoCollateral(market), morphoB),
 			uint8(ComposerCommands.LENDING),
 			uint8(LenderOps.DEPOSIT),
-			uint16(LenderIds.UP_TO_MORPHO),
+			uint16(LenderIds.UP_TO_MORPHO - 1),
 			market,
 			uint128(assets),
 			receiver,
@@ -1127,7 +1133,7 @@ export function encodeMorphoDeposit(
 			encodeApprove(getMorphoLoanAsset(market), morphoB),
 			uint8(ComposerCommands.LENDING),
 			uint8(LenderOps.DEPOSIT_LENDING_TOKEN),
-			uint16(LenderIds.UP_TO_MORPHO),
+			uint16(LenderIds.UP_TO_MORPHO - 1),
 			market,
 			generateAmountBitmap(uint128(assets), isShares, false),
 			receiver,
@@ -1184,7 +1190,7 @@ export function encodeMorphoWithdraw(
 		[
 			uint8(ComposerCommands.LENDING),
 			uint8(LenderOps.WITHDRAW_LENDING_TOKEN),
-			uint16(LenderIds.UP_TO_MORPHO),
+			uint16(LenderIds.UP_TO_MORPHO - 1),
 			market,
 			generateAmountBitmap(uint128(assets), isShares, false),
 			receiver,
@@ -1199,7 +1205,7 @@ export function encodeMorphoWithdrawCollateral(market: Hex, assets: bigint, rece
 		[
 			uint8(ComposerCommands.LENDING),
 			uint8(LenderOps.WITHDRAW),
-			uint16(LenderIds.UP_TO_MORPHO),
+			uint16(LenderIds.UP_TO_MORPHO - 1),
 			market,
 			uint128(assets),
 			receiver,
@@ -1220,7 +1226,7 @@ export function encodeMorphoBorrow(
 		[
 			uint8(ComposerCommands.LENDING),
 			uint8(LenderOps.BORROW),
-			uint16(LenderIds.UP_TO_MORPHO),
+			uint16(LenderIds.UP_TO_MORPHO - 1),
 			market,
 			generateAmountBitmap(uint128(assets), isShares, false),
 			receiver,
@@ -1244,7 +1250,7 @@ export function encodeMorphoRepay(
 			encodeApprove(getMorphoLoanAsset(market), morphoB),
 			uint8(ComposerCommands.LENDING),
 			uint8(LenderOps.REPAY),
-			uint16(LenderIds.UP_TO_MORPHO),
+			uint16(LenderIds.UP_TO_MORPHO - 1),
 			market,
 			generateAmountBitmap(uint128(assets), isShares, false),
 			receiver,
@@ -1510,6 +1516,42 @@ export function encodeCompoundV2Deposit(
 	);
 }
 
+export function encodeSiloV2Deposit(
+	token: Address,
+	amount: bigint,
+	receiver: Address,
+	silo: Address,
+	collateralMode: number,
+): Hex {
+	return encodePacked(
+		["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"],
+		[
+			token === zeroAddress ? newbytes(0) : encodeApprove(token, silo),
+			uint8(ComposerCommands.LENDING),
+			uint8(LenderOps.DEPOSIT),
+			uint16(LenderIds.UP_TO_SILO_V2 - 1),
+			token,
+			encodeSiloV2CollateralMode(uint128(amount), collateralMode),
+			receiver,
+			silo,
+		],
+	);
+}
+
+export function encodeSiloV2Borrow(amount: bigint, receiver: Address, silo: Address): Hex {
+	return encodePacked(
+		["uint8", "uint8", "uint16", "uint128", "address", "address"],
+		[
+			uint8(ComposerCommands.LENDING),
+			uint8(LenderOps.BORROW),
+			uint16(LenderIds.UP_TO_SILO_V2 - 1),
+			uint128(amount),
+			receiver,
+			silo,
+		],
+	);
+}
+
 export function encodeCompoundV2Borrow(token: Address, amount: bigint, receiver: Address, cToken: Address): Hex {
 	return encodePacked(
 		["uint8", "uint8", "uint16", "address", "uint128", "address", "address"],
@@ -1558,6 +1600,36 @@ export function encodeCompoundV2Withdraw(
 			encodeCompoundV2SelectorId(uint128(amount), selectorId),
 			receiver,
 			cToken,
+		],
+	);
+}
+
+export function encodeSiloV2Withdraw(amount: bigint, receiver: Address, silo: Address, collateralMode: number): Hex {
+	return encodePacked(
+		["uint8", "uint8", "uint16", "uint128", "address", "address"],
+		[
+			uint8(ComposerCommands.LENDING),
+			uint8(LenderOps.WITHDRAW),
+			uint16(LenderIds.UP_TO_SILO_V2 - 1),
+			encodeSiloV2CollateralMode(uint128(amount), collateralMode),
+			receiver,
+			silo,
+		],
+	);
+}
+
+export function encodeSiloV2Repay(token: Address, amount: bigint, receiver: Address, silo: Address): Hex {
+	return encodePacked(
+		["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"],
+		[
+			token === zeroAddress ? newbytes(0) : encodeApprove(token, silo),
+			uint8(ComposerCommands.LENDING),
+			uint8(LenderOps.REPAY),
+			uint16(LenderIds.UP_TO_SILO_V2 - 1),
+			token,
+			uint128(amount),
+			receiver,
+			silo,
 		],
 	);
 }

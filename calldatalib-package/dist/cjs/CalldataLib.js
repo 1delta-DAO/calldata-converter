@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DexForkMappings = exports.DexTypeMappings = exports.CompoundV2Selector = exports.BridgeIds = exports.ComposerCommands = exports.Gen2025ActionIds = exports.ERC4626Ids = exports.FlashLoanIds = exports.LenderOps = exports.LenderIds = exports.PermitIds = exports.TransferIds = exports.WrapOperation = exports.DodoSelector = exports.DexPayConfig = exports.SweepType = void 0;
+exports.DexForkMappings = exports.DexTypeMappings = exports.SiloV2CollateralType = exports.CompoundV2Selector = exports.BridgeIds = exports.ComposerCommands = exports.Gen2025ActionIds = exports.ERC4626Ids = exports.FlashLoanIds = exports.LenderOps = exports.LenderIds = exports.PermitIds = exports.TransferIds = exports.WrapOperation = exports.DodoSelector = exports.DexPayConfig = exports.SweepType = void 0;
 exports.encodeExternalCall = encodeExternalCall;
 exports.encodeTryExternalCall = encodeTryExternalCall;
 exports.encodeStargateV2Bridge = encodeStargateV2Bridge;
@@ -74,9 +74,13 @@ exports.encodeCompoundV3Borrow = encodeCompoundV3Borrow;
 exports.encodeCompoundV3Repay = encodeCompoundV3Repay;
 exports.encodeCompoundV3Withdraw = encodeCompoundV3Withdraw;
 exports.encodeCompoundV2Deposit = encodeCompoundV2Deposit;
+exports.encodeSiloV2Deposit = encodeSiloV2Deposit;
+exports.encodeSiloV2Borrow = encodeSiloV2Borrow;
 exports.encodeCompoundV2Borrow = encodeCompoundV2Borrow;
 exports.encodeCompoundV2Repay = encodeCompoundV2Repay;
 exports.encodeCompoundV2Withdraw = encodeCompoundV2Withdraw;
+exports.encodeSiloV2Withdraw = encodeSiloV2Withdraw;
+exports.encodeSiloV2Repay = encodeSiloV2Repay;
 // @ts-nocheck
 const viem_1 = require("viem");
 const utils_js_1 = require("./utils.js");
@@ -125,6 +129,7 @@ var LenderIds;
     LenderIds[LenderIds["UP_TO_COMPOUND_V3"] = 3000] = "UP_TO_COMPOUND_V3";
     LenderIds[LenderIds["UP_TO_COMPOUND_V2"] = 4000] = "UP_TO_COMPOUND_V2";
     LenderIds[LenderIds["UP_TO_MORPHO"] = 5000] = "UP_TO_MORPHO";
+    LenderIds[LenderIds["UP_TO_SILO_V2"] = 6000] = "UP_TO_SILO_V2";
 })(LenderIds || (exports.LenderIds = LenderIds = {}));
 var LenderOps;
 (function (LenderOps) {
@@ -183,6 +188,11 @@ var CompoundV2Selector;
     CompoundV2Selector[CompoundV2Selector["REDEEM"] = 0] = "REDEEM";
     CompoundV2Selector[CompoundV2Selector["REDEEM_BEHALF"] = 1] = "REDEEM_BEHALF";
 })(CompoundV2Selector || (exports.CompoundV2Selector = CompoundV2Selector = {}));
+var SiloV2CollateralType;
+(function (SiloV2CollateralType) {
+    SiloV2CollateralType[SiloV2CollateralType["PROTECTED"] = 0] = "PROTECTED";
+    SiloV2CollateralType[SiloV2CollateralType["COLLATERAL"] = 1] = "COLLATERAL";
+})(SiloV2CollateralType || (exports.SiloV2CollateralType = SiloV2CollateralType = {}));
 var DexTypeMappings;
 (function (DexTypeMappings) {
     DexTypeMappings[DexTypeMappings["UNISWAP_V3_ID"] = 0] = "UNISWAP_V3_ID";
@@ -663,7 +673,7 @@ function encodeMorphoDepositCollateral(market, assets, receiver, data, morphoB, 
         encodeApprove((0, utils_js_1.getMorphoCollateral)(market), morphoB),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
-        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO),
+        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
         market,
         (0, utils_js_1.uint128)(assets),
         receiver,
@@ -677,7 +687,7 @@ function encodeMorphoDeposit(market, isShares, assets, receiver, data, morphoB, 
         encodeApprove((0, utils_js_1.getMorphoLoanAsset)(market), morphoB),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT_LENDING_TOKEN),
-        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO),
+        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
         market,
         (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(assets), isShares, false),
         receiver,
@@ -710,7 +720,7 @@ function encodeMorphoWithdraw(market, isShares, assets, receiver, morphoB) {
     return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "bytes", "uint128", "address", "address"], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW_LENDING_TOKEN),
-        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO),
+        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
         market,
         (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(assets), isShares, false),
         receiver,
@@ -721,7 +731,7 @@ function encodeMorphoWithdrawCollateral(market, assets, receiver, morphoB) {
     return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "bytes", "uint128", "address", "address"], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
-        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO),
+        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
         market,
         (0, utils_js_1.uint128)(assets),
         receiver,
@@ -732,7 +742,7 @@ function encodeMorphoBorrow(market, isShares, assets, receiver, morphoB) {
     return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "bytes", "uint128", "address", "address"], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.BORROW),
-        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO),
+        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
         market,
         (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(assets), isShares, false),
         receiver,
@@ -744,7 +754,7 @@ function encodeMorphoRepay(market, isShares, assets, receiver, data, morphoB, pI
         encodeApprove((0, utils_js_1.getMorphoLoanAsset)(market), morphoB),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
-        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO),
+        (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
         market,
         (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(assets), isShares, false),
         receiver,
@@ -912,6 +922,28 @@ function encodeCompoundV2Deposit(token, amount, receiver, cToken, selectorId) {
         cToken,
     ]);
 }
+function encodeSiloV2Deposit(token, amount, receiver, silo, collateralMode) {
+    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+        token === viem_1.zeroAddress ? (0, utils_js_1.newbytes)(0) : encodeApprove(token, silo),
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
+        (0, utils_js_1.uint16)(LenderIds.UP_TO_SILO_V2 - 1),
+        token,
+        (0, utils_js_1.encodeSiloV2CollateralMode)((0, utils_js_1.uint128)(amount), collateralMode),
+        receiver,
+        silo,
+    ]);
+}
+function encodeSiloV2Borrow(amount, receiver, silo) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "uint128", "address", "address"], [
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.BORROW),
+        (0, utils_js_1.uint16)(LenderIds.UP_TO_SILO_V2 - 1),
+        (0, utils_js_1.uint128)(amount),
+        receiver,
+        silo,
+    ]);
+}
 function encodeCompoundV2Borrow(token, amount, receiver, cToken) {
     return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
@@ -944,5 +976,27 @@ function encodeCompoundV2Withdraw(token, amount, receiver, cToken, selectorId) {
         (0, utils_js_1.encodeCompoundV2SelectorId)((0, utils_js_1.uint128)(amount), selectorId),
         receiver,
         cToken,
+    ]);
+}
+function encodeSiloV2Withdraw(amount, receiver, silo, collateralMode) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "uint128", "address", "address"], [
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
+        (0, utils_js_1.uint16)(LenderIds.UP_TO_SILO_V2 - 1),
+        (0, utils_js_1.encodeSiloV2CollateralMode)((0, utils_js_1.uint128)(amount), collateralMode),
+        receiver,
+        silo,
+    ]);
+}
+function encodeSiloV2Repay(token, amount, receiver, silo) {
+    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+        token === viem_1.zeroAddress ? (0, utils_js_1.newbytes)(0) : encodeApprove(token, silo),
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.REPAY),
+        (0, utils_js_1.uint16)(LenderIds.UP_TO_SILO_V2 - 1),
+        token,
+        (0, utils_js_1.uint128)(amount),
+        receiver,
+        silo,
     ]);
 }
