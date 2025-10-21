@@ -75,3 +75,11 @@ export function newbytes(length: number): Hex {
 export function bytes(value: Hex): Hex {
     return value
 }
+
+export function encodeCompoundV2SelectorId(amount: bigint, selectorId: number): bigint {
+    return uint128(amount) | (uint128(selectorId) << 120n)
+}
+
+export function encodeSiloV2CollateralMode(amount: bigint, mode: number): bigint {
+    return uint128(amount) | (uint128(mode) << 120n)
+}

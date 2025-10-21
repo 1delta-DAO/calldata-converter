@@ -17,6 +17,8 @@ exports.getMorphoLoanAsset = getMorphoLoanAsset;
 exports.rightPadZero = rightPadZero;
 exports.newbytes = newbytes;
 exports.bytes = bytes;
+exports.encodeCompoundV2SelectorId = encodeCompoundV2SelectorId;
+exports.encodeSiloV2CollateralMode = encodeSiloV2CollateralMode;
 const viem_1 = require("viem");
 exports._NATIVE_FLAG = 1n << 127n;
 exports._SHARES_MASK = 1n << 126n;
@@ -78,4 +80,10 @@ function newbytes(length) {
 }
 function bytes(value) {
     return value;
+}
+function encodeCompoundV2SelectorId(amount, selectorId) {
+    return uint128(amount) | (uint128(selectorId) << 120n);
+}
+function encodeSiloV2CollateralMode(amount, mode) {
+    return uint128(amount) | (uint128(mode) << 120n);
 }

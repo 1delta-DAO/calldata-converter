@@ -1,6 +1,6 @@
 // @ts-nocheck
 import { zeroAddress } from "viem";
-import { encodePacked, uint128, uint8, uint16, uint256, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, rightPadZero, } from "./utils.js";
+import { encodePacked, uint128, uint8, uint16, uint256, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, rightPadZero, encodeCompoundV2SelectorId, } from "./utils.js";
 export var SweepType;
 (function (SweepType) {
     SweepType[SweepType["VALIDATE"] = 0] = "VALIDATE";
@@ -97,6 +97,13 @@ export var BridgeIds;
     BridgeIds[BridgeIds["SQUID_ROUTER"] = 20] = "SQUID_ROUTER";
     BridgeIds[BridgeIds["GASZIP"] = 30] = "GASZIP";
 })(BridgeIds || (BridgeIds = {}));
+export var CompoundV2Selector;
+(function (CompoundV2Selector) {
+    CompoundV2Selector[CompoundV2Selector["MINT_BEHALF"] = 0] = "MINT_BEHALF";
+    CompoundV2Selector[CompoundV2Selector["MINT"] = 1] = "MINT";
+    CompoundV2Selector[CompoundV2Selector["REDEEM"] = 0] = "REDEEM";
+    CompoundV2Selector[CompoundV2Selector["REDEEM_BEHALF"] = 1] = "REDEEM_BEHALF";
+})(CompoundV2Selector || (CompoundV2Selector = {}));
 export var DexTypeMappings;
 (function (DexTypeMappings) {
     DexTypeMappings[DexTypeMappings["UNISWAP_V3_ID"] = 0] = "UNISWAP_V3_ID";
@@ -814,14 +821,14 @@ export function encodeCompoundV3Withdraw(token, amount, receiver, comet, isBase)
         comet,
     ]);
 }
-export function encodeCompoundV2Deposit(token, amount, receiver, cToken) {
+export function encodeCompoundV2Deposit(token, amount, receiver, cToken, selectorId) {
     return encodePacked(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
         token === zeroAddress ? newbytes(0) : encodeApprove(token, cToken),
         uint8(ComposerCommands.LENDING),
         uint8(LenderOps.DEPOSIT),
         uint16(LenderIds.UP_TO_COMPOUND_V2 - 1),
         token,
-        uint128(amount),
+        encodeCompoundV2SelectorId(uint128(amount), selectorId),
         receiver,
         cToken,
     ]);
@@ -849,13 +856,13 @@ export function encodeCompoundV2Repay(token, amount, receiver, cToken) {
         cToken,
     ]);
 }
-export function encodeCompoundV2Withdraw(token, amount, receiver, cToken) {
+export function encodeCompoundV2Withdraw(token, amount, receiver, cToken, selectorId) {
     return encodePacked(["uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
         uint8(ComposerCommands.LENDING),
         uint8(LenderOps.WITHDRAW),
         uint16(LenderIds.UP_TO_COMPOUND_V2 - 1),
         token,
-        uint128(amount),
+        encodeCompoundV2SelectorId(uint128(amount), selectorId),
         receiver,
         cToken,
     ]);

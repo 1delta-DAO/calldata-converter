@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DexForkMappings = exports.DexTypeMappings = exports.BridgeIds = exports.ComposerCommands = exports.Gen2025ActionIds = exports.ERC4626Ids = exports.FlashLoanIds = exports.LenderOps = exports.LenderIds = exports.PermitIds = exports.TransferIds = exports.WrapOperation = exports.DodoSelector = exports.DexPayConfig = exports.SweepType = void 0;
+exports.DexForkMappings = exports.DexTypeMappings = exports.CompoundV2Selector = exports.BridgeIds = exports.ComposerCommands = exports.Gen2025ActionIds = exports.ERC4626Ids = exports.FlashLoanIds = exports.LenderOps = exports.LenderIds = exports.PermitIds = exports.TransferIds = exports.WrapOperation = exports.DodoSelector = exports.DexPayConfig = exports.SweepType = void 0;
 exports.encodeExternalCall = encodeExternalCall;
 exports.encodeTryExternalCall = encodeTryExternalCall;
 exports.encodeStargateV2Bridge = encodeStargateV2Bridge;
@@ -176,6 +176,13 @@ var BridgeIds;
     BridgeIds[BridgeIds["SQUID_ROUTER"] = 20] = "SQUID_ROUTER";
     BridgeIds[BridgeIds["GASZIP"] = 30] = "GASZIP";
 })(BridgeIds || (exports.BridgeIds = BridgeIds = {}));
+var CompoundV2Selector;
+(function (CompoundV2Selector) {
+    CompoundV2Selector[CompoundV2Selector["MINT_BEHALF"] = 0] = "MINT_BEHALF";
+    CompoundV2Selector[CompoundV2Selector["MINT"] = 1] = "MINT";
+    CompoundV2Selector[CompoundV2Selector["REDEEM"] = 0] = "REDEEM";
+    CompoundV2Selector[CompoundV2Selector["REDEEM_BEHALF"] = 1] = "REDEEM_BEHALF";
+})(CompoundV2Selector || (exports.CompoundV2Selector = CompoundV2Selector = {}));
 var DexTypeMappings;
 (function (DexTypeMappings) {
     DexTypeMappings[DexTypeMappings["UNISWAP_V3_ID"] = 0] = "UNISWAP_V3_ID";
@@ -893,14 +900,14 @@ function encodeCompoundV3Withdraw(token, amount, receiver, comet, isBase) {
         comet,
     ]);
 }
-function encodeCompoundV2Deposit(token, amount, receiver, cToken) {
+function encodeCompoundV2Deposit(token, amount, receiver, cToken, selectorId) {
     return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
         token === viem_1.zeroAddress ? (0, utils_js_1.newbytes)(0) : encodeApprove(token, cToken),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_COMPOUND_V2 - 1),
         token,
-        (0, utils_js_1.uint128)(amount),
+        (0, utils_js_1.encodeCompoundV2SelectorId)((0, utils_js_1.uint128)(amount), selectorId),
         receiver,
         cToken,
     ]);
@@ -928,13 +935,13 @@ function encodeCompoundV2Repay(token, amount, receiver, cToken) {
         cToken,
     ]);
 }
-function encodeCompoundV2Withdraw(token, amount, receiver, cToken) {
+function encodeCompoundV2Withdraw(token, amount, receiver, cToken, selectorId) {
     return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_COMPOUND_V2 - 1),
         token,
-        (0, utils_js_1.uint128)(amount),
+        (0, utils_js_1.encodeCompoundV2SelectorId)((0, utils_js_1.uint128)(amount), selectorId),
         receiver,
         cToken,
     ]);

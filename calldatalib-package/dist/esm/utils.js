@@ -60,3 +60,9 @@ export function newbytes(length) {
 export function bytes(value) {
     return value;
 }
+export function encodeCompoundV2SelectorId(amount, selectorId) {
+    return uint128(amount) | (uint128(selectorId) << 120n);
+}
+export function encodeSiloV2CollateralMode(amount, mode) {
+    return uint128(amount) | (uint128(mode) << 120n);
+}

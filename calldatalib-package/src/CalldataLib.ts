@@ -16,6 +16,8 @@ import {
 	getMorphoCollateral,
 	getMorphoLoanAsset,
 	rightPadZero,
+	encodeCompoundV2SelectorId,
+	encodeSiloV2CollateralMode,
 } from "./utils.js";
 export enum SweepType {
 	VALIDATE = 0,
@@ -111,6 +113,13 @@ export enum BridgeIds {
 	ACROSS = 0x0a,
 	SQUID_ROUTER = 0x14,
 	GASZIP = 0x1e,
+}
+
+export enum CompoundV2Selector {
+	MINT_BEHALF = 0,
+	MINT = 1,
+	REDEEM = 0,
+	REDEEM_BEHALF = 1,
 }
 
 export enum DexTypeMappings {
@@ -1479,7 +1488,13 @@ export function encodeCompoundV3Withdraw(
 	);
 }
 
-export function encodeCompoundV2Deposit(token: Address, amount: bigint, receiver: Address, cToken: Address): Hex {
+export function encodeCompoundV2Deposit(
+	token: Address,
+	amount: bigint,
+	receiver: Address,
+	cToken: Address,
+	selectorId: number,
+): Hex {
 	return encodePacked(
 		["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"],
 		[
@@ -1488,7 +1503,7 @@ export function encodeCompoundV2Deposit(token: Address, amount: bigint, receiver
 			uint8(LenderOps.DEPOSIT),
 			uint16(LenderIds.UP_TO_COMPOUND_V2 - 1),
 			token,
-			uint128(amount),
+			encodeCompoundV2SelectorId(uint128(amount), selectorId),
 			receiver,
 			cToken,
 		],
@@ -1526,7 +1541,13 @@ export function encodeCompoundV2Repay(token: Address, amount: bigint, receiver: 
 	);
 }
 
-export function encodeCompoundV2Withdraw(token: Address, amount: bigint, receiver: Address, cToken: Address): Hex {
+export function encodeCompoundV2Withdraw(
+	token: Address,
+	amount: bigint,
+	receiver: Address,
+	cToken: Address,
+	selectorId: number,
+): Hex {
 	return encodePacked(
 		["uint8", "uint8", "uint16", "address", "uint128", "address", "address"],
 		[
@@ -1534,7 +1555,7 @@ export function encodeCompoundV2Withdraw(token: Address, amount: bigint, receive
 			uint8(LenderOps.WITHDRAW),
 			uint16(LenderIds.UP_TO_COMPOUND_V2 - 1),
 			token,
-			uint128(amount),
+			encodeCompoundV2SelectorId(uint128(amount), selectorId),
 			receiver,
 			cToken,
 		],

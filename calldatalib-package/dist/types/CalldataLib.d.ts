@@ -82,6 +82,12 @@ export declare enum BridgeIds {
     SQUID_ROUTER = 20,
     GASZIP = 30
 }
+export declare enum CompoundV2Selector {
+    MINT_BEHALF = 0,
+    MINT = 1,
+    REDEEM = 0,
+    REDEEM_BEHALF = 1
+}
 export declare enum DexTypeMappings {
     UNISWAP_V3_ID = 0,
     UNISWAP_V2_ID = 1,
@@ -183,7 +189,7 @@ export declare function encodeCompoundV3Deposit(token: Address, amount: bigint, 
 export declare function encodeCompoundV3Borrow(token: Address, amount: bigint, receiver: Address, comet: Address): Hex;
 export declare function encodeCompoundV3Repay(token: Address, amount: bigint, receiver: Address, comet: Address): Hex;
 export declare function encodeCompoundV3Withdraw(token: Address, amount: bigint, receiver: Address, comet: Address, isBase: boolean): Hex;
-export declare function encodeCompoundV2Deposit(token: Address, amount: bigint, receiver: Address, cToken: Address): Hex;
+export declare function encodeCompoundV2Deposit(token: Address, amount: bigint, receiver: Address, cToken: Address, selectorId: number): Hex;
 export declare function encodeCompoundV2Borrow(token: Address, amount: bigint, receiver: Address, cToken: Address): Hex;
 export declare function encodeCompoundV2Repay(token: Address, amount: bigint, receiver: Address, cToken: Address): Hex;
-export declare function encodeCompoundV2Withdraw(token: Address, amount: bigint, receiver: Address, cToken: Address): Hex;
+export declare function encodeCompoundV2Withdraw(token: Address, amount: bigint, receiver: Address, cToken: Address, selectorId: number): Hex;

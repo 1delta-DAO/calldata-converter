@@ -18,3 +18,5 @@ export declare function getMorphoLoanAsset(market: Hex): Address;
 export declare function rightPadZero(address: Address): Hex;
 export declare function newbytes(length: number): Hex;
 export declare function bytes(value: Hex): Hex;
+export declare function encodeCompoundV2SelectorId(amount: bigint, selectorId: number): bigint;
+export declare function encodeSiloV2CollateralMode(amount: bigint, mode: number): bigint;
