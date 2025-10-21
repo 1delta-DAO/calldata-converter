@@ -313,7 +313,7 @@ export function convertToTS(solidityCode: string, debug: boolean = false): Conve
 
     output += `
   import { type Hex, type Address, zeroAddress } from "viem";
-  import { encodePacked, uint128, uint8, uint112, uint16, uint256, _PRE_PARAM, _SHARES_MASK, _UNSAFE_AMOUNT, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, rightPadZero } from "../../src/utils.ts";
+  import { encodePacked, uint128, uint8, uint112, uint16, uint256, _PRE_PARAM, _SHARES_MASK, _UNSAFE_AMOUNT, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, rightPadZero, encodeCompoundV2SelectorId, encodeSiloV2CollateralMode } from "../../src/utils.ts";
   `
 
     // Add enum definitions
