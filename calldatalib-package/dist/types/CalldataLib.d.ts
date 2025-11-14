@@ -69,6 +69,8 @@ export declare enum ComposerCommands {
     SWAPS = 16,
     EXT_CALL = 32,
     EXT_TRY_CALL = 33,
+    EXT_CALL_WITH_REPLACE = 34,
+    EXT_TRY_CALL_WITH_REPLACE = 35,
     LENDING = 48,
     TRANSFERS = 64,
     PERMIT = 80,
@@ -124,6 +126,8 @@ export declare enum DexForkMappings {
 }
 export declare function encodeExternalCall(target: Address, value: bigint, useSelfBalance: boolean, data: Hex): Hex;
 export declare function encodeTryExternalCall(target: Address, value: bigint, useSelfBalance: boolean, rOnFailure: boolean, data: Hex, catchData: Hex): Hex;
+export declare function encodeExternalCallWithReplace(target: Address, value: bigint, useSelfBalance: boolean, token: Address, replaceOffset: number, data: Hex): Hex;
+export declare function encodeTryExternalCallWithReplace(target: Address, value: bigint, useSelfBalance: boolean, token: Address, replaceOffset: number, data: Hex, rOnFailure: boolean, catchData: Hex): Hex;
 export declare function encodeStargateV2Bridge(asset: Address, stargatePool: Address, dstEid: number, receiver: Hex, refundReceiver: Address, amount: bigint, slippage: number, fee: bigint, isBusMode: boolean, isNative: boolean, composeMsg: Hex, extraOptions: Hex): Hex;
 export declare function encodePermit(permitId: bigint, target: Address, data: Hex): Hex;
 export declare function encodeStargateV2BridgePartial(amount: bigint, slippage: number, fee: bigint, isBusMode: boolean, isNative: boolean, composeMsg: Hex, extraOptions: Hex): Hex;
