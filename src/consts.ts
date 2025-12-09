@@ -2,7 +2,7 @@ import path from "path"
 
 const branch = "main"
 export const BASE_REPO_URL = `https://github.com/1delta-DAO/contracts-delegation/raw/refs/heads/${branch}/`
-export const CALLDATA_LIB_PATH = "test/composer/utils/CalldataLib.sol"
+export const CALLDATA_LIB_PATH = "contracts/utils/CalldataLib.sol"
 export const CALLDATA_LIB_URL = `${BASE_REPO_URL}${CALLDATA_LIB_PATH}`
 
 export const DATA_DIR = "./data"
