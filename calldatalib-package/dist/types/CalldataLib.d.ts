@@ -180,7 +180,7 @@ export declare function encodeUint8AndBytes(poolId: number, data: Hex): Hex;
 export declare function encodeMorphoMarket(loanToken: Address, collateralToken: Address, oracle: Address, irm: Address, lltv: bigint): Hex;
 export declare function encodeMorphoDepositCollateral(market: Hex, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
 export declare function encodeMorphoDeposit(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
-export declare function encodeErc4646Deposit(asset: Address, vault: Address, isShares: boolean, assets: bigint, receiver: Address): Hex;
+export declare function encodeErc4626Deposit(asset: Address, vault: Address, isShares: boolean, assets: bigint, receiver: Address): Hex;
 export declare function encodeErc4646Withdraw(vault: Address, isShares: boolean, assets: bigint, receiver: Address): Hex;
 export declare function encodeMorphoWithdraw(market: Hex, isShares: boolean, assets: bigint, receiver: Address, morphoB: Address): Hex;
 export declare function encodeMorphoWithdrawCollateral(market: Hex, assets: bigint, receiver: Address, morphoB: Address): Hex;

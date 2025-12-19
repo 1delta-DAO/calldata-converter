@@ -58,7 +58,7 @@ exports.encodeUint8AndBytes = encodeUint8AndBytes;
 exports.encodeMorphoMarket = encodeMorphoMarket;
 exports.encodeMorphoDepositCollateral = encodeMorphoDepositCollateral;
 exports.encodeMorphoDeposit = encodeMorphoDeposit;
-exports.encodeErc4646Deposit = encodeErc4646Deposit;
+exports.encodeErc4626Deposit = encodeErc4626Deposit;
 exports.encodeErc4646Withdraw = encodeErc4646Withdraw;
 exports.encodeMorphoWithdraw = encodeMorphoWithdraw;
 exports.encodeMorphoWithdrawCollateral = encodeMorphoWithdrawCollateral;
@@ -317,7 +317,7 @@ function encodeUniswapV4Take(singleton, asset, receiver, amount) {
     return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'address', 'uint128'], [(0, utils_js_1.uint8)(ComposerCommands.GEN_2025_SINGELTONS), (0, utils_js_1.uint8)(Gen2025ActionIds.UNI_V4_TAKE), singleton, asset, receiver, (0, utils_js_1.uint128)(amount)]);
 }
 function swapHead(amount, amountOutMin, assetIn) {
-    return (0, utils_js_1.encodePacked)(['uint8', 'uint128', 'uint128', 'address'], [(0, utils_js_1.uint8)(ComposerCommands.SWAPS), (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(amount), false, false), (0, utils_js_1.uint128)(amountOutMin), assetIn]);
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint128', 'uint128', 'address'], [(0, utils_js_1.uint8)(ComposerCommands.SWAPS), (0, utils_js_1.uint128)(amount), (0, utils_js_1.uint128)(amountOutMin), assetIn]);
 }
 function attachBranch(data, hops, splits, splitsData) {
     if (hops !== 0n && splits !== 0n)
@@ -434,7 +434,7 @@ function encodeMorphoDepositCollateral(market, assets, receiver, data, morphoB, 
 function encodeMorphoDeposit(market, isShares, assets, receiver, data, morphoB, pId) {
     return (0, utils_js_1.encodePacked)(['bytes', 'uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [encodeApprove((0, utils_js_1.getMorphoLoanAsset)(market), morphoB), (0, utils_js_1.uint8)(ComposerCommands.LENDING), (0, utils_js_1.uint8)(LenderOps.DEPOSIT_LENDING_TOKEN), (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1), market, (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(assets), isShares, false), receiver, morphoB, (0, utils_js_1.uint16)(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0), data.length / 2 - 1 === 0 ? (0, utils_js_1.newbytes)(0) : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data)]);
 }
-function encodeErc4646Deposit(asset, vault, isShares, assets, receiver) {
+function encodeErc4626Deposit(asset, vault, isShares, assets, receiver) {
     return (0, utils_js_1.encodePacked)(['bytes', 'uint8', 'uint8', 'address', 'address', 'uint128', 'address'], [encodeApprove(asset, vault), (0, utils_js_1.uint8)(ComposerCommands.ERC4626), (0, utils_js_1.uint8)(0), asset, vault, (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(assets), isShares, false), receiver]);
 }
 function encodeErc4646Withdraw(vault, isShares, assets, receiver) {

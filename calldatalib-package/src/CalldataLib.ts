@@ -224,7 +224,7 @@ export function encodeUniswapV4Take(singleton: Address, asset: Address, receiver
 return  encodePacked(['uint8', 'uint8', 'address', 'address', 'address', 'uint128'], [uint8(ComposerCommands.GEN_2025_SINGELTONS), uint8(Gen2025ActionIds.UNI_V4_TAKE), singleton, asset, receiver, uint128(amount)]);}
 
 export function swapHead(amount: bigint, amountOutMin: bigint, assetIn: Address): Hex {
-return  encodePacked(['uint8', 'uint128', 'uint128', 'address'], [uint8(ComposerCommands.SWAPS), generateAmountBitmap(uint128(amount),false,false), uint128(amountOutMin), assetIn]);}
+return  encodePacked(['uint8', 'uint128', 'uint128', 'address'], [uint8(ComposerCommands.SWAPS), uint128(amount), uint128(amountOutMin), assetIn]);}
 
 export function attachBranch(data: Hex, hops: bigint, splits: bigint, splitsData: Hex): Hex {
 if(hops!== 0n&&splits!== 0n)throw new Error("Invalidbranching");if(splitsData.length/2 -1>0&&splits=== 0n)throw new Error("Nosplitsbutsplitdataprovided");return  encodePacked(['bytes', 'uint8', 'uint8', 'bytes'], [data, uint8(hops), uint8(splits), splitsData]);}
@@ -313,7 +313,7 @@ return  encodePacked(['bytes', 'uint8', 'uint8', 'uint16', 'bytes', 'uint128', '
 export function encodeMorphoDeposit(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex {
 return  encodePacked(['bytes', 'uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [encodeApprove(getMorphoLoanAsset(market),morphoB), uint8(ComposerCommands.LENDING), uint8(LenderOps.DEPOSIT_LENDING_TOKEN), uint16(LenderIds.UP_TO_MORPHO-1), market, generateAmountBitmap(uint128(assets),isShares,false), receiver, morphoB, uint16(data.length/2 -1>0?data.length/2 -1+1:0), data.length/2 -1 === 0?newbytes(0):encodeUint8AndBytes(uint8(pId),data)]);}
 
-export function encodeErc4646Deposit(asset: Address, vault: Address, isShares: boolean, assets: bigint, receiver: Address): Hex {
+export function encodeErc4626Deposit(asset: Address, vault: Address, isShares: boolean, assets: bigint, receiver: Address): Hex {
 return  encodePacked(['bytes', 'uint8', 'uint8', 'address', 'address', 'uint128', 'address'], [encodeApprove(asset,vault), uint8(ComposerCommands.ERC4626), uint8(0), asset, vault, generateAmountBitmap(uint128(assets),isShares,false), receiver]);}
 
 export function encodeErc4646Withdraw(vault: Address, isShares: boolean, assets: bigint, receiver: Address): Hex {
