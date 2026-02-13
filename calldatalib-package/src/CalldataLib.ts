@@ -31,7 +31,8 @@ export enum TransferIds {
   WRAP_NATIVE = 2,
   UNWRAP_WNATIVE = 3,
   PERMIT2_TRANSFER_FROM = 4,
-  APPROVE = 5
+  APPROVE = 5,
+  WRAP = 6
 }
 
 export enum PermitIds {
@@ -288,6 +289,9 @@ return  encodePacked(['uint8', 'uint8', 'address', 'address', 'uint8', 'uint128'
 
 export function encodeWrap(amount: bigint, wrapTarget: Address): Hex {
 return  encodePacked(['uint8', 'uint8', 'address', 'address', 'uint8', 'uint128'], [uint8(ComposerCommands.TRANSFERS), uint8(TransferIds.SWEEP), zeroAddress, wrapTarget, uint8(SweepType.AMOUNT), uint128(amount)]);}
+
+export function encodeWrapWithReceiver(amount: bigint, weth: Address, receiver: Address): Hex {
+return  encodePacked(['uint8', 'uint8', 'address', 'address', 'uint128'], [uint8(ComposerCommands.TRANSFERS), uint8(TransferIds.WRAP), weth, receiver, uint128(amount)]);}
 
 export function encodeApprove(asset: Address, target: Address): Hex {
 return  encodePacked(['uint8', 'uint8', 'address', 'address'], [uint8(ComposerCommands.TRANSFERS), uint8(TransferIds.APPROVE), asset, target]);}

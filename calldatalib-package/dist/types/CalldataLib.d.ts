@@ -24,7 +24,8 @@ export declare enum TransferIds {
     WRAP_NATIVE = 2,
     UNWRAP_WNATIVE = 3,
     PERMIT2_TRANSFER_FROM = 4,
-    APPROVE = 5
+    APPROVE = 5,
+    WRAP = 6
 }
 export declare enum PermitIds {
     TOKEN_PERMIT = 0,
@@ -172,6 +173,7 @@ export declare function encodeNextGenDexSettleBalancer(singleton: Address, asset
 export declare function encodeTransferIn(asset: Address, receiver: Address, amount: bigint): Hex;
 export declare function encodeSweep(asset: Address, receiver: Address, amount: bigint, sweepType: any): Hex;
 export declare function encodeWrap(amount: bigint, wrapTarget: Address): Hex;
+export declare function encodeWrapWithReceiver(amount: bigint, weth: Address, receiver: Address): Hex;
 export declare function encodeApprove(asset: Address, target: Address): Hex;
 export declare function encodeUnwrap(target: Address, receiver: Address, amount: bigint, sweepType: any): Hex;
 export declare function encodeBalancerV2FlashLoan(asset: Address, amount: bigint, poolId: number, data: Hex): Hex;

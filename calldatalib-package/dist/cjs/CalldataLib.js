@@ -50,6 +50,7 @@ exports.encodeNextGenDexSettleBalancer = encodeNextGenDexSettleBalancer;
 exports.encodeTransferIn = encodeTransferIn;
 exports.encodeSweep = encodeSweep;
 exports.encodeWrap = encodeWrap;
+exports.encodeWrapWithReceiver = encodeWrapWithReceiver;
 exports.encodeApprove = encodeApprove;
 exports.encodeUnwrap = encodeUnwrap;
 exports.encodeBalancerV2FlashLoan = encodeBalancerV2FlashLoan;
@@ -117,6 +118,7 @@ var TransferIds;
     TransferIds[TransferIds["UNWRAP_WNATIVE"] = 3] = "UNWRAP_WNATIVE";
     TransferIds[TransferIds["PERMIT2_TRANSFER_FROM"] = 4] = "PERMIT2_TRANSFER_FROM";
     TransferIds[TransferIds["APPROVE"] = 5] = "APPROVE";
+    TransferIds[TransferIds["WRAP"] = 6] = "WRAP";
 })(TransferIds || (exports.TransferIds = TransferIds = {}));
 var PermitIds;
 (function (PermitIds) {
@@ -409,6 +411,9 @@ function encodeSweep(asset, receiver, amount, sweepType) {
 }
 function encodeWrap(amount, wrapTarget) {
     return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'uint8', 'uint128'], [(0, utils_js_1.uint8)(ComposerCommands.TRANSFERS), (0, utils_js_1.uint8)(TransferIds.SWEEP), viem_1.zeroAddress, wrapTarget, (0, utils_js_1.uint8)(SweepType.AMOUNT), (0, utils_js_1.uint128)(amount)]);
+}
+function encodeWrapWithReceiver(amount, weth, receiver) {
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'uint128'], [(0, utils_js_1.uint8)(ComposerCommands.TRANSFERS), (0, utils_js_1.uint8)(TransferIds.WRAP), weth, receiver, (0, utils_js_1.uint128)(amount)]);
 }
 function encodeApprove(asset, target) {
     return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address'], [(0, utils_js_1.uint8)(ComposerCommands.TRANSFERS), (0, utils_js_1.uint8)(TransferIds.APPROVE), asset, target]);

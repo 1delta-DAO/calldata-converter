@@ -32,6 +32,7 @@ export var TransferIds;
     TransferIds[TransferIds["UNWRAP_WNATIVE"] = 3] = "UNWRAP_WNATIVE";
     TransferIds[TransferIds["PERMIT2_TRANSFER_FROM"] = 4] = "PERMIT2_TRANSFER_FROM";
     TransferIds[TransferIds["APPROVE"] = 5] = "APPROVE";
+    TransferIds[TransferIds["WRAP"] = 6] = "WRAP";
 })(TransferIds || (TransferIds = {}));
 export var PermitIds;
 (function (PermitIds) {
@@ -324,6 +325,9 @@ export function encodeSweep(asset, receiver, amount, sweepType) {
 }
 export function encodeWrap(amount, wrapTarget) {
     return encodePacked(['uint8', 'uint8', 'address', 'address', 'uint8', 'uint128'], [uint8(ComposerCommands.TRANSFERS), uint8(TransferIds.SWEEP), zeroAddress, wrapTarget, uint8(SweepType.AMOUNT), uint128(amount)]);
+}
+export function encodeWrapWithReceiver(amount, weth, receiver) {
+    return encodePacked(['uint8', 'uint8', 'address', 'address', 'uint128'], [uint8(ComposerCommands.TRANSFERS), uint8(TransferIds.WRAP), weth, receiver, uint128(amount)]);
 }
 export function encodeApprove(asset, target) {
     return encodePacked(['uint8', 'uint8', 'address', 'address'], [uint8(ComposerCommands.TRANSFERS), uint8(TransferIds.APPROVE), asset, target]);
