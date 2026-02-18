@@ -58,6 +58,7 @@ exports.encodeFlashLoan = encodeFlashLoan;
 exports.encodeUint8AndBytes = encodeUint8AndBytes;
 exports.encodeMorphoMarket = encodeMorphoMarket;
 exports.encodeMorphoDepositCollateral = encodeMorphoDepositCollateral;
+exports.encodeListaSupplyCollateralViaProvider = encodeListaSupplyCollateralViaProvider;
 exports.encodeMorphoDeposit = encodeMorphoDeposit;
 exports.encodeErc4626Deposit = encodeErc4626Deposit;
 exports.encodeErc4646Withdraw = encodeErc4646Withdraw;
@@ -191,8 +192,10 @@ var CompoundV2Selector;
 (function (CompoundV2Selector) {
     CompoundV2Selector[CompoundV2Selector["MINT_BEHALF"] = 0] = "MINT_BEHALF";
     CompoundV2Selector[CompoundV2Selector["MINT"] = 1] = "MINT";
+    CompoundV2Selector[CompoundV2Selector["MINT_ITOKEN"] = 2] = "MINT_ITOKEN";
     CompoundV2Selector[CompoundV2Selector["REDEEM"] = 0] = "REDEEM";
     CompoundV2Selector[CompoundV2Selector["REDEEM_BEHALF"] = 1] = "REDEEM_BEHALF";
+    CompoundV2Selector[CompoundV2Selector["REDEEM_ITOKEN"] = 2] = "REDEEM_ITOKEN";
 })(CompoundV2Selector || (exports.CompoundV2Selector = CompoundV2Selector = {}));
 var SiloV2CollateralType;
 (function (SiloV2CollateralType) {
@@ -435,6 +438,9 @@ function encodeMorphoMarket(loanToken, collateralToken, oracle, irm, lltv) {
 }
 function encodeMorphoDepositCollateral(market, assets, receiver, data, morphoB, pId) {
     return (0, utils_js_1.encodePacked)(['bytes', 'uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [encodeApprove((0, utils_js_1.getMorphoCollateral)(market), morphoB), (0, utils_js_1.uint8)(ComposerCommands.LENDING), (0, utils_js_1.uint8)(LenderOps.DEPOSIT), (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1), market, (0, utils_js_1.uint128)(assets), receiver, morphoB, (0, utils_js_1.uint16)(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0), data.length / 2 - 1 === 0 ? (0, utils_js_1.newbytes)(0) : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data)]);
+}
+function encodeListaSupplyCollateralViaProvider(market, assets, receiver, data, provider, pId) {
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [(0, utils_js_1.uint8)(ComposerCommands.LENDING), (0, utils_js_1.uint8)(LenderOps.DEPOSIT), (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1), market, (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(assets), false, true), receiver, provider, (0, utils_js_1.uint16)(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0), data.length / 2 - 1 === 0 ? (0, utils_js_1.newbytes)(0) : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data)]);
 }
 function encodeMorphoDeposit(market, isShares, assets, receiver, data, morphoB, pId) {
     return (0, utils_js_1.encodePacked)(['bytes', 'uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [encodeApprove((0, utils_js_1.getMorphoLoanAsset)(market), morphoB), (0, utils_js_1.uint8)(ComposerCommands.LENDING), (0, utils_js_1.uint8)(LenderOps.DEPOSIT_LENDING_TOKEN), (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1), market, (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(assets), isShares, false), receiver, morphoB, (0, utils_js_1.uint16)(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0), data.length / 2 - 1 === 0 ? (0, utils_js_1.newbytes)(0) : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data)]);

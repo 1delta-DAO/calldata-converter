@@ -105,8 +105,10 @@ export enum BridgeIds {
 export enum CompoundV2Selector {
   MINT_BEHALF = 0,
   MINT = 1,
+  MINT_ITOKEN = 2,
   REDEEM = 0,
-  REDEEM_BEHALF = 1
+  REDEEM_BEHALF = 1,
+  REDEEM_ITOKEN = 2
 }
 
 export enum SiloV2CollateralType {
@@ -313,6 +315,9 @@ return  encodePacked(['address', 'address', 'address', 'address', 'uint128'], [l
 
 export function encodeMorphoDepositCollateral(market: Hex, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex {
 return  encodePacked(['bytes', 'uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [encodeApprove(getMorphoCollateral(market),morphoB), uint8(ComposerCommands.LENDING), uint8(LenderOps.DEPOSIT), uint16(LenderIds.UP_TO_MORPHO-1), market, uint128(assets), receiver, morphoB, uint16(data.length/2 -1>0?data.length/2 -1+1:0), data.length/2 -1 === 0?newbytes(0):encodeUint8AndBytes(uint8(pId),data)]);}
+
+export function encodeListaSupplyCollateralViaProvider(market: Hex, assets: bigint, receiver: Address, data: Hex, provider: Address, pId: bigint): Hex {
+return  encodePacked(['uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [uint8(ComposerCommands.LENDING), uint8(LenderOps.DEPOSIT), uint16(LenderIds.UP_TO_MORPHO-1), market, generateAmountBitmap(uint128(assets),false,true), receiver, provider, uint16(data.length/2 -1>0?data.length/2 -1+1:0), data.length/2 -1 === 0?newbytes(0):encodeUint8AndBytes(uint8(pId),data)]);}
 
 export function encodeMorphoDeposit(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex {
 return  encodePacked(['bytes', 'uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [encodeApprove(getMorphoLoanAsset(market),morphoB), uint8(ComposerCommands.LENDING), uint8(LenderOps.DEPOSIT_LENDING_TOKEN), uint16(LenderIds.UP_TO_MORPHO-1), market, generateAmountBitmap(uint128(assets),isShares,false), receiver, morphoB, uint16(data.length/2 -1>0?data.length/2 -1+1:0), data.length/2 -1 === 0?newbytes(0):encodeUint8AndBytes(uint8(pId),data)]);}

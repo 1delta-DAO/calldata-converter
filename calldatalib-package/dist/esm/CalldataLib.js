@@ -105,8 +105,10 @@ export var CompoundV2Selector;
 (function (CompoundV2Selector) {
     CompoundV2Selector[CompoundV2Selector["MINT_BEHALF"] = 0] = "MINT_BEHALF";
     CompoundV2Selector[CompoundV2Selector["MINT"] = 1] = "MINT";
+    CompoundV2Selector[CompoundV2Selector["MINT_ITOKEN"] = 2] = "MINT_ITOKEN";
     CompoundV2Selector[CompoundV2Selector["REDEEM"] = 0] = "REDEEM";
     CompoundV2Selector[CompoundV2Selector["REDEEM_BEHALF"] = 1] = "REDEEM_BEHALF";
+    CompoundV2Selector[CompoundV2Selector["REDEEM_ITOKEN"] = 2] = "REDEEM_ITOKEN";
 })(CompoundV2Selector || (CompoundV2Selector = {}));
 export var SiloV2CollateralType;
 (function (SiloV2CollateralType) {
@@ -349,6 +351,9 @@ export function encodeMorphoMarket(loanToken, collateralToken, oracle, irm, lltv
 }
 export function encodeMorphoDepositCollateral(market, assets, receiver, data, morphoB, pId) {
     return encodePacked(['bytes', 'uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [encodeApprove(getMorphoCollateral(market), morphoB), uint8(ComposerCommands.LENDING), uint8(LenderOps.DEPOSIT), uint16(LenderIds.UP_TO_MORPHO - 1), market, uint128(assets), receiver, morphoB, uint16(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0), data.length / 2 - 1 === 0 ? newbytes(0) : encodeUint8AndBytes(uint8(pId), data)]);
+}
+export function encodeListaSupplyCollateralViaProvider(market, assets, receiver, data, provider, pId) {
+    return encodePacked(['uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [uint8(ComposerCommands.LENDING), uint8(LenderOps.DEPOSIT), uint16(LenderIds.UP_TO_MORPHO - 1), market, generateAmountBitmap(uint128(assets), false, true), receiver, provider, uint16(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0), data.length / 2 - 1 === 0 ? newbytes(0) : encodeUint8AndBytes(uint8(pId), data)]);
 }
 export function encodeMorphoDeposit(market, isShares, assets, receiver, data, morphoB, pId) {
     return encodePacked(['bytes', 'uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address', 'uint16', 'bytes'], [encodeApprove(getMorphoLoanAsset(market), morphoB), uint8(ComposerCommands.LENDING), uint8(LenderOps.DEPOSIT_LENDING_TOKEN), uint16(LenderIds.UP_TO_MORPHO - 1), market, generateAmountBitmap(uint128(assets), isShares, false), receiver, morphoB, uint16(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0), data.length / 2 - 1 === 0 ? newbytes(0) : encodeUint8AndBytes(uint8(pId), data)]);

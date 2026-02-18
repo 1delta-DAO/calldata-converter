@@ -89,8 +89,10 @@ export declare enum BridgeIds {
 export declare enum CompoundV2Selector {
     MINT_BEHALF = 0,
     MINT = 1,
+    MINT_ITOKEN = 2,
     REDEEM = 0,
-    REDEEM_BEHALF = 1
+    REDEEM_BEHALF = 1,
+    REDEEM_ITOKEN = 2
 }
 export declare enum SiloV2CollateralType {
     PROTECTED = 0,
@@ -181,6 +183,7 @@ export declare function encodeFlashLoan(asset: Address, amount: bigint, pool: Ad
 export declare function encodeUint8AndBytes(poolId: number, data: Hex): Hex;
 export declare function encodeMorphoMarket(loanToken: Address, collateralToken: Address, oracle: Address, irm: Address, lltv: bigint): Hex;
 export declare function encodeMorphoDepositCollateral(market: Hex, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
+export declare function encodeListaSupplyCollateralViaProvider(market: Hex, assets: bigint, receiver: Address, data: Hex, provider: Address, pId: bigint): Hex;
 export declare function encodeMorphoDeposit(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
 export declare function encodeErc4626Deposit(asset: Address, vault: Address, isShares: boolean, assets: bigint, receiver: Address): Hex;
 export declare function encodeErc4646Withdraw(vault: Address, isShares: boolean, assets: bigint, receiver: Address): Hex;
