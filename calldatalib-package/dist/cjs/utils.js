@@ -19,6 +19,7 @@ exports.newbytes = newbytes;
 exports.bytes = bytes;
 exports.encodeCompoundV2SelectorId = encodeCompoundV2SelectorId;
 exports.encodeSiloV2CollateralMode = encodeSiloV2CollateralMode;
+exports.encodeAaveV4PmsBatchPermit = encodeAaveV4PmsBatchPermit;
 const viem_1 = require("viem");
 exports._NATIVE_FLAG = 1n << 127n;
 exports._SHARES_MASK = 1n << 126n;
@@ -86,4 +87,16 @@ function encodeCompoundV2SelectorId(amount, selectorId) {
 }
 function encodeSiloV2CollateralMode(amount, mode) {
     return uint128(amount) | (uint128(mode) << 120n);
+}
+function encodeAaveV4PmsBatchPermit(spoke, pms, approvals, nonce, deadlinePlusOne, r, vs) {
+    if (pms.length !== approvals.length)
+        throw new Error('CL: length mismatch');
+    if (pms.length === 0 || pms.length >= 256)
+        throw new Error('CL: invalid count');
+    let updates = '0x';
+    for (let i = 0; i < pms.length; i++) {
+        updates = encodePacked(['bytes', 'address', 'uint8'], [updates, pms[i], uint8(approvals[i] ? 1 : 0)]);
+    }
+    const data = encodePacked(['uint8', 'bytes', 'uint256', 'uint32', 'bytes32', 'bytes32'], [uint8(pms.length), updates, nonce, deadlinePlusOne, r, vs]);
+    return encodePacked(['uint8', 'uint8', 'address', 'uint16', 'bytes'], [uint8(0x50), uint8(6), spoke, uint16(data.length / 2 - 1), data]);
 }
