@@ -9,21 +9,21 @@
     "pack": "forge install && pnpm run start && pnpm run prepare-package"
   },
   "devDependencies": {
-    "@types/node": "^22.13.14",
-    "esbuild": "^0.25.11",
-    "glob": "^11.0.3",
-    "prettier": "^3.5.3",
+    "@types/node": "^25.6.0",
+    "esbuild": "^0.28.0",
+    "glob": "^13.0.6",
+    "prettier": "^3.8.3",
     "ts-node": "^10.9.2",
-    "tsx": "^4.20.6",
-    "vitest": "^3.2.4",
-    "viem": "^2.24.1"
+    "tsx": "^4.21.0",
+    "viem": "^2.48.2",
+    "vitest": "^4.1.4"
   },
   "peerDependencies": {
     "typescript": "^5.8.2"
   },
   "dependencies": {
-    "ajv": "^8.17.1",
-    "axios": "^1.8.4"
+    "ajv": "^8.18.0",
+    "axios": "^1.15.1"
   },
-  "packageManager": "pnpm@10.10.0+sha512.d615db246fe70f25dcfea6d8d73dee782ce23e2245e3c4f6f888249fb568149318637dca73c2c5c8ef2a4ca0d5657fb9567188bfab47f566d1ee6ce987815c39"
+  "packageManager": "pnpm@10.33.0+sha512.10568bb4a6afb58c9eb3630da90cc9516417abebd3fabbe6739f0ae795728da1491e9db5a544c76ad8eb7570f5c4bb3d6c637b2cb41bfdcdb47fa823c8649319"
 }

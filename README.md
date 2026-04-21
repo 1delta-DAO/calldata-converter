@@ -17,12 +17,14 @@
 
 [![Update and Publish Package](https://github.com/1delta-DAO/calldata-converter/actions/workflows/update-package.yml/badge.svg)](https://github.com/1delta-DAO/calldata-converter/actions/workflows/update-package.yml)
 
-A tool that automatically converts 1delta composer-light calldata library functions into TypeScript code, with testing and validation.
+A tool that automatically converts 1delta composer-light calldata library
+functions into TypeScript code, with testing and validation.
 
 ## Features
 
 - Converts Solidity calldata encoding functions to TypeScript
-- Automatically generates tests to verify correctness (uses a foundry script to generate the expected outputs)
+- Automatically generates tests to verify correctness (uses a foundry script to
+  generate the expected outputs)
 - Packages the code as an npm library ready for publishing
 - Includes GitHub Actions workflow for auto-updates
 
@@ -32,7 +34,8 @@ A tool that automatically converts 1delta composer-light calldata library functi
 
 - [Node.js](https://nodejs.org) runtime (v22+ recommended)
 - [pnpm](https://pnpm.io)
-- [Foundry](https://book.getfoundry.sh/getting-started/installation) for Solidity testing
+- [Foundry](https://book.getfoundry.sh/getting-started/installation) for
+  Solidity testing
 
 ### Quick Start
 

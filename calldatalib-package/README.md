@@ -12,7 +12,8 @@ yarn add @1delta/calldatalib
 pnpm add @1delta/calldatalib
 ```
 
-This package requires `viem` as a peer dependency, so make sure to install it as well:
+This package requires `viem` as a peer dependency, so make sure to install it as
+well:
 
 ```bash
 npm install viem
@@ -25,13 +26,13 @@ pnpm add viem
 ## Usage
 
 ```typescript
-import { encodeExternalCall } from "@1delta/calldatalib";
-import { parseEther } from "viem";
+import { encodeExternalCall } from '@1delta/calldatalib'
+import { parseEther } from 'viem'
 
 // Example usage
 const calldata = encodeExternalCall(
-  "0x1234567890123456789012345678901234567890",
-  parseEther("0.1"),
-  "0x1234"
-);
+  '0x1234567890123456789012345678901234567890',
+  parseEther('0.1'),
+  '0x1234',
+)
 ```
