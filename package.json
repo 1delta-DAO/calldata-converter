@@ -2,17 +2,20 @@
   "name": "converter",
   "type": "module",
   "scripts": {
-    "start": "forge install && bun run ./src/cli.ts --run-tests",
-    "test": "forge install && bun test",
-    "build": "forge install && bun build --target node --production ./src/cli.ts --outdir ./dist",
-    "prepare-package": "forge install && bun run src/preparePackage.ts",
-    "pack": "forge install && bun run start && bun run prepare-package"
+    "start": "forge install && tsx ./src/cli.ts --run-tests",
+    "test": "forge install && vitest run --passWithNoTests",
+    "build": "forge install && esbuild ./src/cli.ts --bundle --packages=external --platform=node --target=node22 --format=esm --outfile=dist/cli.js",
+    "prepare-package": "forge install && tsx src/preparePackage.ts",
+    "pack": "forge install && pnpm run start && pnpm run prepare-package"
   },
   "devDependencies": {
-    "@types/bun": "latest",
     "@types/node": "^22.13.14",
+    "esbuild": "^0.25.11",
+    "glob": "^11.0.3",
     "prettier": "^3.5.3",
     "ts-node": "^10.9.2",
+    "tsx": "^4.20.6",
+    "vitest": "^3.2.4",
     "viem": "^2.24.1"
   },
   "peerDependencies": {

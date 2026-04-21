@@ -17,8 +17,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Store current hash
         id: check
@@ -60,8 +67,15 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Bun
-        uses: oven-sh/setup-bun@v1
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10
 
       - name: Setup Foundry
         uses: foundry-rs/foundry-toolchain@v1
@@ -70,7 +84,7 @@ jobs:
         run: forge install
 
       - name: Install dependencies
-        run: bun install
+        run: pnpm install --frozen-lockfile
 
       - name: Check if library already exists
         run: |
@@ -80,7 +94,7 @@ jobs:
           fi
 
       - name: Generate library and prepare package
-        run: bun run pack
+        run: pnpm run pack
 
       - name: Check for library changes
         id: check_lib_changes
@@ -107,9 +121,9 @@ jobs:
           rm -rf .tmp_prev_lib
 
       - name: Setup Node.js for publishing
-        uses: actions/setup-node@v3
+        uses: actions/setup-node@v4
         with:
-          node-version: "18"
+          node-version: "22"
           registry-url: "https://registry.npmjs.org"
 
       - name: Bump package version

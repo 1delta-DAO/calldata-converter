@@ -2,6 +2,7 @@ import { getAddress, isAddress, type Hex } from "viem"
 import type { FunctionDef, SolidityEnum, TestInputs } from "./types"
 import { getRandomValues } from "crypto"
 import path from "path"
+import { promises as fs } from "fs"
 import { CALLDATA_LIB_PATH, OUTPUT_DIR, TEST_INPUTS_FILE } from "./consts"
 
 /**
@@ -138,12 +139,12 @@ export async function generateTestSuite(
     enums: SolidityEnum[]
 ) {
     const imports = `
-import { describe, expect, test } from 'bun:test';
+import { describe, expect, test } from 'vitest';
 import * as CalldataLib from "./${path.basename(CALLDATA_LIB_PATH).replace(".sol", "_pure.ts")}";
 import type { Address, Hex } from 'viem';
 `
     // read saved test inputs
-    const testInputs = await Bun.file(path.join(OUTPUT_DIR, TEST_INPUTS_FILE)).text()
+    const testInputs = await fs.readFile(path.join(OUTPUT_DIR, TEST_INPUTS_FILE), "utf8")
     const testInputsJson: TestInputs[] = JSON.parse(testInputs)
 
     const tests = functions

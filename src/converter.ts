@@ -5,12 +5,13 @@ import { processImports, combineContent, cleanupPragmas } from "./parser";
 import { generateForgeScript } from "./generateForgeScript";
 import { validateTestInputs } from "./validateSchema";
 import { generateTestSuite } from "./testInputGenerator";
-import { execSync } from "child_process";
+import { execSync, spawnSync } from "child_process";
 import { LibCache } from "./libCache";
 import { convertToTS } from "./conv";
 import { removeIfConditions } from "./purifier";
 import { HARDCODED_FUNCTIONS, OUTPUT_DIR, TEST_INPUTS_FILE } from "./consts";
 import { format } from "prettier";
+import { glob } from "glob";
 
 function parseForgeOutput(output: string): { name: string; hex: string }[] {
   const lines = output.split("\n");
@@ -129,9 +130,8 @@ export async function converter(config: ConverterConfig) {
     if (runTests) {
       console.log("Running tests...\n");
       try {
-        const result = Bun.spawnSync(["bun", "test", testPath], {
-          stdout: "inherit",
-          stderr: "inherit",
+        const result = spawnSync("pnpm", ["vitest", "run", testPath], {
+          stdio: "inherit",
         });
         if (result.exitCode === 0) {
           console.log("\n✅ Tests completed successfully\n");
@@ -146,7 +146,7 @@ export async function converter(config: ConverterConfig) {
       }
     } else {
       console.log("Tests generated. To run them, use: \n");
-      console.log(`bun test ${testPath}`);
+      console.log(`pnpm vitest run ${testPath}`);
       console.log("\n");
     }
   } catch (error) {
@@ -156,7 +156,7 @@ export async function converter(config: ConverterConfig) {
 }
 
 export async function tsFormatter(path_: string): Promise<void> {
-  const content = await Bun.file(path_).text();
+  const content = await fs.promises.readFile(path_, "utf8");
   const formatted = await format(content, {
     parser: "typescript",
     singleQuote: false,
@@ -167,16 +167,15 @@ export async function tsFormatter(path_: string): Promise<void> {
     trailingComma: "all",
     bracketSpacing: true,
   });
-  await Bun.write(path_, formatted);
+  await fs.promises.writeFile(path_, formatted);
 }
 
 export async function formatAll(): Promise<void> {
-  const glob = new Bun.Glob("**/*.ts");
-  const tsFiles: string[] = [];
-  for await (const file of glob.scan({ cwd: OUTPUT_DIR })) {
-    tsFiles.push(path.join(OUTPUT_DIR, file));
-  }
+  const tsFiles = await glob("**/*.ts", {
+    cwd: OUTPUT_DIR,
+    absolute: true,
+  });
   for (const file of tsFiles) {
-    await tsFormatter(file);
+    await tsFormatter(path.resolve(file));
   }
 }

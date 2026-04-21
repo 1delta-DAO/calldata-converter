@@ -2,25 +2,15 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "type": "bun",
+      "type": "node",
       "request": "launch",
-      "name": "Debug Bun",
-      "program": "${workspaceFolder}/src/cli.ts",
-      "args": ["--run-tests"],
+      "name": "Debug CLI (pnpm/tsx)",
+      "runtimeExecutable": "pnpm",
+      "runtimeArgs": ["tsx", "${workspaceFolder}/src/cli.ts", "--run-tests"],
       "cwd": "${workspaceFolder}",
       "env": {},
-      "strictEnv": false,
-      "watchMode": false,
       "stopOnEntry": false,
-      "noDebug": false,
-      "runtime": "bun",
-      "runtimeArgs": []
-    },
-    {
-      "type": "bun",
-      "request": "attach",
-      "name": "Attach to Bun",
-      "url": "ws://localhost:6499/"
+      "console": "integratedTerminal"
     }
   ]
 }

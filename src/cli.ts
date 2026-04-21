@@ -32,7 +32,7 @@ async function main() {
 `
   );
   const usage =
-    "Usage: bun run cli.ts [outputDir] [--run-tests] [--test-count <count>] [--verbose]";
+    "Usage: pnpm tsx src/cli.ts [outputDir] [--run-tests] [--test-count <count>] [--verbose]";
 
   // Parse flags
   let runTests = false;

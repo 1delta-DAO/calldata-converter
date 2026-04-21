@@ -30,16 +30,17 @@ A tool that automatically converts 1delta composer-light calldata library functi
 
 ### Prerequisites
 
-- [Bun](https://bun.sh) runtime
+- [Node.js](https://nodejs.org) runtime (v22+ recommended)
+- [pnpm](https://pnpm.io)
 - [Foundry](https://book.getfoundry.sh/getting-started/installation) for Solidity testing
 
 ### Quick Start
 
 ```bash
 # converter command pattern
-# bun run src/cli.ts [outputDir] [--run-tests] [--test-count <count>] [--verbose]
-bun install # install dependencies
-bun run start # execute the converter
-bun run pack # execute the converter, update the npm package directory
-bun run test # run the bun tests (requires the bun run start to be executed first to generate the tests)
+# pnpm tsx src/cli.ts [outputDir] [--run-tests] [--test-count <count>] [--verbose]
+pnpm install # install dependencies
+pnpm run start # execute the converter
+pnpm run pack # execute the converter, update the npm package directory
+pnpm run test # run the generated tests with Vitest (requires pnpm run start first)
 ```

@@ -1,11 +1,11 @@
-# dependencies (bun install)
+# dependencies (pnpm install)
 node_modules
 .npmrc
 
 # output
 out
-./calldatalib-package/dist
-./dist
+calldatalib-package/dist
+dist
 *.tgz
 
 # code coverage
