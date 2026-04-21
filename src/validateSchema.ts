@@ -1,26 +1,26 @@
-import Ajv from "ajv";
-import type { TestInputs } from "./types";
+import Ajv from 'ajv'
+import type { TestInputs } from './types'
 
 const testInputSchema = {
-  type: "array",
+  type: 'array',
   items: {
-    type: "object",
+    type: 'object',
     properties: {
       solidityValues: {
-        type: "array",
-        items: { type: "string" },
+        type: 'array',
+        items: { type: 'string' },
       },
       typescriptValues: {
-        type: "array",
-        items: { type: "string" },
+        type: 'array',
+        items: { type: 'string' },
       },
     },
-    required: ["solidityValues", "typescriptValues"],
+    required: ['solidityValues', 'typescriptValues'],
   },
-};
+}
 
 export function validateTestInputs(inputs: unknown): inputs is TestInputs[] {
-  const ajv = new Ajv();
-  const validate = ajv.compile(testInputSchema);
-  return validate(inputs);
+  const ajv = new Ajv()
+  const validate = ajv.compile(testInputSchema)
+  return validate(inputs)
 }

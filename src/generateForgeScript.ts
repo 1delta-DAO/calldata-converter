@@ -1,8 +1,8 @@
-import { generateTestInputs } from "./testInputGenerator";
-import type { TestInputs, FunctionDef, SolidityEnum } from "./types";
-import { CALLDATA_LIB_PATH, HARDCODED_FUNCTIONS, INPUT_DIR } from "./consts";
-import { LibCache } from "./libCache";
-import path from "path";
+import { generateTestInputs } from './testInputGenerator'
+import type { TestInputs, FunctionDef, SolidityEnum } from './types'
+import { CALLDATA_LIB_PATH, HARDCODED_FUNCTIONS, INPUT_DIR } from './consts'
+import { LibCache } from './libCache'
+import path from 'path'
 
 /**
  * Generates a Forge script to test CalldataLib functions
@@ -12,50 +12,50 @@ import path from "path";
 export function generateForgeScript(
   libPath: string,
   functions: FunctionDef[],
-  enums: SolidityEnum[]
+  enums: SolidityEnum[],
 ): {
-  script: string;
-  inputs: TestInputs[];
+  script: string
+  inputs: TestInputs[]
 } {
-  const cache = LibCache.getInstance();
-  const allLibraries = cache.getLibs();
+  const cache = LibCache.getInstance()
+  const allLibraries = cache.getLibs()
 
   let imports: string = allLibraries
     .map((lib) => {
-      let objs = "";
+      let objs = ''
       // enums
       if (lib.enums.length > 0) {
         lib.enums.forEach((enumDef) => {
-          objs += `${enumDef.name},`;
-        });
+          objs += `${enumDef.name},`
+        })
       }
       // structs
       if (lib.structs.length > 0) {
         lib.structs.forEach((struct) => {
-          objs += `${struct.name},`;
-        });
+          objs += `${struct.name},`
+        })
       }
       // libraries
       if (lib.libraries.length > 0) {
         lib.libraries.forEach((libraryName) => {
-          objs += `${libraryName.name},`;
-        });
+          objs += `${libraryName.name},`
+        })
       }
 
-      objs = objs.replace(/,$/, "");
-      const ipath = toRelativePath(path.resolve(INPUT_DIR, lib.path));
+      objs = objs.replace(/,$/, '')
+      const ipath = toRelativePath(path.resolve(INPUT_DIR, lib.path))
 
       return objs.length > 0
         ? `import {${objs}} from "${ipath}";`
-        : `import  "${ipath}";`;
+        : `import  "${ipath}";`
     })
-    .join("\n");
+    .join('\n')
 
   // import pre version
-  const libName = path.basename(CALLDATA_LIB_PATH);
-  imports = imports.replace(libName, libName.replace(".sol", "_pure.sol"));
+  const libName = path.basename(CALLDATA_LIB_PATH)
+  imports = imports.replace(libName, libName.replace('.sol', '_pure.sol'))
 
-  const allTestInputs: TestInputs[] = [];
+  const allTestInputs: TestInputs[] = []
 
   let forgeScript = `
 // SPDX-License-Identifier: UNLICENSED
@@ -69,50 +69,53 @@ contract GenerateCalldata is Script {
     function setUp() public {}
 
     function run() public pure {
-`;
+`
 
   functions.forEach((func, index) => {
     // Skip hardcoded functions
     if (isHardCodedFunction(func.name)) {
-      return;
+      return
     }
 
-    const testInputs = generateTestInputs(func, enums);
-    allTestInputs.push(testInputs);
+    const testInputs = generateTestInputs(func, enums)
+    allTestInputs.push(testInputs)
 
     forgeScript += generateTestFunc(
       func,
       [...testInputs.solidityValues],
-      index
-    );
-  });
+      index,
+      testInputs.solidityPreamble,
+    )
+  })
 
   forgeScript += `
     }
-}`;
+}`
 
-  return { script: forgeScript, inputs: allTestInputs };
+  return { script: forgeScript, inputs: allTestInputs }
 }
 
 function isHardCodedFunction(functionName: string): boolean {
-  return HARDCODED_FUNCTIONS.includes(functionName);
+  return HARDCODED_FUNCTIONS.includes(functionName)
 }
 
 function generateTestFunc(
   func: FunctionDef,
   modifiedSolidityValues: string[],
-  index: number
+  index: number,
+  preamble?: string,
 ): string {
+  const preambleBlock = preamble ? `\n        ${preamble}\n` : ''
   return `
-        // Test ${func.name}
+        // Test ${func.name}${preambleBlock}
         bytes memory ${func.name}Result = CalldataLib.${func.name}(
-            ${modifiedSolidityValues.join(",\n            ")}
+            ${modifiedSolidityValues.join(',\n            ')}
         );
         console.log("${func.name},");
         console.logBytes(${func.name}Result);
-`;
+`
 }
 
 function toRelativePath(absolutePath: string): string {
-  return path.relative("./", absolutePath).replace(/\\/g, "/");
+  return path.relative('./', absolutePath).replace(/\\/g, '/')
 }
