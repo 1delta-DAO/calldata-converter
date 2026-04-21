@@ -93,3 +93,28 @@ export function encodeSiloV2CollateralMode(
 ): bigint {
   return uint128(amount) | (uint128(mode) << 120n)
 }
+
+export function encodeAaveV4PmsBatchPermit(
+  spoke: Address,
+  pms: Address[],
+  approvals: boolean[],
+  nonce: bigint,
+  deadlinePlusOne: number,
+  r: Hex,
+  vs: Hex,
+): Hex {
+  if (pms.length !== approvals.length) throw new Error('CL: length mismatch')
+  if (pms.length === 0 || pms.length >= 256) throw new Error('CL: invalid count')
+  let updates: Hex = '0x'
+  for (let i = 0; i < pms.length; i++) {
+    updates = encodePacked(['bytes', 'address', 'uint8'], [updates, pms[i]!, uint8(approvals[i]! ? 1 : 0)])
+  }
+  const data = encodePacked(
+    ['uint8', 'bytes', 'uint256', 'uint32', 'bytes32', 'bytes32'],
+    [uint8(pms.length), updates, nonce, deadlinePlusOne, r, vs],
+  )
+  return encodePacked(
+    ['uint8', 'uint8', 'address', 'uint16', 'bytes'],
+    [uint8(0x50), uint8(6), spoke, uint16(data.length / 2 - 1), data],
+  )
+}
