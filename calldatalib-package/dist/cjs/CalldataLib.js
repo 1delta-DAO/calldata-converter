@@ -88,6 +88,14 @@ exports.encodeCompoundV2Repay = encodeCompoundV2Repay;
 exports.encodeCompoundV2Withdraw = encodeCompoundV2Withdraw;
 exports.encodeSiloV2Withdraw = encodeSiloV2Withdraw;
 exports.encodeSiloV2Repay = encodeSiloV2Repay;
+exports.encodeAaveV4Deposit = encodeAaveV4Deposit;
+exports.encodeAaveV4Borrow = encodeAaveV4Borrow;
+exports.encodeAaveV4Repay = encodeAaveV4Repay;
+exports.encodeAaveV4Withdraw = encodeAaveV4Withdraw;
+exports.encodeAaveV4SetCollateral = encodeAaveV4SetCollateral;
+exports.encodeAaveV4BorrowPermit = encodeAaveV4BorrowPermit;
+exports.encodeAaveV4WithdrawPermit = encodeAaveV4WithdrawPermit;
+exports.encodeAaveV4ConfigPermit = encodeAaveV4ConfigPermit;
 const viem_1 = require("viem");
 const utils_js_1 = require("./utils.js");
 var SweepType;
@@ -128,6 +136,10 @@ var PermitIds;
     PermitIds[PermitIds["TOKEN_PERMIT"] = 0] = "TOKEN_PERMIT";
     PermitIds[PermitIds["AAVE_V3_CREDIT_PERMIT"] = 1] = "AAVE_V3_CREDIT_PERMIT";
     PermitIds[PermitIds["ALLOW_CREDIT_PERMIT"] = 2] = "ALLOW_CREDIT_PERMIT";
+    PermitIds[PermitIds["AAVE_V4_BORROW_PERMIT"] = 3] = "AAVE_V4_BORROW_PERMIT";
+    PermitIds[PermitIds["AAVE_V4_WITHDRAW_PERMIT"] = 4] = "AAVE_V4_WITHDRAW_PERMIT";
+    PermitIds[PermitIds["AAVE_V4_CONFIG_PERMIT"] = 5] = "AAVE_V4_CONFIG_PERMIT";
+    PermitIds[PermitIds["AAVE_V4_PMS_BATCH_PERMIT"] = 6] = "AAVE_V4_PMS_BATCH_PERMIT";
 })(PermitIds || (exports.PermitIds = PermitIds = {}));
 var LenderIds;
 (function (LenderIds) {
@@ -137,6 +149,7 @@ var LenderIds;
     LenderIds[LenderIds["UP_TO_COMPOUND_V2"] = 4000] = "UP_TO_COMPOUND_V2";
     LenderIds[LenderIds["UP_TO_MORPHO"] = 5000] = "UP_TO_MORPHO";
     LenderIds[LenderIds["UP_TO_SILO_V2"] = 6000] = "UP_TO_SILO_V2";
+    LenderIds[LenderIds["UP_TO_AAVE_V4"] = 7000] = "UP_TO_AAVE_V4";
 })(LenderIds || (exports.LenderIds = LenderIds = {}));
 var LenderOps;
 (function (LenderOps) {
@@ -146,6 +159,7 @@ var LenderOps;
     LenderOps[LenderOps["WITHDRAW"] = 3] = "WITHDRAW";
     LenderOps[LenderOps["DEPOSIT_LENDING_TOKEN"] = 4] = "DEPOSIT_LENDING_TOKEN";
     LenderOps[LenderOps["WITHDRAW_LENDING_TOKEN"] = 5] = "WITHDRAW_LENDING_TOKEN";
+    LenderOps[LenderOps["SET_COLLATERAL"] = 6] = "SET_COLLATERAL";
 })(LenderOps || (exports.LenderOps = LenderOps = {}));
 var FlashLoanIds;
 (function (FlashLoanIds) {
@@ -530,4 +544,31 @@ function encodeSiloV2Withdraw(amount, receiver, silo, collateralMode) {
 }
 function encodeSiloV2Repay(token, amount, receiver, silo) {
     return (0, utils_js_1.encodePacked)(['bytes', 'uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'address'], [token === viem_1.zeroAddress ? (0, utils_js_1.newbytes)(0) : encodeApprove(token, silo), (0, utils_js_1.uint8)(ComposerCommands.LENDING), (0, utils_js_1.uint8)(LenderOps.REPAY), (0, utils_js_1.uint16)(LenderIds.UP_TO_SILO_V2 - 1), token, (0, utils_js_1.uint128)(amount), receiver, silo]);
+}
+function encodeAaveV4Deposit(underlying, amount, receiver, reserveId, spoke, positionManager) {
+    return (0, utils_js_1.encodePacked)(['bytes', 'uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'uint256', 'address', 'address'], [encodeApprove(underlying, positionManager), (0, utils_js_1.uint8)(ComposerCommands.LENDING), (0, utils_js_1.uint8)(LenderOps.DEPOSIT), (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V4 - 1), underlying, (0, utils_js_1.uint128)(amount), receiver, reserveId, spoke, positionManager]);
+}
+function encodeAaveV4Borrow(underlying, amount, receiver, reserveId, spoke, positionManager) {
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'uint256', 'address', 'address'], [(0, utils_js_1.uint8)(ComposerCommands.LENDING), (0, utils_js_1.uint8)(LenderOps.BORROW), (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V4 - 1), underlying, (0, utils_js_1.uint128)(amount), receiver, reserveId, spoke, positionManager]);
+}
+function encodeAaveV4Repay(underlying, amount, receiver, reserveId, spoke, positionManager) {
+    return (0, utils_js_1.encodePacked)(['bytes', 'uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'uint256', 'address', 'address'], [encodeApprove(underlying, positionManager), (0, utils_js_1.uint8)(ComposerCommands.LENDING), (0, utils_js_1.uint8)(LenderOps.REPAY), (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V4 - 1), underlying, (0, utils_js_1.uint128)(amount), receiver, reserveId, spoke, positionManager]);
+}
+function encodeAaveV4Withdraw(underlying, amount, receiver, reserveId, spoke, positionManager) {
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'uint256', 'address', 'address'], [(0, utils_js_1.uint8)(ComposerCommands.LENDING), (0, utils_js_1.uint8)(LenderOps.WITHDRAW), (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V4 - 1), underlying, (0, utils_js_1.uint128)(amount), receiver, reserveId, spoke, positionManager]);
+}
+function encodeAaveV4SetCollateral(reserveId, enable, spoke, configPositionManager) {
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'uint256', 'uint8', 'address', 'address'], [(0, utils_js_1.uint8)(ComposerCommands.LENDING), (0, utils_js_1.uint8)(LenderOps.SET_COLLATERAL), (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V4 - 1), reserveId, (0, utils_js_1.uint8)(enable ? 1 : 0), spoke, configPositionManager]);
+}
+function encodeAaveV4BorrowPermit(takerPM, spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs) {
+    const data = (0, utils_js_1.encodePacked)(['address', 'uint256', 'uint256', 'uint256', 'uint32', 'bytes32', 'bytes32'], [spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs]);
+    return encodePermit(PermitIds.AAVE_V4_BORROW_PERMIT, takerPM, data);
+}
+function encodeAaveV4WithdrawPermit(takerPM, spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs) {
+    const data = (0, utils_js_1.encodePacked)(['address', 'uint256', 'uint256', 'uint256', 'uint32', 'bytes32', 'bytes32'], [spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs]);
+    return encodePermit(PermitIds.AAVE_V4_WITHDRAW_PERMIT, takerPM, data);
+}
+function encodeAaveV4ConfigPermit(configPM, spoke, status, nonce, deadlinePlusOne, r, vs) {
+    const data = (0, utils_js_1.encodePacked)(['address', 'uint8', 'uint256', 'uint32', 'bytes32', 'bytes32'], [spoke, (0, utils_js_1.uint8)(status ? 1 : 0), nonce, deadlinePlusOne, r, vs]);
+    return encodePermit(PermitIds.AAVE_V4_CONFIG_PERMIT, configPM, data);
 }

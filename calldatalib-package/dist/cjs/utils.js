@@ -52,7 +52,7 @@ function uint256(value) {
 }
 function encodePacked(types, values) {
     if (types.length !== values.length) {
-        throw new Error("Types and values arrays must have the same length");
+        throw new Error('Types and values arrays must have the same length');
     }
     return (0, viem_1.encodePacked)(types, values);
 }
@@ -73,10 +73,10 @@ function getMorphoLoanAsset(market) {
     return `0x${slice}`;
 }
 function rightPadZero(address) {
-    return (address.toLowerCase() + "0".repeat(24));
+    return (address.toLowerCase() + '0'.repeat(24));
 }
 function newbytes(length) {
-    return ("0x" + "0".repeat(length * 2));
+    return ('0x' + '0'.repeat(length * 2));
 }
 function bytes(value) {
     return value;

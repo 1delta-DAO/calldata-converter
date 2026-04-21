@@ -30,7 +30,11 @@ export declare enum TransferIds {
 export declare enum PermitIds {
     TOKEN_PERMIT = 0,
     AAVE_V3_CREDIT_PERMIT = 1,
-    ALLOW_CREDIT_PERMIT = 2
+    ALLOW_CREDIT_PERMIT = 2,
+    AAVE_V4_BORROW_PERMIT = 3,
+    AAVE_V4_WITHDRAW_PERMIT = 4,
+    AAVE_V4_CONFIG_PERMIT = 5,
+    AAVE_V4_PMS_BATCH_PERMIT = 6
 }
 export declare enum LenderIds {
     UP_TO_AAVE_V3 = 1000,
@@ -38,7 +42,8 @@ export declare enum LenderIds {
     UP_TO_COMPOUND_V3 = 3000,
     UP_TO_COMPOUND_V2 = 4000,
     UP_TO_MORPHO = 5000,
-    UP_TO_SILO_V2 = 6000
+    UP_TO_SILO_V2 = 6000,
+    UP_TO_AAVE_V4 = 7000
 }
 export declare enum LenderOps {
     DEPOSIT = 0,
@@ -46,7 +51,8 @@ export declare enum LenderOps {
     REPAY = 2,
     WITHDRAW = 3,
     DEPOSIT_LENDING_TOKEN = 4,
-    WITHDRAW_LENDING_TOKEN = 5
+    WITHDRAW_LENDING_TOKEN = 5,
+    SET_COLLATERAL = 6
 }
 export declare enum FlashLoanIds {
     MORPHO = 0,
@@ -213,3 +219,11 @@ export declare function encodeCompoundV2Repay(token: Address, amount: bigint, re
 export declare function encodeCompoundV2Withdraw(token: Address, amount: bigint, receiver: Address, cToken: Address, selectorId: number): Hex;
 export declare function encodeSiloV2Withdraw(amount: bigint, receiver: Address, silo: Address, collateralMode: number): Hex;
 export declare function encodeSiloV2Repay(token: Address, amount: bigint, receiver: Address, silo: Address): Hex;
+export declare function encodeAaveV4Deposit(underlying: Address, amount: bigint, receiver: Address, reserveId: bigint, spoke: Address, positionManager: Address): Hex;
+export declare function encodeAaveV4Borrow(underlying: Address, amount: bigint, receiver: Address, reserveId: bigint, spoke: Address, positionManager: Address): Hex;
+export declare function encodeAaveV4Repay(underlying: Address, amount: bigint, receiver: Address, reserveId: bigint, spoke: Address, positionManager: Address): Hex;
+export declare function encodeAaveV4Withdraw(underlying: Address, amount: bigint, receiver: Address, reserveId: bigint, spoke: Address, positionManager: Address): Hex;
+export declare function encodeAaveV4SetCollateral(reserveId: bigint, enable: boolean, spoke: Address, configPositionManager: Address): Hex;
+export declare function encodeAaveV4BorrowPermit(takerPM: Address, spoke: Address, reserveId: bigint, amount: bigint, nonce: bigint, deadlinePlusOne: number, r: Hex, vs: Hex): Hex;
+export declare function encodeAaveV4WithdrawPermit(takerPM: Address, spoke: Address, reserveId: bigint, amount: bigint, nonce: bigint, deadlinePlusOne: number, r: Hex, vs: Hex): Hex;
+export declare function encodeAaveV4ConfigPermit(configPM: Address, spoke: Address, status: boolean, nonce: bigint, deadlinePlusOne: number, r: Hex, vs: Hex): Hex;

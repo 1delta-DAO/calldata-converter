@@ -39,6 +39,10 @@ export var PermitIds;
     PermitIds[PermitIds["TOKEN_PERMIT"] = 0] = "TOKEN_PERMIT";
     PermitIds[PermitIds["AAVE_V3_CREDIT_PERMIT"] = 1] = "AAVE_V3_CREDIT_PERMIT";
     PermitIds[PermitIds["ALLOW_CREDIT_PERMIT"] = 2] = "ALLOW_CREDIT_PERMIT";
+    PermitIds[PermitIds["AAVE_V4_BORROW_PERMIT"] = 3] = "AAVE_V4_BORROW_PERMIT";
+    PermitIds[PermitIds["AAVE_V4_WITHDRAW_PERMIT"] = 4] = "AAVE_V4_WITHDRAW_PERMIT";
+    PermitIds[PermitIds["AAVE_V4_CONFIG_PERMIT"] = 5] = "AAVE_V4_CONFIG_PERMIT";
+    PermitIds[PermitIds["AAVE_V4_PMS_BATCH_PERMIT"] = 6] = "AAVE_V4_PMS_BATCH_PERMIT";
 })(PermitIds || (PermitIds = {}));
 export var LenderIds;
 (function (LenderIds) {
@@ -48,6 +52,7 @@ export var LenderIds;
     LenderIds[LenderIds["UP_TO_COMPOUND_V2"] = 4000] = "UP_TO_COMPOUND_V2";
     LenderIds[LenderIds["UP_TO_MORPHO"] = 5000] = "UP_TO_MORPHO";
     LenderIds[LenderIds["UP_TO_SILO_V2"] = 6000] = "UP_TO_SILO_V2";
+    LenderIds[LenderIds["UP_TO_AAVE_V4"] = 7000] = "UP_TO_AAVE_V4";
 })(LenderIds || (LenderIds = {}));
 export var LenderOps;
 (function (LenderOps) {
@@ -57,6 +62,7 @@ export var LenderOps;
     LenderOps[LenderOps["WITHDRAW"] = 3] = "WITHDRAW";
     LenderOps[LenderOps["DEPOSIT_LENDING_TOKEN"] = 4] = "DEPOSIT_LENDING_TOKEN";
     LenderOps[LenderOps["WITHDRAW_LENDING_TOKEN"] = 5] = "WITHDRAW_LENDING_TOKEN";
+    LenderOps[LenderOps["SET_COLLATERAL"] = 6] = "SET_COLLATERAL";
 })(LenderOps || (LenderOps = {}));
 export var FlashLoanIds;
 (function (FlashLoanIds) {
@@ -441,4 +447,31 @@ export function encodeSiloV2Withdraw(amount, receiver, silo, collateralMode) {
 }
 export function encodeSiloV2Repay(token, amount, receiver, silo) {
     return encodePacked(['bytes', 'uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'address'], [token === zeroAddress ? newbytes(0) : encodeApprove(token, silo), uint8(ComposerCommands.LENDING), uint8(LenderOps.REPAY), uint16(LenderIds.UP_TO_SILO_V2 - 1), token, uint128(amount), receiver, silo]);
+}
+export function encodeAaveV4Deposit(underlying, amount, receiver, reserveId, spoke, positionManager) {
+    return encodePacked(['bytes', 'uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'uint256', 'address', 'address'], [encodeApprove(underlying, positionManager), uint8(ComposerCommands.LENDING), uint8(LenderOps.DEPOSIT), uint16(LenderIds.UP_TO_AAVE_V4 - 1), underlying, uint128(amount), receiver, reserveId, spoke, positionManager]);
+}
+export function encodeAaveV4Borrow(underlying, amount, receiver, reserveId, spoke, positionManager) {
+    return encodePacked(['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'uint256', 'address', 'address'], [uint8(ComposerCommands.LENDING), uint8(LenderOps.BORROW), uint16(LenderIds.UP_TO_AAVE_V4 - 1), underlying, uint128(amount), receiver, reserveId, spoke, positionManager]);
+}
+export function encodeAaveV4Repay(underlying, amount, receiver, reserveId, spoke, positionManager) {
+    return encodePacked(['bytes', 'uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'uint256', 'address', 'address'], [encodeApprove(underlying, positionManager), uint8(ComposerCommands.LENDING), uint8(LenderOps.REPAY), uint16(LenderIds.UP_TO_AAVE_V4 - 1), underlying, uint128(amount), receiver, reserveId, spoke, positionManager]);
+}
+export function encodeAaveV4Withdraw(underlying, amount, receiver, reserveId, spoke, positionManager) {
+    return encodePacked(['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'uint256', 'address', 'address'], [uint8(ComposerCommands.LENDING), uint8(LenderOps.WITHDRAW), uint16(LenderIds.UP_TO_AAVE_V4 - 1), underlying, uint128(amount), receiver, reserveId, spoke, positionManager]);
+}
+export function encodeAaveV4SetCollateral(reserveId, enable, spoke, configPositionManager) {
+    return encodePacked(['uint8', 'uint8', 'uint16', 'uint256', 'uint8', 'address', 'address'], [uint8(ComposerCommands.LENDING), uint8(LenderOps.SET_COLLATERAL), uint16(LenderIds.UP_TO_AAVE_V4 - 1), reserveId, uint8(enable ? 1 : 0), spoke, configPositionManager]);
+}
+export function encodeAaveV4BorrowPermit(takerPM, spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs) {
+    const data = encodePacked(['address', 'uint256', 'uint256', 'uint256', 'uint32', 'bytes32', 'bytes32'], [spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs]);
+    return encodePermit(PermitIds.AAVE_V4_BORROW_PERMIT, takerPM, data);
+}
+export function encodeAaveV4WithdrawPermit(takerPM, spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs) {
+    const data = encodePacked(['address', 'uint256', 'uint256', 'uint256', 'uint32', 'bytes32', 'bytes32'], [spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs]);
+    return encodePermit(PermitIds.AAVE_V4_WITHDRAW_PERMIT, takerPM, data);
+}
+export function encodeAaveV4ConfigPermit(configPM, spoke, status, nonce, deadlinePlusOne, r, vs) {
+    const data = encodePacked(['address', 'uint8', 'uint256', 'uint32', 'bytes32', 'bytes32'], [spoke, uint8(status ? 1 : 0), nonce, deadlinePlusOne, r, vs]);
+    return encodePermit(PermitIds.AAVE_V4_CONFIG_PERMIT, configPM, data);
 }

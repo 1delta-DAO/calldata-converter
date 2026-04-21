@@ -1,4 +1,4 @@
-import { type Hex, type Address } from "viem";
+import { type Hex, type Address } from 'viem';
 export declare const _NATIVE_FLAG: bigint;
 export declare const _SHARES_MASK: bigint;
 export declare const _UNSAFE_AMOUNT: bigint;

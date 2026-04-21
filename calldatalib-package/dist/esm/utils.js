@@ -1,4 +1,4 @@
-import { encodePacked as abiEncodePacked } from "viem";
+import { encodePacked as abiEncodePacked } from 'viem';
 export const _NATIVE_FLAG = 1n << 127n;
 export const _SHARES_MASK = 1n << 126n;
 export const _UNSAFE_AMOUNT = 1n << 125n;
@@ -31,7 +31,7 @@ export function uint256(value) {
 }
 export function encodePacked(types, values) {
     if (types.length !== values.length) {
-        throw new Error("Types and values arrays must have the same length");
+        throw new Error('Types and values arrays must have the same length');
     }
     return abiEncodePacked(types, values);
 }
@@ -52,10 +52,10 @@ export function getMorphoLoanAsset(market) {
     return `0x${slice}`;
 }
 export function rightPadZero(address) {
-    return (address.toLowerCase() + "0".repeat(24));
+    return (address.toLowerCase() + '0'.repeat(24));
 }
 export function newbytes(length) {
-    return ("0x" + "0".repeat(length * 2));
+    return ('0x' + '0'.repeat(length * 2));
 }
 export function bytes(value) {
     return value;
