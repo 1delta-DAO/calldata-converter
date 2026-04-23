@@ -3,21 +3,6 @@ export declare enum SweepType {
     VALIDATE = 0,
     AMOUNT = 1
 }
-export declare enum DexPayConfig {
-    CALLER_PAYS = 0,
-    CONTRACT_PAYS = 1,
-    PRE_FUND = 2,
-    FLASH = 3
-}
-export declare enum DodoSelector {
-    SELL_BASE = 0,
-    SELL_QUOTE = 1
-}
-export declare enum WrapOperation {
-    NATIVE = 0,
-    ERC4626_DEPOSIT = 1,
-    ERC4626_REDEEM = 2
-}
 export declare enum TransferIds {
     TRANSFER_FROM = 0,
     SWEEP = 1,
@@ -25,7 +10,8 @@ export declare enum TransferIds {
     UNWRAP_WNATIVE = 3,
     PERMIT2_TRANSFER_FROM = 4,
     APPROVE = 5,
-    WRAP = 6
+    WRAP = 6,
+    SWEEP_NFT = 7
 }
 export declare enum PermitIds {
     TOKEN_PERMIT = 0,
@@ -43,7 +29,9 @@ export declare enum LenderIds {
     UP_TO_COMPOUND_V2 = 4000,
     UP_TO_MORPHO = 5000,
     UP_TO_SILO_V2 = 6000,
-    UP_TO_AAVE_V4 = 7000
+    UP_TO_AAVE_V4 = 7000,
+    UP_TO_FLUID = 8000,
+    UP_TO_FLUID_SMART = 9000
 }
 export declare enum LenderOps {
     DEPOSIT = 0,
@@ -52,7 +40,10 @@ export declare enum LenderOps {
     WITHDRAW = 3,
     DEPOSIT_LENDING_TOKEN = 4,
     WITHDRAW_LENDING_TOKEN = 5,
-    SET_COLLATERAL = 6
+    SET_COLLATERAL = 6,
+    FLUID_OPERATE = 10,
+    FLUID_OPERATE_PERFECT = 11,
+    FLUID_OPERATE_T1 = 12
 }
 export declare enum FlashLoanIds {
     MORPHO = 0,
@@ -73,7 +64,6 @@ export declare enum Gen2025ActionIds {
     BAL_V3_SETTLE = 5
 }
 export declare enum ComposerCommands {
-    SWAPS = 16,
     EXT_CALL = 32,
     EXT_TRY_CALL = 33,
     EXT_CALL_WITH_REPLACE = 34,
@@ -104,35 +94,6 @@ export declare enum SiloV2CollateralType {
     PROTECTED = 0,
     COLLATERAL = 1
 }
-export declare enum DexTypeMappings {
-    UNISWAP_V3_ID = 0,
-    UNISWAP_V2_ID = 1,
-    UNISWAP_V4_ID = 2,
-    IZI_ID = 5,
-    UNISWAP_V2_FOT_ID = 3,
-    CURVE_V1_STANDARD_ID = 64,
-    CURVE_RECEIVED_ID = 65,
-    CURVE_FORK_ID = 66,
-    WOO_FI_ID = 80,
-    GMX_ID = 90,
-    KTX_ID = 91,
-    BALANCER_V2_ID = 128,
-    BALANCER_V3_ID = 129,
-    LB_ID = 140,
-    DODO_ID = 150,
-    SYNC_SWAP_ID = 160,
-    ERC4626_ID = 253,
-    ASSET_WRAP_ID = 254
-}
-export declare enum DexForkMappings {
-    UNISWAP_V3 = 0,
-    IZI = 0,
-    ANY_V3 = 255,
-    ANY_IZI = 255,
-    UNISWAP_V4 = 0,
-    BALANCER_V3 = 0,
-    UNISWAP_V2 = 0
-}
 export declare function encodeExternalCall(target: Address, value: bigint, useSelfBalance: boolean, data: Hex): Hex;
 export declare function encodeTryExternalCall(target: Address, value: bigint, useSelfBalance: boolean, rOnFailure: boolean, data: Hex, catchData: Hex): Hex;
 export declare function encodeExternalCallWithReplace(target: Address, value: bigint, useSelfBalance: boolean, token: Address, replaceOffset: number, data: Hex): Hex;
@@ -159,23 +120,6 @@ export declare function encodeUniswapV4FlashLoanData(take: Hex, sync: Hex, flash
 export declare function encodeBalancerV3Take(singleton: Address, asset: Address, receiver: Address, amount: bigint): Hex;
 export declare function encodeUniswapV4Sync(singleton: Address, asset: Address): Hex;
 export declare function encodeUniswapV4Take(singleton: Address, asset: Address, receiver: Address, amount: bigint): Hex;
-export declare function swapHead(amount: bigint, amountOutMin: bigint, assetIn: Address): Hex;
-export declare function attachBranch(data: Hex, hops: bigint, splits: bigint, splitsData: Hex): Hex;
-export declare function encodeUniswapV2StyleSwap(tokenOut: Address, receiver: Address, forkId: bigint, pool: Address, feeDenom: bigint, cfg: any, flashCalldata: Hex): Hex;
-export declare function encodeUniswapV4StyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, manager: Address, fee: number, tickSpacing: number, hooks: Address, hookData: Hex, cfg: any): Hex;
-export declare function encodeBalancerV2StyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, poolId: Hex, balancerVault: Address, cfg: any): Hex;
-export declare function encodeLbStyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, pool: Address, swapForY: boolean, cfg: any): Hex;
-export declare function encodeSyncSwapStyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, pool: Address, cfg: any): Hex;
-export declare function encodeUniswapV3StyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, forkId: bigint, pool: Address, feeTier: bigint, cfg: any, flashCalldata: Hex): Hex;
-export declare function encodeIzumiStyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, forkId: bigint, pool: Address, feeTier: bigint, cfg: any, flashCalldata: Hex): Hex;
-export declare function encodeBalancerV3StyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, balancerV3Vault: Address, pool: Address, cfg: any, poolUserData: Hex): Hex;
-export declare function encodeDodoStyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, pool: Address, selector: any, poolId: bigint, cfg: any, flashCalldata: Hex): Hex;
-export declare function encodeWooStyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, pool: Address, cfg: any): Hex;
-export declare function encodeGmxStyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, pool: Address, cfg: any): Hex;
-export declare function encodeKtxStyleSwap(currentData: Hex, tokenOut: Address, receiver: Address, pool: Address, cfg: any): Hex;
-export declare function encodeCurveStyleSwap(tokenOut: Address, receiver: Address, pool: Address, indexIn: bigint, indexOut: bigint, selectorId: bigint, cfg: any): Hex;
-export declare function encodeCurveNGStyleSwap(tokenOut: Address, receiver: Address, pool: Address, indexIn: bigint, indexOut: bigint, selectorId: bigint, cfg: any): Hex;
-export declare function encodeWrapperSwap(currentData: Hex, assetOut: Address, receiver: Address, operation: any, cfg: any): Hex;
 export declare function encodeNextGenDexSettle(singleton: Address, nativeAmount: bigint): Hex;
 export declare function encodeNextGenDexSettleBalancer(singleton: Address, asset: Address, amountHint: bigint): Hex;
 export declare function encodeTransferIn(asset: Address, receiver: Address, amount: bigint): Hex;
@@ -183,6 +127,7 @@ export declare function encodeSweep(asset: Address, receiver: Address, amount: b
 export declare function encodeWrap(amount: bigint, wrapTarget: Address): Hex;
 export declare function encodeWrapWithReceiver(amount: bigint, weth: Address, receiver: Address): Hex;
 export declare function encodeApprove(asset: Address, target: Address): Hex;
+export declare function encodeSweepNft(collection: Address, receiver: Address, tokenId: bigint): Hex;
 export declare function encodeUnwrap(target: Address, receiver: Address, amount: bigint, sweepType: any): Hex;
 export declare function encodeBalancerV2FlashLoan(asset: Address, amount: bigint, poolId: number, data: Hex): Hex;
 export declare function encodeFlashLoan(asset: Address, amount: bigint, pool: Address, poolType: number, poolId: number, data: Hex): Hex;
@@ -227,3 +172,23 @@ export declare function encodeAaveV4SetCollateral(reserveId: bigint, enable: boo
 export declare function encodeAaveV4BorrowPermit(takerPM: Address, spoke: Address, reserveId: bigint, amount: bigint, nonce: bigint, deadlinePlusOne: number, r: Hex, vs: Hex): Hex;
 export declare function encodeAaveV4WithdrawPermit(takerPM: Address, spoke: Address, reserveId: bigint, amount: bigint, nonce: bigint, deadlinePlusOne: number, r: Hex, vs: Hex): Hex;
 export declare function encodeAaveV4ConfigPermit(configPM: Address, spoke: Address, status: boolean, nonce: bigint, deadlinePlusOne: number, r: Hex, vs: Hex): Hex;
+export declare function encodeFluidT1Operate(colUnderlying: Address, debtUnderlying: Address, colAmount: bigint, debtAmount: bigint, nftId: bigint, receiver: Address, nftReceiver: Address, vault: Address): Hex;
+export declare function _fluidIsDepositAmount(a: bigint): boolean;
+export declare function _fluidIsRepayAmount(a: bigint): boolean;
+export declare function encodeFluidDeposit(underlying: Address, amount: bigint, nftId: bigint, receiver: Address, vault: Address): Hex;
+export declare function encodeFluidBorrow(underlying: Address, amount: bigint, nftId: bigint, receiver: Address, vault: Address): Hex;
+export declare function encodeFluidRepay(underlying: Address, amount: bigint, nftId: bigint, receiver: Address, vault: Address): Hex;
+export declare function encodeFluidWithdraw(underlying: Address, amount: bigint, nftId: bigint, receiver: Address, vault: Address): Hex;
+export declare function _fluidSmartHeader(vaultType: number, callValue: bigint, nftId: bigint, receiver: Address, nftReceiver: Address, vault: Address, isPerfect: boolean): Hex;
+export declare function _fluidSmartTokens4(t: Address[]): Hex;
+export declare function _fluidSmartTokens6(t: Address[]): Hex;
+export declare function _fluidSmartAmounts4(a: bigint[]): Hex;
+export declare function _fluidSmartAmounts6(a: bigint[]): Hex;
+export declare function encodeFluidSmartOperateT2(callValue: bigint, nftId: bigint, receiver: Address, nftReceiver: Address, vault: Address, tokens: Address[], amounts: bigint[]): Hex;
+export declare function encodeFluidSmartOperateT3(callValue: bigint, nftId: bigint, receiver: Address, nftReceiver: Address, vault: Address, tokens: Address[], amounts: bigint[]): Hex;
+export declare function encodeFluidSmartOperateT4(callValue: bigint, nftId: bigint, receiver: Address, nftReceiver: Address, vault: Address, tokens: Address[], amounts: bigint[]): Hex;
+export declare function encodeFluidSmartOperatePerfectT2(callValue: bigint, nftId: bigint, receiver: Address, nftReceiver: Address, vault: Address, tokens: Address[], amounts: bigint[]): Hex;
+export declare function encodeFluidSmartOperatePerfectT3(callValue: bigint, nftId: bigint, receiver: Address, nftReceiver: Address, vault: Address, tokens: Address[], amounts: bigint[]): Hex;
+export declare function encodeFluidSmartOperatePerfectT4(callValue: bigint, nftId: bigint, receiver: Address, nftReceiver: Address, vault: Address, tokens: Address[], amounts: bigint[]): Hex;
+export declare function encodeFluidFTokenDeposit(underlying: Address, amount: bigint, receiver: Address, fToken: Address): Hex;
+export declare function encodeFluidFTokenWithdraw(underlying: Address, amount: bigint, receiver: Address, fToken: Address): Hex;

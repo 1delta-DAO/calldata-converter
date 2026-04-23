@@ -111,6 +111,12 @@ async function modifyImportsAndComments(inputDir: string, verbose: boolean) {
         // Remove line comments
         content = content.replace(/\/\/.*$/gm, '')
 
+        // Normalize strict solc pins to a compatible range for local Foundry.
+        content = content.replace(
+          /pragma\s+solidity\s+(?:=)?\s*0\.8\.\d+;/g,
+          'pragma solidity ^0.8.28;',
+        )
+
         // Write the modified content back to the file
         fs.writeFileSync(filePath, content)
         if (verbose) {

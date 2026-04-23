@@ -141,6 +141,27 @@ function generateScalarValuePair(
     }
   }
 
+  if (cleanType.startsWith('int')) {
+    const bits = parseInt(cleanType.replace('int', '')) || 256
+
+    if (bits <= 32) {
+      const maxAbs = Math.min(1e9, Math.pow(2, Math.min(bits - 1, 30)) - 1)
+      const num = Math.max(1, Math.floor(maxAbs / 3))
+      const signed = Math.random() < 0.5 ? num : -num
+      return {
+        solValue: signed.toString(),
+        tsValue: `${signed}`,
+      }
+    }
+
+    const maxAbs = (1n << BigInt(Math.min(bits - 1, 62))) - 1n
+    const num = (maxAbs / 3n) * (Math.random() < 0.5 ? 1n : -1n)
+    return {
+      solValue: num.toString(),
+      tsValue: `${num.toString()}n`,
+    }
+  }
+
   if (cleanType === 'address') {
     const address = generateRandomAddress()
     return {

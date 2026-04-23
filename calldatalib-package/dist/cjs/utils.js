@@ -10,6 +10,12 @@ exports.uint64 = uint64;
 exports.uint112 = uint112;
 exports.uint128 = uint128;
 exports.uint256 = uint256;
+exports.int8 = int8;
+exports.int16 = int16;
+exports.int32 = int32;
+exports.int64 = int64;
+exports.int128 = int128;
+exports.int256 = int256;
 exports.encodePacked = encodePacked;
 exports.generateAmountBitmap = generateAmountBitmap;
 exports.getMorphoCollateral = getMorphoCollateral;
@@ -50,6 +56,31 @@ function uint128(value) {
 }
 function uint256(value) {
     return BigInt(value) & ((1n << 256n) - 1n);
+}
+function toSigned(value, bits) {
+    const b = BigInt(bits);
+    const mod = 1n << b;
+    const masked = BigInt(value) & (mod - 1n);
+    const signBit = 1n << (b - 1n);
+    return masked >= signBit ? masked - mod : masked;
+}
+function int8(value) {
+    return Number(toSigned(value, 8));
+}
+function int16(value) {
+    return Number(toSigned(value, 16));
+}
+function int32(value) {
+    return Number(toSigned(value, 32));
+}
+function int64(value) {
+    return toSigned(value, 64);
+}
+function int128(value) {
+    return toSigned(value, 128);
+}
+function int256(value) {
+    return toSigned(value, 256);
 }
 function encodePacked(types, values) {
     if (types.length !== values.length) {

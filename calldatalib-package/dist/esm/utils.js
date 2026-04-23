@@ -29,6 +29,31 @@ export function uint128(value) {
 export function uint256(value) {
     return BigInt(value) & ((1n << 256n) - 1n);
 }
+function toSigned(value, bits) {
+    const b = BigInt(bits);
+    const mod = 1n << b;
+    const masked = BigInt(value) & (mod - 1n);
+    const signBit = 1n << (b - 1n);
+    return masked >= signBit ? masked - mod : masked;
+}
+export function int8(value) {
+    return Number(toSigned(value, 8));
+}
+export function int16(value) {
+    return Number(toSigned(value, 16));
+}
+export function int32(value) {
+    return Number(toSigned(value, 32));
+}
+export function int64(value) {
+    return toSigned(value, 64);
+}
+export function int128(value) {
+    return toSigned(value, 128);
+}
+export function int256(value) {
+    return toSigned(value, 256);
+}
 export function encodePacked(types, values) {
     if (types.length !== values.length) {
         throw new Error('Types and values arrays must have the same length');

@@ -15,9 +15,6 @@ export async function removeIfConditions(files: string[]) {
       content = tempContent[0]!.replaceAll(regex, '')
       content += splitText + tempContent[1]!
     } else if (name.endsWith('ts')) {
-      const regex =
-        /if\s*\([^)]*\)\s*({(?:[^{}]*|{(?:[^{}]*|{[^{}]*})*})*}|[^;\n]*;)/g
-      content = content.replaceAll(regex, '')
     } else throw new Error('Unsupported file type')
     const newPath = filePath.replace(name, pureName)
     await fs.writeFile(newPath, content)

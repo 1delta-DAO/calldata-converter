@@ -96,7 +96,9 @@ contract GenerateCalldata is Script {
 }
 
 function isHardCodedFunction(functionName: string): boolean {
-  return HARDCODED_FUNCTIONS.includes(functionName)
+  return (
+    HARDCODED_FUNCTIONS.includes(functionName) || functionName.startsWith('_')
+  )
 }
 
 function generateTestFunc(

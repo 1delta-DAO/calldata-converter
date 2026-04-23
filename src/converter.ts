@@ -116,7 +116,7 @@ export async function converter(config: ConverterConfig) {
 
     // Generate the test file with proper imports and expected outputs
     const requiredFunctions = functions.filter(
-      (f) => !HARDCODED_FUNCTIONS.includes(f.name),
+      (f) => !HARDCODED_FUNCTIONS.includes(f.name) && !f.name.startsWith('_'),
     )
     let testContent = await generateTestSuite(
       requiredFunctions,

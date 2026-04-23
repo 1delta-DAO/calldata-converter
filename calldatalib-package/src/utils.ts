@@ -40,6 +40,38 @@ export function uint256(value: number | bigint): bigint {
   return BigInt(value) & ((1n << 256n) - 1n)
 }
 
+function toSigned(value: number | bigint, bits: number): bigint {
+  const b = BigInt(bits)
+  const mod = 1n << b
+  const masked = BigInt(value) & (mod - 1n)
+  const signBit = 1n << (b - 1n)
+  return masked >= signBit ? masked - mod : masked
+}
+
+export function int8(value: number | bigint): number {
+  return Number(toSigned(value, 8))
+}
+
+export function int16(value: number | bigint): number {
+  return Number(toSigned(value, 16))
+}
+
+export function int32(value: number | bigint): number {
+  return Number(toSigned(value, 32))
+}
+
+export function int64(value: number | bigint): bigint {
+  return toSigned(value, 64)
+}
+
+export function int128(value: number | bigint): bigint {
+  return toSigned(value, 128)
+}
+
+export function int256(value: number | bigint): bigint {
+  return toSigned(value, 256)
+}
+
 export function encodePacked(types: string[], values: any[]): Hex {
   if (types.length !== values.length) {
     throw new Error('Types and values arrays must have the same length')
@@ -104,10 +136,14 @@ export function encodeAaveV4PmsBatchPermit(
   vs: Hex,
 ): Hex {
   if (pms.length !== approvals.length) throw new Error('CL: length mismatch')
-  if (pms.length === 0 || pms.length >= 256) throw new Error('CL: invalid count')
+  if (pms.length === 0 || pms.length >= 256)
+    throw new Error('CL: invalid count')
   let updates: Hex = '0x'
   for (let i = 0; i < pms.length; i++) {
-    updates = encodePacked(['bytes', 'address', 'uint8'], [updates, pms[i]!, uint8(approvals[i]! ? 1 : 0)])
+    updates = encodePacked(
+      ['bytes', 'address', 'uint8'],
+      [updates, pms[i]!, uint8(approvals[i]! ? 1 : 0)],
+    )
   }
   const data = encodePacked(
     ['uint8', 'bytes', 'uint256', 'uint32', 'bytes32', 'bytes32'],

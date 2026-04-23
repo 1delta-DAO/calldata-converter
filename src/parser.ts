@@ -286,17 +286,23 @@ export async function processImports(
 }
 
 export function cleanupPragmas(content: string): string {
+  // Normalize solc for compatibility
+  let cleaned = content.replace(
+    /pragma\s+solidity\s+(?:=)?\s*0\.8\.\d+;/g,
+    'pragma solidity ^0.8.28;',
+  )
+
   // Find all pragma statements
   const pragmaRegex = /pragma\s+solidity\s+[^;]+;/g
-  const pragmas = content.match(pragmaRegex) || []
+  const pragmas = cleaned.match(pragmaRegex) || []
 
   if (pragmas.length <= 1) {
-    return content
+    return cleaned
   }
 
   // Keep the first pragma and remove all others
   const firstPragma = pragmas[0]
-  let cleanedContent = content
+  let cleanedContent = cleaned
 
   cleanedContent = cleanedContent.replace(pragmaRegex, '')
 

@@ -141,7 +141,9 @@ function parseTernaryType(
     const castMatch = expr.match(FUNCTION_REGEX)
     if (
       castMatch &&
-      (castMatch[0]?.startsWith('uint') || castMatch[0]?.startsWith('address'))
+      (castMatch[0]?.startsWith('uint') ||
+        castMatch[0]?.startsWith('int') ||
+        castMatch[0]?.startsWith('address'))
     ) {
       return castMatch[1]!
     }
@@ -149,7 +151,7 @@ function parseTernaryType(
     // Check for function calls
     const funcMatch = expr.match(FUNCTION_REGEX)
     if (funcMatch) {
-      if (funcMatch[1]?.startsWith('uint')) {
+      if (funcMatch[1]?.startsWith('uint') || funcMatch[1]?.startsWith('int')) {
         // for casts
         return funcMatch[1]
       }
@@ -172,29 +174,18 @@ function convertAbiEncodePacked(
   funcDef: FunctionDef,
   allFunctions: FunctionDef[],
 ): string {
-  // Convert parameters with their types
-  const tsParams = funcDef.params
-    .map((param) => {
-      const tsType = TYPE_MAP[param.type] || 'any'
-      return `${param.name}: ${tsType}`
-    })
-    .join(', ')
-
-  // Convert return type
-  const tsReturnType = TYPE_MAP[funcDef.returnType] || 'any'
-
   // Process function body
   let tsBody = funcDef.body
 
   // Process each abi.encodePacked call
-  if (funcDef.body.includes('abi.encodePacked')) {
+  while (tsBody.includes('abi.encodePacked')) {
     const encodeMarker = 'abi.encodePacked'
-    const markerIdx = funcDef.body.indexOf(encodeMarker)
+    const markerIdx = tsBody.indexOf(encodeMarker)
     const openParenIdx = markerIdx + encodeMarker.length
-    const closeParenIdx = findMatchingParen(funcDef.body, openParenIdx)
+    const closeParenIdx = findMatchingParen(tsBody, openParenIdx)
 
     if (markerIdx !== -1 && closeParenIdx !== -1) {
-      const encodedParams = funcDef.body.slice(openParenIdx + 1, closeParenIdx)
+      const encodedParams = tsBody.slice(openParenIdx + 1, closeParenIdx)
       // Split by commas and handle nested function calls correctly ()
       const args = splitArgsRespectingParentheses(encodedParams)
 
@@ -211,6 +202,7 @@ function convertAbiEncodePacked(
           functionCallMatch &&
           arg.indexOf(functionCallMatch?.[0] || '0') === 0 &&
           !arg.startsWith('uint') &&
+          !arg.startsWith('int') &&
           !arg.startsWith('bytes') &&
           !arg.startsWith('address')
         ) {
@@ -256,8 +248,16 @@ function convertAbiEncodePacked(
         // For regular variables
         const argName = arg.trim()
         // Find parameter type from function definition
-        const param = funcDef.params.find((p) => p.name === argName)
+        const param = funcDef.params.find(
+          (p) => p.name === argName || argName.startsWith(`${p.name}[`),
+        )
         let paramType = param?.type || 'bytes'
+
+        // If this is an indexed access (e.g. a[0]) and the param is an array,
+        // encode the element type, not the array type.
+        if (param && argName.startsWith(`${param.name}[`)) {
+          paramType = paramType.replace(/\[\d*\]$/, '')
+        }
 
         // Clean up type by removing "memory" and other modifiers
         paramType = paramType
@@ -281,7 +281,9 @@ function convertAbiEncodePacked(
         tsBody.slice(0, markerIdx) +
         replacement +
         tsBody.slice(closeParenIdx + 1)
+      continue
     }
+    break
   }
 
   // Reassemble the function
@@ -372,7 +374,7 @@ export function convertToTS(
 
   output += `
   import { type Hex, type Address, zeroAddress } from "viem";
-  import { encodePacked, uint128, uint8, uint112, uint16, uint256, _PRE_PARAM, _SHARES_MASK, _UNSAFE_AMOUNT, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, rightPadZero, encodeCompoundV2SelectorId, encodeSiloV2CollateralMode, encodeAaveV4PmsBatchPermit } from "../../src/utils.ts";
+  import { encodePacked, uint128, uint8, uint112, uint16, uint256, int8, int16, int32, int64, int128, int256, _SHARES_MASK, _UNSAFE_AMOUNT, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, rightPadZero, encodeCompoundV2SelectorId, encodeSiloV2CollateralMode, encodeAaveV4PmsBatchPermit } from "../../src/utils.ts";
   `
 
   // Add enum definitions
@@ -442,10 +444,17 @@ function convertFunction(
     .replaceAll('!=', '!==')
     .replaceAll('bytesmemory', 'const ')
     .replace(/\bconst (\w+);/g, 'let $1: Hex = "0x";')
+    .replace(
+      /(^|[;{])(u?int\d+|address|bool|string|bytes\d*|bytes)([A-Za-z_]\w*)=/g,
+      '$1let $3=',
+    )
     .replace(/for\s*\(\s*uint\d*\s*(\w+)\s*=/g, 'for (let $1 =')
     .replaceAll('return', 'return ')
     .replaceAll(/=\s*(\d+)(?!n\b)/g, '= $1n')
     .replaceAll('type(uint120).max', '0xffffffffffffffffffffffffffffffn')
+    .replaceAll('FLUID_MAX_AMOUNT', '((1n << 112n) - 1n)')
+    .replaceAll('FLUID_USE_BALANCE', '((1n << 127n) - 1n)')
+    .replaceAll('FLUID_ALL', '(-(1n << 127n))')
     .replaceAll('address(0)', 'zeroAddress')
     .replaceAll(/\.length\s*===\s*0n/g, '.length === 0')
     .replaceAll('.length', '.length/2 -1')
