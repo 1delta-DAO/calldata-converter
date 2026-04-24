@@ -9,7 +9,9 @@ export function generateVitestSuite(opts: {
 }): string {
   const { functions, testInputs, expected, tsImportSpecifier } = opts
   const byName = Object.fromEntries(testInputs.map((t) => [t.functionName, t]))
-  const expectedByName = Object.fromEntries(expected.map((e) => [e.name, e.hex]))
+  const expectedByName = Object.fromEntries(
+    expected.map((e) => [e.name, e.hex]),
+  )
 
   const tests = functions
     .map((fn) => {

@@ -7,7 +7,10 @@ import type { ImportResolver, ResolvedFile } from './types.ts'
  * Handles the `./` / `../` / bare-filename cases CalldataLib uses.
  */
 export function createFsResolver(): ImportResolver {
-  return async (importPath: string, fromFile: string): Promise<ResolvedFile> => {
+  return async (
+    importPath: string,
+    fromFile: string,
+  ): Promise<ResolvedFile> => {
     const fromDir = path.dirname(fromFile)
     // Strip any leading `./` so `./X.sol` and `X.sol` behave the same.
     const normalized = importPath.replace(/^\.\//, '')
@@ -30,7 +33,10 @@ export function createFsResolver(): ImportResolver {
 export function createInMemoryResolver(
   sources: Record<string, string>,
 ): ImportResolver {
-  return async (importPath: string, fromFile: string): Promise<ResolvedFile> => {
+  return async (
+    importPath: string,
+    fromFile: string,
+  ): Promise<ResolvedFile> => {
     const normalized = importPath.replace(/^\.\//, '')
     const keys = [normalized, path.basename(normalized)]
     for (const k of keys) {

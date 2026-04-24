@@ -8,7 +8,10 @@ import type { FunctionIr, ProjectIr } from '../types.ts'
 export class Scope {
   private frames: Array<Record<string, string>> = [{}]
 
-  constructor(public readonly fn: FunctionIr, public readonly ir: ProjectIr) {
+  constructor(
+    public readonly fn: FunctionIr,
+    public readonly ir: ProjectIr,
+  ) {
     for (const p of fn.params) {
       this.frames[0]![p.name] = p.type
     }

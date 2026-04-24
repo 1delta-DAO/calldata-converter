@@ -5,7 +5,11 @@ import * as path from 'path'
 import * as fs from 'fs'
 import * as os from 'os'
 
-function withTempFile(name: string, source: string, fn: (p: string) => Promise<void> | void) {
+function withTempFile(
+  name: string,
+  source: string,
+  fn: (p: string) => Promise<void> | void,
+) {
   return (async () => {
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'sol-to-ts-'))
     const p = path.join(dir, name)
@@ -60,7 +64,9 @@ describe('sol-to-ts smoke', () => {
         },
         format: false,
       })
-      expect(res.output).toContain(`encodePacked(["uint8", "address", "uint128"]`)
+      expect(res.output).toContain(
+        `encodePacked(["uint8", "address", "uint128"]`,
+      )
     })
   })
 
@@ -78,7 +84,9 @@ describe('sol-to-ts smoke', () => {
         runtime: { imports: [] },
         format: false,
       })
-      expect(res.output).toContain('FLUID_MAX_AMOUNT: bigint = ((1n << 112n) - 1n)')
+      expect(res.output).toContain(
+        'FLUID_MAX_AMOUNT: bigint = ((1n << 112n) - 1n)',
+      )
       expect(res.output).toContain('FLUID_ALL: bigint = (-(1n << 127n))')
     })
   })

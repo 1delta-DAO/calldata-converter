@@ -47,7 +47,9 @@ export interface ConstantIr {
   name: string
   solidityType: string
   /** Raw AST node for the initializer; emitters translate it. */
-  valueAst: StateVariableDeclaration['initialValue'] | FileLevelConstant['initialValue']
+  valueAst:
+    | StateVariableDeclaration['initialValue']
+    | FileLevelConstant['initialValue']
   sourceFile: string
   /** If declared inside a contract/library, the containing contract name. */
   container?: string

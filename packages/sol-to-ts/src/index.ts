@@ -21,4 +21,8 @@ export { buildProjectIr, loadProject } from './parser.ts'
 export { solTypeFromAst } from './solTypes.ts'
 export { solTypeToTs } from './tsTypes.ts'
 export { runValidation } from './validate/index.ts'
-export { purifyIfStatements, libraryAsEnum, skipFunctionsPlugin } from './plugins/index.ts'
+export {
+  purifyIfStatements,
+  libraryAsEnum,
+  skipFunctionsPlugin,
+} from './plugins/index.ts'

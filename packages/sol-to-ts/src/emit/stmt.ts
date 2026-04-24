@@ -22,7 +22,11 @@ import { inferTsKind } from './tsKind.ts'
  * Emit a single statement as a full TypeScript line (or multiple lines for
  * blocks). Newlines are included in the returned string.
  */
-export function emitStatement(stmt: Statement, ctx: EmitExprCtx, indent: string): string {
+export function emitStatement(
+  stmt: Statement,
+  ctx: EmitExprCtx,
+  indent: string,
+): string {
   switch (stmt.type) {
     case 'Block':
       return emitBlock(stmt as Block, ctx, indent)
@@ -54,7 +58,8 @@ export function emitStatement(stmt: Statement, ctx: EmitExprCtx, indent: string)
       const rs = stmt as RevertStatement
       const call = rs.revertCall
       const msg =
-        call.arguments.length === 1 && call.arguments[0]!.type === 'StringLiteral'
+        call.arguments.length === 1 &&
+        call.arguments[0]!.type === 'StringLiteral'
           ? (call.arguments[0] as any).value
           : 'revert'
       return `${indent}throw new Error(${JSON.stringify(msg)});\n`
@@ -93,8 +98,12 @@ function emitVarDecl(
   indent: string,
 ): string {
   if (vd.variables.length !== 1) {
-    ctx.warnings.push('Tuple variable decls are not supported; using untyped let.')
-    const init = vd.initialValue ? emitExpression(vd.initialValue as Expression, ctx) : 'undefined'
+    ctx.warnings.push(
+      'Tuple variable decls are not supported; using untyped let.',
+    )
+    const init = vd.initialValue
+      ? emitExpression(vd.initialValue as Expression, ctx)
+      : 'undefined'
     return `${indent}let _tuple = ${init};\n`
   }
   const v = vd.variables[0] as any
@@ -118,7 +127,11 @@ function emitVarDecl(
 function defaultInitValue(solType: string): string {
   if (!solType) return 'undefined'
   if (solType === 'bool') return 'false'
-  if (solType === 'bytes' || /^bytes\d+$/.test(solType) || solType === 'string') {
+  if (
+    solType === 'bytes' ||
+    /^bytes\d+$/.test(solType) ||
+    solType === 'string'
+  ) {
     return `'0x' as Hex`
   }
   if (/^u?int\d*$/.test(solType)) {
@@ -138,7 +151,11 @@ function emitIf(is: IfStatement, ctx: EmitExprCtx, indent: string): string {
   return `${indent}if (${cond}) ${trueBody.replace(/\n$/, '')} else ${falseBody}`
 }
 
-function wrapInBraces(stmt: Statement, ctx: EmitExprCtx, indent: string): string {
+function wrapInBraces(
+  stmt: Statement,
+  ctx: EmitExprCtx,
+  indent: string,
+): string {
   const childIndent = indent + '\t'
   if (stmt.type === 'Block') {
     const inner = emitBlock(stmt as Block, ctx, childIndent)
@@ -166,11 +183,17 @@ function emitFor(fs: ForStatement, ctx: EmitExprCtx, indent: string): string {
         // Override the scope binding so the body/condition infer as `number`.
         ctx.scope.define(name, 'uint32')
         const init = vd.initialValue
-          ? emitExpression(vd.initialValue as Expression, ctx, { bigint: false })
+          ? emitExpression(vd.initialValue as Expression, ctx, {
+              bigint: false,
+            })
           : '0'
         initStr = `let ${name}: number = ${init}`
       } else {
-        initStr = emitVarDecl(fs.initExpression as VariableDeclarationStatement, ctx, '').trim()
+        initStr = emitVarDecl(
+          fs.initExpression as VariableDeclarationStatement,
+          ctx,
+          '',
+        ).trim()
         if (initStr.endsWith(';')) initStr = initStr.slice(0, -1)
       }
     } else if (fs.initExpression.type === 'ExpressionStatement') {
@@ -178,7 +201,9 @@ function emitFor(fs: ForStatement, ctx: EmitExprCtx, indent: string): string {
       initStr = es.expression ? emitExpression(es.expression, ctx) : ''
     }
   }
-  const condStr = fs.conditionExpression ? emitExpression(fs.conditionExpression, ctx) : ''
+  const condStr = fs.conditionExpression
+    ? emitExpression(fs.conditionExpression, ctx)
+    : ''
   const loopStr = fs.loopExpression.expression
     ? emitExpression(fs.loopExpression.expression, ctx)
     : ''
@@ -193,7 +218,11 @@ function emitFor(fs: ForStatement, ctx: EmitExprCtx, indent: string): string {
  * to avoid a `bigint`/`number` mix at runtime.
  */
 function detectCounterDowncast(fs: ForStatement, ctx: EmitExprCtx): boolean {
-  if (!fs.initExpression || fs.initExpression.type !== 'VariableDeclarationStatement') return false
+  if (
+    !fs.initExpression ||
+    fs.initExpression.type !== 'VariableDeclarationStatement'
+  )
+    return false
   const vd = fs.initExpression as VariableDeclarationStatement
   if (vd.variables.length !== 1) return false
   const v = vd.variables[0] as any
@@ -217,7 +246,11 @@ function detectCounterDowncast(fs: ForStatement, ctx: EmitExprCtx): boolean {
   }
 }
 
-function emitWhile(ws: WhileStatement, ctx: EmitExprCtx, indent: string): string {
+function emitWhile(
+  ws: WhileStatement,
+  ctx: EmitExprCtx,
+  indent: string,
+): string {
   const cond = emitExpression(ws.condition, ctx)
   const body = wrapInBraces(ws.body as Statement, ctx, indent)
   return `${indent}while (${cond}) ${body}`

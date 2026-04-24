@@ -22,7 +22,12 @@ export function generateTestInputs(fn: FunctionIr, ir: ProjectIr): TestInputs {
   fn.params.forEach((p, i) => {
     const varName = `_a_${fn.name}_${i}`
     const type = paramTypeForTesting(p)
-    const { solValue, tsValue } = generateValuePairFull(type, ir, varName, preambleLines)
+    const { solValue, tsValue } = generateValuePairFull(
+      type,
+      ir,
+      varName,
+      preambleLines,
+    )
     solidity.push(solValue)
     typescript.push(tsValue)
   })
@@ -49,10 +54,14 @@ function paramTypeForTesting(p: ParamIr): string {
 function parseOutermostDimension(
   type: string,
 ): { elementType: string; outerDim: number | null } | null {
-  if (type.endsWith('[]')) return { elementType: type.slice(0, -2), outerDim: null }
+  if (type.endsWith('[]'))
+    return { elementType: type.slice(0, -2), outerDim: null }
   const m = type.match(/\[(\d+)\]$/)
   if (m) {
-    return { elementType: type.slice(0, -m[0].length), outerDim: parseInt(m[1]!, 10) }
+    return {
+      elementType: type.slice(0, -m[0].length),
+      outerDim: parseInt(m[1]!, 10),
+    }
   }
   return null
 }
@@ -81,7 +90,9 @@ function generateValuePairFull(
     elementTsValues.push(tsValue)
   }
   if (outer.outerDim !== null) {
-    preambleLines.push(`${outer.elementType}[${outer.outerDim}] memory ${varName};`)
+    preambleLines.push(
+      `${outer.elementType}[${outer.outerDim}] memory ${varName};`,
+    )
   } else {
     preambleLines.push(
       `${outer.elementType}[] memory ${varName} = new ${outer.elementType}[](${count});`,
@@ -140,7 +151,10 @@ function generateScalarValuePair(
   if (uMatch) {
     const bits = uMatch[1] ? parseInt(uMatch[1], 10) : 256
     const num = Math.min(1e20, Math.pow(2, Math.min(bits, 53)) - 1)
-    return { solValue: num.toString(), tsValue: `${num}${bits <= 32 ? '' : 'n'}` }
+    return {
+      solValue: num.toString(),
+      tsValue: `${num}${bits <= 32 ? '' : 'n'}`,
+    }
   }
 
   const iMatch = /^int(\d+)?$/.exec(clean)

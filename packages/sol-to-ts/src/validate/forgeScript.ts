@@ -79,7 +79,11 @@ ${testCalls}    }
   return { script, inputs }
 }
 
-function renderTestCall(fn: FunctionIr, t: TestInputs, libraryName: string): string {
+function renderTestCall(
+  fn: FunctionIr,
+  t: TestInputs,
+  libraryName: string,
+): string {
   const preamble = t.solidityPreamble ? `\n        ${t.solidityPreamble}\n` : ''
   return `
         // Test ${fn.name}${preamble}

@@ -1,5 +1,11 @@
 import type { Expression } from '@solidity-parser/parser/dist/src/ast-types'
-import type { ConstantIr, EmitCtx, EnumIr, FunctionIr, LibraryAsEnumCandidate } from '../types.ts'
+import type {
+  ConstantIr,
+  EmitCtx,
+  EnumIr,
+  FunctionIr,
+  LibraryAsEnumCandidate,
+} from '../types.ts'
 import { solTypeToTs } from '../tsTypes.ts'
 import { uintSize } from '../solTypes.ts'
 import { emitExpression, isBigintSolType } from './expr.ts'
@@ -34,11 +40,20 @@ export function emitConstant(c: ConstantIr, ctx: EmitCtx): string {
   const emitCtx: EmitExprCtx = {
     ...ctx,
     scope: new Scope(
-      { name: '__const__', params: [], returnType: null, returnParams: [], body: null } as FunctionIr,
+      {
+        name: '__const__',
+        params: [],
+        returnType: null,
+        returnParams: [],
+        body: null,
+      } as FunctionIr,
       ctx.ir,
     ),
   }
-  const hint = { bigint: isBigintSolType(c.solidityType), expect: c.solidityType }
+  const hint = {
+    bigint: isBigintSolType(c.solidityType),
+    expect: c.solidityType,
+  }
   const value = emitExpression(c.valueAst as Expression, emitCtx, hint)
   return `export const ${c.name}: ${tsType} = ${value};`
 }
@@ -68,7 +83,9 @@ export function emitFunction(fn: FunctionIr, ctx: EmitCtx): string {
   }
 
   const statements = fn.body ? fn.body.statements : []
-  const hasExplicitReturn = statements.some((s: any) => s && s.type === 'ReturnStatement')
+  const hasExplicitReturn = statements.some(
+    (s: any) => s && s.type === 'ReturnStatement',
+  )
   for (const s of statements) {
     body += emitStatement(s as any, emitCtx, '\t')
   }
@@ -83,7 +100,11 @@ export function emitFunction(fn: FunctionIr, ctx: EmitCtx): string {
 function defaultForSolType(solType: string): string {
   if (!solType) return 'undefined as any'
   if (solType === 'bool') return 'false'
-  if (solType === 'bytes' || /^bytes\d+$/.test(solType) || solType === 'string') {
+  if (
+    solType === 'bytes' ||
+    /^bytes\d+$/.test(solType) ||
+    solType === 'string'
+  ) {
     return `('0x' as Hex)`
   }
   const u = uintSize(solType)
@@ -92,6 +113,7 @@ function defaultForSolType(solType: string): string {
     const bits = parseInt(solType.replace(/^int/, ''), 10) || 256
     return bits > 32 ? '0n' : '0'
   }
-  if (solType === 'address' || solType === 'address payable') return 'zeroAddress'
+  if (solType === 'address' || solType === 'address payable')
+    return 'zeroAddress'
   return 'undefined as any'
 }

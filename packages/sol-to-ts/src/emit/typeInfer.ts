@@ -11,12 +11,16 @@ import type {
   UnaryOperation,
 } from '@solidity-parser/parser/dist/src/ast-types'
 import type { ProjectIr } from '../types.ts'
-import { arrayElementType, isArrayType, isHexType, uintSize } from '../solTypes.ts'
+import {
+  arrayElementType,
+  isArrayType,
+  isHexType,
+  uintSize,
+} from '../solTypes.ts'
 import { Scope } from './scope.ts'
 
 /** Match elementary Solidity type cast identifiers (uint8/int128/bytes32/…). */
-const ELEMENTARY_CAST_RE =
-  /^(u?int(?:\d+)?|bytes\d*|address|bool|string)$/
+const ELEMENTARY_CAST_RE = /^(u?int(?:\d+)?|bytes\d*|address|bool|string)$/
 
 function isElementaryCastName(name: string): boolean {
   return ELEMENTARY_CAST_RE.test(name)
@@ -67,7 +71,8 @@ export function inferSolType(expr: Expression, scope: Scope): string {
       if (
         ma.expression.type === 'FunctionCall' &&
         (ma.expression as FunctionCall).expression.type === 'Identifier' &&
-        ((ma.expression as FunctionCall).expression as Identifier).name === 'type'
+        ((ma.expression as FunctionCall).expression as Identifier).name ===
+          'type'
       ) {
         const inner = (ma.expression as FunctionCall).arguments[0]
         if (inner && inner.type === 'ElementaryTypeName') {
@@ -83,8 +88,8 @@ export function inferSolType(expr: Expression, scope: Scope): string {
         return (fc.expression as any).name === 'uint'
           ? 'uint256'
           : (fc.expression as any).name === 'int'
-          ? 'int256'
-          : (fc.expression as any).name
+            ? 'int256'
+            : (fc.expression as any).name
       }
       if (fc.expression.type === 'Identifier') {
         const name = (fc.expression as Identifier).name
@@ -127,8 +132,14 @@ export function inferSolType(expr: Expression, scope: Scope): string {
       const bo = expr as BinaryOperation
       const op = bo.operator
       if (
-        op === '==' || op === '!=' || op === '<' || op === '>' ||
-        op === '<=' || op === '>=' || op === '&&' || op === '||'
+        op === '==' ||
+        op === '!=' ||
+        op === '<' ||
+        op === '>' ||
+        op === '<=' ||
+        op === '>=' ||
+        op === '&&' ||
+        op === '||'
       ) {
         return 'bool'
       }
@@ -173,7 +184,11 @@ export function inferSolType(expr: Expression, scope: Scope): string {
 
 function inferElementaryName(tn: any): string {
   if (tn.type === 'ElementaryTypeName') {
-    return tn.name === 'uint' ? 'uint256' : tn.name === 'int' ? 'int256' : tn.name
+    return tn.name === 'uint'
+      ? 'uint256'
+      : tn.name === 'int'
+        ? 'int256'
+        : tn.name
   }
   if (tn.type === 'UserDefinedTypeName') return tn.namePath
   if (tn.type === 'ArrayTypeName') {
@@ -192,7 +207,8 @@ function inferNumberLiteralType(n: NumberLiteral): string {
 function pickWider(a: string, b: string): string {
   if (!a) return b
   if (!b) return a
-  const au = uintSize(a), bu = uintSize(b)
+  const au = uintSize(a),
+    bu = uintSize(b)
   if (au != null && bu != null) return au >= bu ? a : b
   return a
 }

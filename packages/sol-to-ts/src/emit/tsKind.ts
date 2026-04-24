@@ -36,7 +36,11 @@ export function inferTsKind(expr: Expression, scope: Scope): TsKind {
       return 'other'
     case 'Identifier': {
       const id = expr as Identifier
-      if (scope.ir.enums[id.name] || scope.ir.libraryEnums[id.name] || scope.ir.structs[id.name]) {
+      if (
+        scope.ir.enums[id.name] ||
+        scope.ir.libraryEnums[id.name] ||
+        scope.ir.structs[id.name]
+      ) {
         return 'other'
       }
       const solType = scope.lookup(id.name)
@@ -59,7 +63,8 @@ export function inferTsKind(expr: Expression, scope: Scope): TsKind {
       if (
         ma.expression.type === 'FunctionCall' &&
         (ma.expression as FunctionCall).expression.type === 'Identifier' &&
-        ((ma.expression as FunctionCall).expression as Identifier).name === 'type'
+        ((ma.expression as FunctionCall).expression as Identifier).name ===
+          'type'
       ) {
         if (ma.memberName === 'max' || ma.memberName === 'min') return 'bigint'
       }
@@ -98,7 +103,8 @@ export function inferTsKind(expr: Expression, scope: Scope): TsKind {
     case 'BinaryOperation': {
       const bo = expr as BinaryOperation
       const op = bo.operator
-      if (['==', '!=', '<', '>', '<=', '>=', '&&', '||'].includes(op)) return 'bool'
+      if (['==', '!=', '<', '>', '<=', '>=', '&&', '||'].includes(op))
+        return 'bool'
       const l = inferTsKind(bo.left, scope)
       const r = inferTsKind(bo.right, scope)
       return mergeKinds(l, r)

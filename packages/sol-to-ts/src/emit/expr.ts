@@ -303,7 +303,8 @@ function emitBinary(
   const rightKind = inferTsKind(bo.right, ctx.scope)
   let chosen: TsKind
   if (leftKind === 'bigint' || rightKind === 'bigint') {
-    chosen = leftKind === 'number' || rightKind === 'number' ? 'number' : 'bigint'
+    chosen =
+      leftKind === 'number' || rightKind === 'number' ? 'number' : 'bigint'
   } else if (leftKind === 'number' || rightKind === 'number') {
     chosen = 'number'
   } else {
@@ -386,7 +387,10 @@ export function isBigintSolType(solType: string): boolean {
   return false
 }
 
-export function emitAbiEncodePacked(fc: FunctionCall, ctx: EmitExprCtx): string {
+export function emitAbiEncodePacked(
+  fc: FunctionCall,
+  ctx: EmitExprCtx,
+): string {
   const args = fc.arguments
   const types: string[] = []
   const values: string[] = []

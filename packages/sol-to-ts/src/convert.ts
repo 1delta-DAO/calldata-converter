@@ -11,10 +11,7 @@ import {
 } from './emit/topLevel.ts'
 import type { FunctionIr } from './types.ts'
 
-function shouldSkipFunction(
-  name: string,
-  skip: (string | RegExp)[],
-): boolean {
+function shouldSkipFunction(name: string, skip: (string | RegExp)[]): boolean {
   for (const s of skip) {
     if (typeof s === 'string' && s === name) return true
     if (s instanceof RegExp && s.test(name)) return true
@@ -110,7 +107,8 @@ export async function convert(opts: ConvertOptions): Promise<ConvertResult> {
     // `_fluidSmartHeader` is called from public helpers). Only restrict
     // emission to the entry contract; callers can use `skipFunctions` to
     // drop specific names.
-    if (fn.container && entryContainer && fn.container !== entryContainer) continue
+    if (fn.container && entryContainer && fn.container !== entryContainer)
+      continue
     if (shouldSkipFunction(fn.name, ctx.skipFunctions)) continue
     // Functions supplied by the runtime config take precedence over anything
     // parsed from sources - don't emit a duplicate that would clash with the

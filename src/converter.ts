@@ -102,7 +102,9 @@ export async function converter(config: ConverterConfig): Promise<void> {
 
   if (!runTests) {
     console.log('Tests generated. To run them, use:\n')
-    console.log(`pnpm vitest run ${tsOutputPath.replace(/\.ts$/, '.test.ts')}\n`)
+    console.log(
+      `pnpm vitest run ${tsOutputPath.replace(/\.ts$/, '.test.ts')}\n`,
+    )
     return
   }
 

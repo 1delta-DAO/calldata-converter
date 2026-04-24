@@ -30,7 +30,11 @@ function canonical(p: string): string {
 
 function parseSource(source: string, filePath: string): SourceUnit {
   try {
-    return parse(source, { loc: false, range: false, tolerant: false }) as SourceUnit
+    return parse(source, {
+      loc: false,
+      range: false,
+      tolerant: false,
+    }) as SourceUnit
   } catch (err) {
     throw new Error(
       `sol-to-ts: failed to parse '${filePath}': ${(err as Error).message}`,
@@ -206,7 +210,11 @@ function collectFromFile(
             acc.constants[`${c.name}.${m.name}`] = {
               name: m.name,
               solidityType: 'uint256',
-              valueAst: { type: 'NumberLiteral', number: m.value, subdenomination: null } as any,
+              valueAst: {
+                type: 'NumberLiteral',
+                number: m.value,
+                subdenomination: null,
+              } as any,
               sourceFile: filePath,
               container: c.name,
             }
@@ -255,7 +263,13 @@ function collectFromFile(
             }
             case 'FunctionDefinition': {
               const fn = sub as FunctionDefinition
-              if (!fn.name || fn.isConstructor || fn.isFallback || fn.isReceiveEther) break
+              if (
+                !fn.name ||
+                fn.isConstructor ||
+                fn.isFallback ||
+                fn.isReceiveEther
+              )
+                break
               acc.functions[fn.name] = {
                 name: fn.name,
                 params: extractParams(fn.parameters),

@@ -5,10 +5,7 @@ import type {
   ProjectIr,
   SolToTsPlugin,
 } from '../types.ts'
-import {
-  emitConstant,
-  emitFunction,
-} from '../emit/topLevel.ts'
+import { emitConstant, emitFunction } from '../emit/topLevel.ts'
 
 /**
  * Drops `IfStatement` nodes from function bodies so the emitted helpers never
@@ -19,9 +16,11 @@ import {
  * every function defined strictly *before* the named function. Functions from
  * `stopAtFunction` onward pass through unchanged.
  */
-export function purifyIfStatements(options: {
-  stopAtFunction?: string
-} = {}): SolToTsPlugin {
+export function purifyIfStatements(
+  options: {
+    stopAtFunction?: string
+  } = {},
+): SolToTsPlugin {
   const stopAt = options.stopAtFunction
   let stopReached = false
   return {
@@ -49,7 +48,10 @@ function stripIfs(stmts: any[]): any[] {
       continue
     }
     if (s.type === 'ForStatement' && s.body && s.body.type === 'Block') {
-      out.push({ ...s, body: { ...s.body, statements: stripIfs(s.body.statements) } })
+      out.push({
+        ...s,
+        body: { ...s.body, statements: stripIfs(s.body.statements) },
+      })
       continue
     }
     out.push(s)
