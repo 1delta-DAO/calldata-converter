@@ -31,7 +31,8 @@ export declare enum LenderIds {
     UP_TO_SILO_V2 = 6000,
     UP_TO_AAVE_V4 = 7000,
     UP_TO_FLUID = 8000,
-    UP_TO_FLUID_SMART = 9000
+    UP_TO_FLUID_SMART = 9000,
+    UP_TO_GEARBOX_V3 = 10000
 }
 export declare enum LenderOps {
     DEPOSIT = 0,
@@ -43,7 +44,8 @@ export declare enum LenderOps {
     SET_COLLATERAL = 6,
     FLUID_OPERATE = 10,
     FLUID_OPERATE_PERFECT = 11,
-    FLUID_OPERATE_T1 = 12
+    FLUID_OPERATE_T1 = 12,
+    GEARBOX_MULTICALL = 13
 }
 export declare enum FlashLoanIds {
     MORPHO = 0,
@@ -192,3 +194,12 @@ export declare function encodeFluidSmartOperatePerfectT3(callValue: bigint, nftI
 export declare function encodeFluidSmartOperatePerfectT4(callValue: bigint, nftId: bigint, receiver: Address, nftReceiver: Address, vault: Address, tokens: Address[], amounts: bigint[]): Hex;
 export declare function encodeFluidFTokenDeposit(underlying: Address, amount: bigint, receiver: Address, fToken: Address): Hex;
 export declare function encodeFluidFTokenWithdraw(underlying: Address, amount: bigint, receiver: Address, fToken: Address): Hex;
+export declare function encodeGearboxV3Supply(token: Address, amount: bigint, creditAccount: Address, creditManager: Address): Hex;
+export declare function encodeGearboxV3Borrow(underlying: Address, amount: bigint, receiver: Address, creditAccount: Address): Hex;
+export declare function encodeGearboxV3RepayPartial(underlying: Address, amount: bigint, creditAccount: Address, creditManager: Address): Hex;
+export declare function encodeGearboxV3RepayAll(underlying: Address, creditAccount: Address, creditManager: Address, quotedTokens: Address[]): Hex;
+export declare function encodeGearboxV3RepayPartialMax(underlying: Address, creditAccount: Address, creditManager: Address): Hex;
+export declare function encodeGearboxV3Withdraw(token: Address, amount: bigint, receiver: Address, creditAccount: Address): Hex;
+export declare function encodeGearboxV3FacadeCall(innerCallData: Hex): Hex;
+export declare function encodeGearboxV3BotMulticall(creditAccount: Address, numCalls: number, calls: Hex): Hex;
+export declare function encodeGearboxV3OpenCreditAccount(creditFacade: Address, referralCode: bigint, numCalls: number, calls: Hex): Hex;

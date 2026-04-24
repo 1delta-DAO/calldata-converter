@@ -1,4 +1,5 @@
 // @ts-nocheck
+
 import { type Hex, type Address, zeroAddress } from 'viem'
 import {
   encodePacked,
@@ -61,6 +62,7 @@ export enum LenderIds {
   UP_TO_AAVE_V4 = 7000,
   UP_TO_FLUID = 8000,
   UP_TO_FLUID_SMART = 9000,
+  UP_TO_GEARBOX_V3 = 10000,
 }
 
 export enum LenderOps {
@@ -74,6 +76,7 @@ export enum LenderOps {
   FLUID_OPERATE = 10,
   FLUID_OPERATE_PERFECT = 11,
   FLUID_OPERATE_T1 = 12,
+  GEARBOX_MULTICALL = 13,
 }
 
 export enum FlashLoanIds {
@@ -2535,6 +2538,240 @@ export function encodeFluidFTokenWithdraw(
       amount,
       receiver,
       fToken,
+    ],
+  )
+}
+
+export function encodeGearboxV3Supply(
+  token: Address,
+  amount: bigint,
+  creditAccount: Address,
+  creditManager: Address,
+): Hex {
+  return encodePacked(
+    ['bytes', 'uint8', 'uint8', 'uint16', 'address', 'uint128', 'address'],
+    [
+      encodeApprove(token, creditManager),
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.DEPOSIT),
+      uint16(LenderIds.UP_TO_GEARBOX_V3 - 1),
+      token,
+      amount,
+      creditAccount,
+    ],
+  )
+}
+
+export function encodeGearboxV3Borrow(
+  underlying: Address,
+  amount: bigint,
+  receiver: Address,
+  creditAccount: Address,
+): Hex {
+  return encodePacked(
+    ['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'address'],
+    [
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.BORROW),
+      uint16(LenderIds.UP_TO_GEARBOX_V3 - 1),
+      underlying,
+      amount,
+      receiver,
+      creditAccount,
+    ],
+  )
+}
+
+export function encodeGearboxV3RepayPartial(
+  underlying: Address,
+  amount: bigint,
+  creditAccount: Address,
+  creditManager: Address,
+): Hex {
+  if (amount === 0n || amount === GEARBOX_REPAY_ALL)
+    throw new Error('CL:gearboxpartialrepayneedsliteralamount')
+  return encodePacked(
+    [
+      'bytes',
+      'uint8',
+      'uint8',
+      'uint16',
+      'address',
+      'uint128',
+      'address',
+      'uint8',
+    ],
+    [
+      encodeApprove(underlying, creditManager),
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.REPAY),
+      uint16(LenderIds.UP_TO_GEARBOX_V3 - 1),
+      underlying,
+      amount,
+      creditAccount,
+      uint8(0),
+    ],
+  )
+}
+
+export function encodeGearboxV3RepayAll(
+  underlying: Address,
+  creditAccount: Address,
+  creditManager: Address,
+  quotedTokens: Address[],
+): Hex {
+  if (quotedTokens.length / 2 - 1 > 255)
+    throw new Error('CL:gearboxtoomanyquotedtokens')
+  let quotedBlob: Hex = '0x'
+  for (let i = 0n; i < quotedTokens.length / 2 - 1; i++) {
+    quotedBlob = encodePacked(
+      ['bytes', 'address'],
+      [quotedBlob, quotedTokens[i]],
+    )
+  }
+  return encodePacked(
+    [
+      'bytes',
+      'uint8',
+      'uint8',
+      'uint16',
+      'address',
+      'bytes',
+      'address',
+      'uint8',
+      'bytes',
+    ],
+    [
+      encodeApprove(underlying, creditManager),
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.REPAY),
+      uint16(LenderIds.UP_TO_GEARBOX_V3 - 1),
+      underlying,
+      GEARBOX_REPAY_ALL,
+      creditAccount,
+      uint8(quotedTokens.length / 2 - 1),
+      quotedBlob,
+    ],
+  )
+}
+
+export function encodeGearboxV3RepayPartialMax(
+  underlying: Address,
+  creditAccount: Address,
+  creditManager: Address,
+): Hex {
+  return encodePacked(
+    [
+      'bytes',
+      'uint8',
+      'uint8',
+      'uint16',
+      'address',
+      'bytes',
+      'address',
+      'uint8',
+    ],
+    [
+      encodeApprove(underlying, creditManager),
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.REPAY),
+      uint16(LenderIds.UP_TO_GEARBOX_V3 - 1),
+      underlying,
+      GEARBOX_REPAY_ALL,
+      creditAccount,
+      uint8(0),
+    ],
+  )
+}
+
+export function encodeGearboxV3Withdraw(
+  token: Address,
+  amount: bigint,
+  receiver: Address,
+  creditAccount: Address,
+): Hex {
+  return encodePacked(
+    ['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'address'],
+    [
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.WITHDRAW),
+      uint16(LenderIds.UP_TO_GEARBOX_V3 - 1),
+      token,
+      amount,
+      receiver,
+      creditAccount,
+    ],
+  )
+}
+
+export function encodeGearboxV3FacadeCall(innerCallData: Hex): Hex {
+  if (innerCallData.length / 2 - 1 > type(uint16).max)
+    throw new Error('CL:gearboxsub-calltoolong')
+  return encodePacked(
+    ['uint16', 'bytes'],
+    [uint16(innerCallData.length / 2 - 1), innerCallData],
+  )
+}
+
+export function encodeGearboxV3BotMulticall(
+  creditAccount: Address,
+  numCalls: number,
+  calls: Hex,
+): Hex {
+  return encodePacked(
+    [
+      'uint8',
+      'uint8',
+      'uint16',
+      'uint8',
+      'address',
+      'address',
+      'bytes32',
+      'uint16',
+      'bytes',
+    ],
+    [
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.GEARBOX_MULTICALL),
+      uint16(LenderIds.UP_TO_GEARBOX_V3 - 1),
+      uint8(0),
+      creditAccount,
+      zeroAddress,
+      bytes32(0),
+      numCalls,
+      calls,
+    ],
+  )
+}
+
+export function encodeGearboxV3OpenCreditAccount(
+  creditFacade: Address,
+  referralCode: bigint,
+  numCalls: number,
+  calls: Hex,
+): Hex {
+  return encodePacked(
+    [
+      'uint8',
+      'uint8',
+      'uint16',
+      'uint8',
+      'address',
+      'address',
+      'uint256',
+      'uint16',
+      'bytes',
+    ],
+    [
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.GEARBOX_MULTICALL),
+      uint16(LenderIds.UP_TO_GEARBOX_V3 - 1),
+      uint8(1),
+      creditFacade,
+      zeroAddress,
+      referralCode,
+      numCalls,
+      calls,
     ],
   )
 }
