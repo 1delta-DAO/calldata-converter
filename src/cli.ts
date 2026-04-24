@@ -8,7 +8,6 @@ import {
   OUTPUT_DIR,
   CALLDATA_LIB_PATH,
 } from './consts'
-import { LibCache } from './libCache'
 async function main() {
   const args = process.argv.slice(2)
   console.log(
@@ -98,8 +97,6 @@ async function main() {
   } catch (error) {
     console.error('Error:', error)
     process.exit(1)
-  } finally {
-    LibCache.getInstance().clearCache()
   }
 }
 

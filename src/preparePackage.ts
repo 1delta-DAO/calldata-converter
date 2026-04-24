@@ -7,39 +7,34 @@ if (!fs.existsSync(PACKAGE_SRC_DIR)) {
   fs.mkdirSync(PACKAGE_SRC_DIR, { recursive: true })
 }
 
-const indexContent = `export * from './${LIB_NAME}.js';\nexport * from './utils.js';`
+const indexContent = `export * from './${LIB_NAME}.js';\nexport * from './runtime.js';\n`
 fs.writeFileSync(path.join(PACKAGE_SRC_DIR, 'index.ts'), indexContent)
 
-const utilsPath = path.resolve('./src/utils.ts')
-if (fs.existsSync(utilsPath)) {
-  fs.copyFileSync(utilsPath, path.join(PACKAGE_SRC_DIR, 'utils.ts'))
-  console.log('Successfully copied utils.ts to package directory')
-} else {
-  console.error('Error: utils.ts not found in src directory.')
+// runtime.ts is the canonical file in packages/calldatalib/src; do not copy or overwrite it here.
+const runtimePath = path.join(PACKAGE_SRC_DIR, 'runtime.ts')
+if (!fs.existsSync(runtimePath)) {
+  throw new Error(`Runtime helpers not found at ${runtimePath}`)
+}
+
+const generatedLib = path.join(OUTPUT_DIR, `${LIB_NAME}.ts`)
+if (!fs.existsSync(generatedLib)) {
+  console.error(`Error: ${generatedLib} not found. Run the converter first.`)
   process.exit(1)
 }
 
-const calldataLibPath = path.join(OUTPUT_DIR, `${LIB_NAME}.ts`)
-if (fs.existsSync(calldataLibPath)) {
-  let content = fs.readFileSync(calldataLibPath, 'utf8')
-  // Update the import path for utils.ts
-  content = content.replace(/from "..\/..\/src\/utils.ts"/, 'from "./utils.js"')
+let content = fs.readFileSync(generatedLib, 'utf8')
+// Rewrite dev-relative runtime import to a package-internal sibling import.
+content = content.replace(
+  /from\s+["']\.\.\/\.\.\/packages\/calldatalib\/src\/runtime(?:\.ts)?["']/g,
+  "from './runtime.js'",
+)
 
-  // Write the modified file
-  fs.writeFileSync(
-    path.join(PACKAGE_SRC_DIR, 'CalldataLib.ts'),
-    '// @ts-nocheck\n' + content,
-  )
-  console.log(
-    'Successfully copied and processed CalldataLib.ts to package directory',
-  )
+fs.writeFileSync(
+  path.join(PACKAGE_SRC_DIR, `${LIB_NAME}.ts`),
+  '// @ts-nocheck\n' + content,
+)
+console.log(`Copied generated ${LIB_NAME}.ts into ${PACKAGE_SRC_DIR}`)
 
-  // Build the package
-  console.log('Building package...')
-  execSync('npm run build', { cwd: PACKAGE_DIR, stdio: 'inherit' })
-
-  console.log('Package is ready to be published!')
-} else {
-  console.error('Error: CalldataLib.ts not found. Run the converter first.')
-  process.exit(1)
-}
+console.log('Building @1delta/calldatalib package...')
+execSync('npm run build', { cwd: PACKAGE_DIR, stdio: 'inherit' })
+console.log('Package is ready to be published!')

@@ -1,10 +1,19 @@
 import * as fs from 'fs'
 import * as path from 'path'
 import axios from 'axios'
-import { parseImports as pI } from './parser'
 import { BASE_REPO_URL, INPUT_DIR } from './consts'
-import { LibCache } from './libCache'
-import type { ParsedLibrary } from './types'
+
+function pI(content: string): string[] {
+  // Minimal import-path extractor: we only need these to build download URLs;
+  // the actual solidity parse happens inside @1delta/sol-to-ts.
+  const importRegex = /import\s+(?:{[^}]+}\s+from\s+)?["'](.+?)["'];/g
+  const imports: string[] = []
+  let match
+  while ((match = importRegex.exec(content)) !== null) {
+    if (match[1]) imports.push(match[1])
+  }
+  return imports
+}
 
 export interface FileHandlerConfig {
   mainFile: string
