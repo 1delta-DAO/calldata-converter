@@ -133,16 +133,23 @@ export async function converter(config: ConverterConfig) {
         const result = spawnSync('pnpm', ['vitest', 'run', testPath], {
           stdio: 'inherit',
         })
+        if (result.error) {
+          throw result.error
+        }
         if (result.status === 0) {
           console.log('\n✅ Tests completed successfully\n')
           // format the test file
           console.log('Formatting all generated typescript files...\n')
           await formatAll()
         } else {
-          console.error('\n❌ Tests failed:', result.stderr, '\n\n')
+          const msg = result.stderr
+            ? String(result.stderr)
+            : `exit code ${result.status ?? 'unknown'} (stdio inherited; see output above)`
+          throw new Error(`Vitest failed: ${msg}`)
         }
       } catch (error) {
         console.error('\n❌ Tests failed:', error, '\n\n')
+        throw error
       }
     } else {
       console.log('Tests generated. To run them, use: \n')
