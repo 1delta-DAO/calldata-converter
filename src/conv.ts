@@ -4,6 +4,7 @@ import type {
   FunctionDef,
   ConverterOutput,
   Parameter,
+  SolidityConstant,
 } from './types'
 import { FUNCTION_REGEX, HARDCODED_FUNCTIONS } from './consts'
 
@@ -13,14 +14,18 @@ const TYPE_MAP: Record<string, string> = {
   uint24: 'number',
   uint32: 'number',
   uint64: 'bigint',
+  uint112: 'bigint',
   uint128: 'bigint',
+  uint192: 'bigint',
   uint256: 'bigint',
+  uint: 'bigint',
   int8: 'number',
   int16: 'number',
   int32: 'number',
   int64: 'bigint',
   int128: 'bigint',
   int256: 'bigint',
+  int: 'bigint',
   bool: 'boolean',
   string: 'string',
   bytes: 'Hex',
@@ -59,11 +64,113 @@ const TYPE_MAP: Record<string, string> = {
   bytes32: 'Hex',
 }
 
+/** TypeScript type for a Solidity top-level / library constant. */
+function getConstTsType(solType: string): string {
+  if (Object.prototype.hasOwnProperty.call(TYPE_MAP, solType)) {
+    return TYPE_MAP[solType]!
+  }
+  if (/^u?int\d+$/i.test(solType)) {
+    return 'bigint'
+  }
+  if (/^bytes(?:[1-9]|[12]\d|3[0-2])$/i.test(solType) || solType === 'bytes') {
+    return 'Hex'
+  }
+  return 'any'
+}
+
+/**
+ * `4n` -> `4` for top-level consts whose TypeScript type is `number` (uint8, int8, etc.).
+ */
+function constExprForTsAnnotation(
+  solType: string,
+  expr: string,
+  tsType: string,
+): string {
+  if (tsType === 'number' && /^\d+n$/.test(expr)) {
+    const b = BigInt(expr.slice(0, -1))
+    if (
+      b >= BigInt(Number.MIN_SAFE_INTEGER) &&
+      b <= BigInt(Number.MAX_SAFE_INTEGER)
+    ) {
+      return b.toString()
+    }
+  }
+  return expr
+}
+
+/**
+ * Maps common Solidity constant initializers to a TypeScript expression. Throws
+ * for unsupported forms so the mapper can be extended with a clear error.
+ */
+export function convertSolidityConstValueToTs(
+  solType: string,
+  valueStr: string,
+): string {
+  const tsType = getConstTsType(solType)
+  let s = valueStr.trim()
+
+  if (solType === 'bool' || tsType === 'boolean') {
+    if (s === 'true' || s === 'false') {
+      return s
+    }
+    throw new Error(`Unsupported bool constant initializer: ${valueStr}`)
+  }
+
+  s = s
+    .replace(
+      /type\(\s*u?int(\d+)\s*\)\s*\.\s*max/gi,
+      (_: string, n: string) => `((1n << ${n}n) - 1n)`,
+    )
+    .replace(
+      /type\(\s*int(\d+)\s*\)\s*\.\s*min/gi,
+      (_: string, n: string) => `(-(1n << ${String(Number(n) - 1)}n))`,
+    )
+    .replace(/type\(\s*int(\d+)\s*\)\s*\.\s*max/gi, (_: string, n: string) => {
+      const bits = Number(n) - 1
+      return `((1n << ${bits}n) - 1n)`
+    })
+
+  s = s.replace(
+    /\b(\d+)\s*<<\s*(\d+)\b/g,
+    (_: string, a: string, b: string) => `(${a}n << ${b}n)`,
+  )
+
+  s = s.replace(/\baddress\s*\(\s*0\s*\)/gi, 'zeroAddress')
+
+  if (tsType === 'Address' && /^0x[0-9a-fA-F]{40}$/i.test(s)) {
+    return `'${s.toLowerCase()}' as Address`
+  }
+
+  if (tsType === 'Hex' && /^0x[0-9a-fA-F]+$/i.test(s)) {
+    return `'${s}' as Hex`
+  }
+
+  if (
+    /^0x[0-9a-fA-F]+$/i.test(s) &&
+    (tsType === 'bigint' || /^(u?int\d*|u?int)$/.test(solType))
+  ) {
+    s = `${s}n`
+  } else if (
+    /^\d+$/.test(s) &&
+    (tsType === 'bigint' || /^(u?int\d*|u?int)$/.test(solType))
+  ) {
+    s = `${s}n`
+  }
+
+  if (s.includes('type(')) {
+    throw new Error(
+      `Unsupported constant initializer (unhandled type() or expression): ${valueStr}`,
+    )
+  }
+
+  s = constExprForTsAnnotation(solType, s, tsType)
+  return s
+}
+
 function convertType(
   solidityType: string,
   structs: SolidityStruct[] = [],
 ): string {
-  // Handle array types
   if (solidityType.endsWith('[]')) {
     const baseType = solidityType.slice(0, -2)
     return `${convertType(baseType, structs)}[]`
@@ -170,9 +277,34 @@ function parseTernaryType(
   return getExprType(truePart)
 }
 
+function buildConstantNameToTypeMap(
+  constants: SolidityConstant[],
+): Map<string, string> {
+  const m = new Map<string, string>()
+  for (const c of constants) {
+    if (!m.has(c.name)) m.set(c.name, c.type)
+  }
+  return m
+}
+
+/** viem `encodePacked` type tag for a Solidity value type. */
+function solidityTypeToEncodePackedType(solType: string): string {
+  const t = solType.replace(' memory', '').replace(' calldata', '').trim()
+  if (t === 'uint') return 'uint256'
+  if (t === 'int') return 'int256'
+  if (/^u?int\d+$/i.test(t)) return t
+  if (/^bytes(?:[1-9]|[12]\d|3[0-2])$/i.test(t)) return t
+  if (t === 'bytes' || t === 'string')
+    return t === 'string' ? 'string' : 'bytes'
+  if (t === 'address') return 'address'
+  if (t === 'bool') return 'bool'
+  return t
+}
+
 function convertAbiEncodePacked(
   funcDef: FunctionDef,
   allFunctions: FunctionDef[],
+  constantTypeByName: Map<string, string>,
 ): string {
   // Process function body
   let tsBody = funcDef.body
@@ -251,7 +383,16 @@ function convertAbiEncodePacked(
         const param = funcDef.params.find(
           (p) => p.name === argName || argName.startsWith(`${p.name}[`),
         )
-        let paramType = param?.type || 'bytes'
+        let paramType: string
+        if (param) {
+          paramType = param.type
+        } else if (constantTypeByName.has(argName)) {
+          paramType = solidityTypeToEncodePackedType(
+            constantTypeByName.get(argName)!,
+          )
+        } else {
+          paramType = 'bytes'
+        }
 
         // If this is an indexed access (e.g. a[0]) and the param is an array,
         // encode the element type, not the array type.
@@ -400,11 +541,25 @@ export function convertToTS(
     output += '}\n\n'
   })
 
+  const constantTypeByName = buildConstantNameToTypeMap(constants)
+
+  // Solidity `constant` declarations (including `internal` etc. before `constant`)
+  constants.forEach((c) => {
+    const tsT = getConstTsType(c.type)
+    const expr = convertSolidityConstValueToTs(c.type, c.value)
+    output += `export const ${c.name}: ${tsT} = ${expr};\n\n`
+  })
+
   // Convert functions
   functions
     .filter((func) => !HARDCODED_FUNCTIONS.includes(func.name))
     .forEach((func) => {
-      const funcOutput = convertFunction(func, structs, functions)
+      const funcOutput = convertFunction(
+        func,
+        structs,
+        functions,
+        constantTypeByName,
+      )
       output += funcOutput
     })
 
@@ -419,10 +574,52 @@ export function convertToTS(
   }
 }
 
+/** `address[]` etc. use real `.length`; only `bytes` / Hex use hex half-length. */
+function escapeForRegex(s: string) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+}
+
+/**
+ * Masks `someArray.length` for dynamic array parameters so the global
+ * `bytes` `.length` -> `.length/2 -1` pass does not break for-loops and counts.
+ */
+function maskArrayParamLengths(
+  body: string,
+  func: FunctionDef,
+): { body: string; unmask: (b: string) => string } {
+  const arrayParams = func.params.filter(
+    (p) => p.type.includes('[') && p.type.includes(']') && p.name,
+  )
+  if (arrayParams.length === 0) {
+    return { body, unmask: (b) => b }
+  }
+  const slices: { token: string; literal: string }[] = []
+  let b = body
+  for (const p of arrayParams) {
+    const re = new RegExp(`\\b${escapeForRegex(p.name)}\\.length\\b`, 'g')
+    b = b.replace(re, (m) => {
+      const t = `__ph_arr_len_${slices.length}__`
+      slices.push({ token: t, literal: m })
+      return t
+    })
+  }
+  return {
+    body: b,
+    unmask: (out: string) => {
+      let s = out
+      for (const { token, literal } of slices) {
+        s = s.split(token).join(literal)
+      }
+      return s
+    },
+  }
+}
+
 function convertFunction(
   func: FunctionDef,
   structs: SolidityStruct[],
   functions: FunctionDef[],
+  constantTypeByName: Map<string, string>,
 ): string {
   let output: string = ''
   // Function signature
@@ -435,8 +632,10 @@ function convertFunction(
   let body = func.body
   if (body.includes('abi.encodePacked')) {
     // then convert this
-    body = convertAbiEncodePacked(func, functions)
+    body = convertAbiEncodePacked(func, functions, constantTypeByName)
   }
+  const masked = maskArrayParamLengths(body, func)
+  body = masked.body
   body = body
     .replaceAll('revert', 'throw new Error')
     .replaceAll('returnnewbytes(0)', 'return `0x0` as Hex;\n')
@@ -451,13 +650,18 @@ function convertFunction(
     .replace(/for\s*\(\s*uint\d*\s*(\w+)\s*=/g, 'for (let $1 =')
     .replaceAll('return', 'return ')
     .replaceAll(/=\s*(\d+)(?!n\b)/g, '= $1n')
-    .replaceAll('type(uint120).max', '0xffffffffffffffffffffffffffffffn')
+    .replace(
+      /type\(u?int(\d+)\)\.max/g,
+      (_: string, n: string) => `((1n << ${n}n) - 1n)`,
+    )
+    .replaceAll('bytes32(0)', "('0x' + '0'.repeat(64)) as Hex")
     .replaceAll('FLUID_MAX_AMOUNT', '((1n << 112n) - 1n)')
     .replaceAll('FLUID_USE_BALANCE', '((1n << 127n) - 1n)')
     .replaceAll('FLUID_ALL', '(-(1n << 127n))')
     .replaceAll('address(0)', 'zeroAddress')
     .replaceAll(/\.length\s*===\s*0n/g, '.length === 0')
     .replaceAll('.length', '.length/2 -1')
+  body = masked.unmask(body)
 
   output += body
   output += '}\n\n'

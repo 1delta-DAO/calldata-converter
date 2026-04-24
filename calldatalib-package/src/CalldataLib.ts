@@ -1,5 +1,4 @@
 // @ts-nocheck
-
 import { type Hex, type Address, zeroAddress } from 'viem'
 import {
   encodePacked,
@@ -134,6 +133,172 @@ export enum SiloV2CollateralType {
   PROTECTED = 0,
   COLLATERAL = 1,
 }
+
+export const NATIVE_FLAG: bigint = 1n << 127n
+
+export const USE_SHARES_FLAG: bigint = 1n << 126n
+
+export const UPPER_128BITS: bigint = 120n
+
+export const FLUID_ALL: bigint = -(1n << 127n)
+
+export const FLUID_USE_BALANCE: bigint = (1n << 128n) - 1n
+
+export const FLUID_MAX_AMOUNT: bigint = (1n << 112n) - 1n
+
+export const FLUID_SMART_USE_BALANCE: bigint = (1n << 256n) - 1n
+
+export const GEARBOX_REPAY_ALL: bigint = (1n << 112n) - 1n
+
+export const GEARBOX_WITHDRAW_ALL: bigint = (1n << 112n) - 1n
+
+export const GEARBOX_ADD_COLLATERAL_PERMISSION: bigint = 1n << 0n
+
+export const GEARBOX_INCREASE_DEBT_PERMISSION: bigint = 1n << 1n
+
+export const GEARBOX_DECREASE_DEBT_PERMISSION: bigint = 1n << 2n
+
+export const GEARBOX_WITHDRAW_COLLATERAL_PERMISSION: bigint = 1n << 5n
+
+export const GEARBOX_UPDATE_QUOTA_PERMISSION: bigint = 1n << 6n
+
+export const TRANSFER_FROM: bigint = 0n
+
+export const SWEEP: bigint = 1n
+
+export const WRAP_NATIVE: bigint = 2n
+
+export const UNWRAP_WNATIVE: bigint = 3n
+
+export const PERMIT2_TRANSFER_FROM: bigint = 4n
+
+export const APPROVE: bigint = 5n
+
+export const WRAP: bigint = 6n
+
+export const SWEEP_NFT: bigint = 7n
+
+export const TOKEN_PERMIT: bigint = 0n
+
+export const AAVE_V3_CREDIT_PERMIT: bigint = 1n
+
+export const ALLOW_CREDIT_PERMIT: bigint = 2n
+
+export const AAVE_V4_BORROW_PERMIT: bigint = 3n
+
+export const AAVE_V4_WITHDRAW_PERMIT: bigint = 4n
+
+export const AAVE_V4_CONFIG_PERMIT: bigint = 5n
+
+export const AAVE_V4_PMS_BATCH_PERMIT: bigint = 6n
+
+export const UP_TO_AAVE_V3: bigint = 1000n
+
+export const UP_TO_AAVE_V2: bigint = 2000n
+
+export const UP_TO_COMPOUND_V3: bigint = 3000n
+
+export const UP_TO_COMPOUND_V2: bigint = 4000n
+
+export const UP_TO_MORPHO: bigint = 5000n
+
+export const UP_TO_SILO_V2: bigint = 6000n
+
+export const UP_TO_AAVE_V4: bigint = 7000n
+
+export const UP_TO_FLUID: bigint = 8000n
+
+export const UP_TO_FLUID_SMART: bigint = 9000n
+
+export const UP_TO_GEARBOX_V3: bigint = 10000n
+
+export const DEPOSIT: bigint = 0n
+
+export const BORROW: bigint = 1n
+
+export const REPAY: bigint = 2n
+
+export const WITHDRAW: bigint = 3n
+
+export const DEPOSIT_LENDING_TOKEN: bigint = 4n
+
+export const WITHDRAW_LENDING_TOKEN: bigint = 5n
+
+export const SET_COLLATERAL: bigint = 6n
+
+export const FLUID_OPERATE: bigint = 10n
+
+export const FLUID_OPERATE_PERFECT: bigint = 11n
+
+export const FLUID_OPERATE_T1: bigint = 12n
+
+export const GEARBOX_MULTICALL: bigint = 13n
+
+export const MORPHO: bigint = 0n
+
+export const BALANCER_V2: bigint = 1n
+
+export const AAVE_V3: bigint = 2n
+
+export const AAVE_V2: bigint = 3n
+
+export const UNLOCK: bigint = 0n
+
+export const UNI_V4_TAKE: bigint = 1n
+
+export const UNI_V4_SETTLE: bigint = 2n
+
+export const UNI_V4_SYNC: bigint = 3n
+
+export const BAL_V3_TAKE: bigint = 4n
+
+export const BAL_V3_SETTLE: bigint = 5n
+
+export const EXT_CALL: bigint = 0x20n
+
+export const EXT_TRY_CALL: bigint = 0x21n
+
+export const EXT_CALL_WITH_REPLACE: bigint = 0x22n
+
+export const EXT_TRY_CALL_WITH_REPLACE: bigint = 0x23n
+
+export const LENDING: bigint = 0x30n
+
+export const TRANSFERS: bigint = 0x40n
+
+export const PERMIT: bigint = 0x50n
+
+export const FLASH_LOAN: bigint = 0x60n
+
+export const ERC4626: bigint = 0x70n
+
+export const GEN_2025_SINGELTONS: bigint = 0x80n
+
+export const BRIDGING: bigint = 0x90n
+
+export const STARGATE_V2: bigint = 0x00n
+
+export const ACROSS: bigint = 0x0an
+
+export const SQUID_ROUTER: bigint = 0x14n
+
+export const GASZIP: bigint = 0x1en
+
+export const MINT_BEHALF: bigint = 0n
+
+export const MINT: bigint = 1n
+
+export const MINT_ITOKEN: bigint = 2n
+
+export const REDEEM: bigint = 0n
+
+export const REDEEM_BEHALF: bigint = 1n
+
+export const REDEEM_ITOKEN: bigint = 2n
+
+export const PROTECTED: bigint = 0n
+
+export const COLLATERAL: bigint = 1n
 
 export function encodeExternalCall(
   target: Address,
@@ -823,11 +988,7 @@ export function encodeNextGenDexSettleBalancer(
       uint8(Gen2025ActionIds.BAL_V3_SETTLE),
       singleton,
       asset,
-      uint128(
-        amountHint >= 0xffffffffffffffffffffffffffffffn
-          ? 0xffffffffffffffffffffffffffffffn
-          : amountHint,
-      ),
+      uint128(amountHint >= (1n << 120n) - 1n ? (1n << 120n) - 1n : amountHint),
     ],
   )
 }
@@ -2620,10 +2781,10 @@ export function encodeGearboxV3RepayAll(
   creditManager: Address,
   quotedTokens: Address[],
 ): Hex {
-  if (quotedTokens.length / 2 - 1 > 255)
+  if (quotedTokens.length > 255)
     throw new Error('CL:gearboxtoomanyquotedtokens')
   let quotedBlob: Hex = '0x'
-  for (let i = 0n; i < quotedTokens.length / 2 - 1; i++) {
+  for (let i = 0n; i < quotedTokens.length; i++) {
     quotedBlob = encodePacked(
       ['bytes', 'address'],
       [quotedBlob, quotedTokens[i]],
@@ -2636,7 +2797,7 @@ export function encodeGearboxV3RepayAll(
       'uint8',
       'uint16',
       'address',
-      'bytes',
+      'uint128',
       'address',
       'uint8',
       'bytes',
@@ -2649,7 +2810,7 @@ export function encodeGearboxV3RepayAll(
       underlying,
       GEARBOX_REPAY_ALL,
       creditAccount,
-      uint8(quotedTokens.length / 2 - 1),
+      uint8(quotedTokens.length),
       quotedBlob,
     ],
   )
@@ -2667,7 +2828,7 @@ export function encodeGearboxV3RepayPartialMax(
       'uint8',
       'uint16',
       'address',
-      'bytes',
+      'uint128',
       'address',
       'uint8',
     ],
@@ -2705,7 +2866,7 @@ export function encodeGearboxV3Withdraw(
 }
 
 export function encodeGearboxV3FacadeCall(innerCallData: Hex): Hex {
-  if (innerCallData.length / 2 - 1 > type(uint16).max)
+  if (innerCallData.length / 2 - 1 > (1n << 16n) - 1n)
     throw new Error('CL:gearboxsub-calltoolong')
   return encodePacked(
     ['uint16', 'bytes'],
@@ -2737,7 +2898,7 @@ export function encodeGearboxV3BotMulticall(
       uint8(0),
       creditAccount,
       zeroAddress,
-      bytes32(0),
+      ('0x' + '0'.repeat(64)) as Hex,
       numCalls,
       calls,
     ],

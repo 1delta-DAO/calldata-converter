@@ -72,15 +72,30 @@ function parseStructs(content: string) {
   return { structs, structSolCode }
 }
 
-function parseConstants(content: string): SolidityConstant[] {
-  const constantRegex = /(\w+)\s+constant\s+(\w+)\s*=\s*([^;]+);/g
+// Solidity: <valueType> [<visibility>] constant <name> = <value>;
+// Visibility is optional: internal | public | private | external
+// u?intN before bare u?int so uint8 does not match as uint + 8
+const VALUE_TYPE_RE =
+  '\\b(?:u?int\\d+|u?int|bool|address|bytes(?:[1-9]|[12]\\d|3[0-2]))\\b'
+
+const CONSTANT_DECL_RE = new RegExp(
+  `(${VALUE_TYPE_RE})\\s+(?:(?:internal|public|private|external)\\s+)?constant\\s+(\\w+)\\s*=\\s*([^;]+);`,
+  'g',
+)
+
+/**
+ * Top-level and library `constant` declarations. First occurrence wins on duplicate name.
+ */
+export function parseConstants(content: string): SolidityConstant[] {
   const constants: SolidityConstant[] = []
+  const seen = new Set<string>()
   let match
-  while ((match = constantRegex.exec(content)) !== null) {
+  while ((match = CONSTANT_DECL_RE.exec(content)) !== null) {
     const [_, type, name, value] = match
-    if (type && name && value) {
-      constants.push({ type, name, value: value.trim() })
-    }
+    if (!type || !name || !value) continue
+    if (seen.has(name)) continue
+    seen.add(name)
+    constants.push({ type, name, value: value.trim() })
   }
   return constants
 }
