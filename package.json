@@ -6,7 +6,7 @@
     "test": "forge install && vitest run --passWithNoTests",
     "build": "forge install && esbuild ./src/cli.ts --bundle --packages=external --platform=node --target=node22 --format=esm --outfile=dist/cli.js",
     "prepare-package": "forge install && tsx src/preparePackage.ts",
-    "pack": "forge install && pnpm run start && pnpm run prepare-package && pnpm prettier . --write"
+    "build:pack": "forge install && pnpm run start && pnpm run prepare-package && pnpm prettier . --write"
   },
   "devDependencies": {
     "@types/node": "^25.6.0",
