@@ -80,7 +80,6 @@ export enum LenderOps {
 
 export enum FlashLoanIds {
   MORPHO = 0,
-  BALANCER_V2 = 1,
   AAVE_V3 = 2,
   AAVE_V2 = 3,
 }
@@ -235,8 +234,6 @@ export const FLUID_OPERATE_T1: bigint = 12n
 export const GEARBOX_MULTICALL: bigint = 13n
 
 export const MORPHO: bigint = 0n
-
-export const BALANCER_V2: bigint = 1n
 
 export const AAVE_V3: bigint = 2n
 
@@ -1104,25 +1101,6 @@ export function encodeUnwrap(
       receiver,
       sweepType,
       uint128(amount),
-    ],
-  )
-}
-
-export function encodeBalancerV2FlashLoan(
-  asset: Address,
-  amount: bigint,
-  poolId: number,
-  data: Hex,
-): Hex {
-  return encodePacked(
-    ['uint8', 'uint8', 'address', 'uint128', 'uint16', 'bytes'],
-    [
-      uint8(ComposerCommands.FLASH_LOAN),
-      uint8(FlashLoanIds.BALANCER_V2),
-      asset,
-      uint128(amount),
-      uint16(data.length / 2 - 1 + 1),
-      encodeUint8AndBytes(poolId, data),
     ],
   )
 }

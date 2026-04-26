@@ -1,4 +1,4 @@
-import { type Hex, type Address } from 'viem';
+import { type Hex, type Address } from "viem";
 export declare enum SweepType {
     VALIDATE = 0,
     AMOUNT = 1
@@ -49,7 +49,6 @@ export declare enum LenderOps {
 }
 export declare enum FlashLoanIds {
     MORPHO = 0,
-    BALANCER_V2 = 1,
     AAVE_V3 = 2,
     AAVE_V2 = 3
 }
@@ -147,7 +146,6 @@ export declare const FLUID_OPERATE_PERFECT: bigint;
 export declare const FLUID_OPERATE_T1: bigint;
 export declare const GEARBOX_MULTICALL: bigint;
 export declare const MORPHO: bigint;
-export declare const BALANCER_V2: bigint;
 export declare const AAVE_V3: bigint;
 export declare const AAVE_V2: bigint;
 export declare const UNLOCK: bigint;
@@ -214,7 +212,6 @@ export declare function encodeWrapWithReceiver(amount: bigint, weth: Address, re
 export declare function encodeApprove(asset: Address, target: Address): Hex;
 export declare function encodeSweepNft(collection: Address, receiver: Address, tokenId: bigint): Hex;
 export declare function encodeUnwrap(target: Address, receiver: Address, amount: bigint, sweepType: any): Hex;
-export declare function encodeBalancerV2FlashLoan(asset: Address, amount: bigint, poolId: number, data: Hex): Hex;
 export declare function encodeFlashLoan(asset: Address, amount: bigint, pool: Address, poolType: number, poolId: number, data: Hex): Hex;
 export declare function encodeUint8AndBytes(poolId: number, data: Hex): Hex;
 export declare function encodeMorphoMarket(loanToken: Address, collateralToken: Address, oracle: Address, irm: Address, lltv: bigint): Hex;
