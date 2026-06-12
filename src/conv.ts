@@ -287,6 +287,25 @@ function buildConstantNameToTypeMap(
   return m
 }
 
+/**
+ * Builds a map of local variable name -> Solidity type by scanning the
+ * function body for declarations like `uint128 amountWord = ...;`.
+ */
+function buildLocalVarTypeMap(body: string): Map<string, string> {
+  const m = new Map<string, string>()
+  // The parser strips all whitespace from the body, so declarations look like
+  // `uint128amountWord=...`. Match a leading type followed by the var name.
+  const declRegex =
+    /(?:^|[;{])(u?int\d*|address|bool|string|bytes\d*)([A-Za-z_]\w*)=/g
+  let match: RegExpExecArray | null
+  while ((match = declRegex.exec(body)) !== null) {
+    const type = match[1]!
+    const name = match[2]!
+    if (!m.has(name)) m.set(name, type)
+  }
+  return m
+}
+
 /** viem `encodePacked` type tag for a Solidity value type. */
 function solidityTypeToEncodePackedType(solType: string): string {
   const t = solType.replace(' memory', '').replace(' calldata', '').trim()
@@ -308,6 +327,9 @@ function convertAbiEncodePacked(
 ): string {
   // Process function body
   let tsBody = funcDef.body
+
+  // Local variables declared in the body (e.g. `uint128 amountWord = ...;`)
+  const localVarTypeByName = buildLocalVarTypeMap(funcDef.body)
 
   // Process each abi.encodePacked call
   while (tsBody.includes('abi.encodePacked')) {
@@ -389,6 +411,10 @@ function convertAbiEncodePacked(
         } else if (constantTypeByName.has(argName)) {
           paramType = solidityTypeToEncodePackedType(
             constantTypeByName.get(argName)!,
+          )
+        } else if (localVarTypeByName.has(argName)) {
+          paramType = solidityTypeToEncodePackedType(
+            localVarTypeByName.get(argName)!,
           )
         } else {
           paramType = 'bytes'
