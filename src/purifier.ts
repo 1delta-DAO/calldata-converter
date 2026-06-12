@@ -15,7 +15,11 @@ const IF_REGEX =
 function stripIfsBefore(content: string, splitText: string): string {
   const parts = content.split(splitText)
   if (parts.length < 2) return content.replaceAll(IF_REGEX, '')
-  return parts[0]!.replaceAll(IF_REGEX, '') + splitText + parts.slice(1).join(splitText)
+  return (
+    parts[0]!.replaceAll(IF_REGEX, '') +
+    splitText +
+    parts.slice(1).join(splitText)
+  )
 }
 
 export async function removeIfConditions(files: string[]) {

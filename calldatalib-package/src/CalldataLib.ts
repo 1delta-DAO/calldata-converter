@@ -72,6 +72,8 @@ export enum LenderOps {
   DEPOSIT_LENDING_TOKEN = 4,
   WITHDRAW_LENDING_TOKEN = 5,
   SET_COLLATERAL = 6,
+  LISTA_BROKER_BORROW = 7,
+  LISTA_BROKER_REPAY = 8,
   FLUID_OPERATE = 10,
   FLUID_OPERATE_PERFECT = 11,
   FLUID_OPERATE_T1 = 12,
@@ -132,6 +134,8 @@ export enum SiloV2CollateralType {
   PROTECTED = 0,
   COLLATERAL = 1,
 }
+
+export const LISTA_BROKER_DYNAMIC_LOAN: bigint = (1n << 128n) - 1n
 
 export const NATIVE_FLAG: bigint = 1n << 127n
 
@@ -224,6 +228,10 @@ export const DEPOSIT_LENDING_TOKEN: bigint = 4n
 export const WITHDRAW_LENDING_TOKEN: bigint = 5n
 
 export const SET_COLLATERAL: bigint = 6n
+
+export const LISTA_BROKER_BORROW: bigint = 7n
+
+export const LISTA_BROKER_REPAY: bigint = 8n
 
 export const FLUID_OPERATE: bigint = 10n
 
@@ -1460,6 +1468,62 @@ export function encodeListaRepayViaProvider(
       data.length / 2 - 1 === 0
         ? newbytes(0)
         : encodeUint8AndBytes(uint8(pId), data),
+    ],
+  )
+}
+
+export function encodeListaBrokerBorrow(
+  assets: bigint,
+  broker: Address,
+  receiver: Address,
+  termId: bigint,
+): Hex {
+  return encodePacked(
+    ['uint8', 'uint8', 'uint16', 'uint128', 'address', 'address', 'uint128'],
+    [
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.LISTA_BROKER_BORROW),
+      uint16(LenderIds.UP_TO_MORPHO - 1),
+      uint128(assets),
+      broker,
+      receiver,
+      uint128(termId),
+    ],
+  )
+}
+
+export function encodeListaBrokerRepay(
+  loanToken: Address,
+  assets: bigint,
+  native: boolean,
+  broker: Address,
+  loanId: bigint,
+  onBehalf: Address,
+): Hex {
+  let amountWord = uint128(assets)
+  if (native) amountWord = amountWord | NATIVE_FLAG
+  return encodePacked(
+    [
+      'bytes',
+      'uint8',
+      'uint8',
+      'uint16',
+      'address',
+      'uint128',
+      'address',
+      'uint128',
+      'address',
+    ],
+    [
+      native ? newbytes(0) : encodeApprove(loanToken, broker),
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.LISTA_BROKER_REPAY),
+      uint16(LenderIds.UP_TO_MORPHO - 1),
+      loanToken,
+      amountWord,
+      broker,
+      uint128(loanId),
+      onBehalf,
     ],
   )
 }

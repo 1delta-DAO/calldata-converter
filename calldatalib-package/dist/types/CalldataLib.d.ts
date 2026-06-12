@@ -1,4 +1,4 @@
-import { type Hex, type Address } from 'viem';
+import { type Hex, type Address } from "viem";
 export declare enum SweepType {
     VALIDATE = 0,
     AMOUNT = 1
@@ -42,6 +42,8 @@ export declare enum LenderOps {
     DEPOSIT_LENDING_TOKEN = 4,
     WITHDRAW_LENDING_TOKEN = 5,
     SET_COLLATERAL = 6,
+    LISTA_BROKER_BORROW = 7,
+    LISTA_BROKER_REPAY = 8,
     FLUID_OPERATE = 10,
     FLUID_OPERATE_PERFECT = 11,
     FLUID_OPERATE_T1 = 12,
@@ -95,6 +97,7 @@ export declare enum SiloV2CollateralType {
     PROTECTED = 0,
     COLLATERAL = 1
 }
+export declare const LISTA_BROKER_DYNAMIC_LOAN: bigint;
 export declare const NATIVE_FLAG: bigint;
 export declare const USE_SHARES_FLAG: bigint;
 export declare const UPPER_128BITS: bigint;
@@ -141,6 +144,8 @@ export declare const WITHDRAW: bigint;
 export declare const DEPOSIT_LENDING_TOKEN: bigint;
 export declare const WITHDRAW_LENDING_TOKEN: bigint;
 export declare const SET_COLLATERAL: bigint;
+export declare const LISTA_BROKER_BORROW: bigint;
+export declare const LISTA_BROKER_REPAY: bigint;
 export declare const FLUID_OPERATE: bigint;
 export declare const FLUID_OPERATE_PERFECT: bigint;
 export declare const FLUID_OPERATE_T1: bigint;
@@ -226,6 +231,8 @@ export declare function encodeListaWithdrawCollateralViaProvider(market: Hex, as
 export declare function encodeMorphoBorrow(market: Hex, isShares: boolean, assets: bigint, receiver: Address, morphoB: Address): Hex;
 export declare function encodeMorphoRepay(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
 export declare function encodeListaRepayViaProvider(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
+export declare function encodeListaBrokerBorrow(assets: bigint, broker: Address, receiver: Address, termId: bigint): Hex;
+export declare function encodeListaBrokerRepay(loanToken: Address, assets: bigint, native: boolean, broker: Address, loanId: bigint, onBehalf: Address): Hex;
 export declare function encodeAaveDeposit(token: Address, amount: bigint, receiver: Address, pool: Address): Hex;
 export declare function encodeAaveBorrow(token: Address, amount: bigint, receiver: Address, mode: bigint, pool: Address): Hex;
 export declare function encodeAaveRepay(token: Address, amount: bigint, receiver: Address, mode: bigint, dToken: Address, pool: Address): Hex;
