@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.UP_TO_FLUID = exports.UP_TO_AAVE_V4 = exports.UP_TO_SILO_V2 = exports.UP_TO_MORPHO = exports.UP_TO_COMPOUND_V2 = exports.UP_TO_COMPOUND_V3 = exports.UP_TO_AAVE_V2 = exports.UP_TO_AAVE_V3 = exports.AAVE_V4_PMS_BATCH_PERMIT = exports.AAVE_V4_CONFIG_PERMIT = exports.AAVE_V4_WITHDRAW_PERMIT = exports.AAVE_V4_BORROW_PERMIT = exports.ALLOW_CREDIT_PERMIT = exports.AAVE_V3_CREDIT_PERMIT = exports.TOKEN_PERMIT = exports.SWEEP_NFT = exports.WRAP = exports.APPROVE = exports.PERMIT2_TRANSFER_FROM = exports.UNWRAP_WNATIVE = exports.WRAP_NATIVE = exports.SWEEP = exports.TRANSFER_FROM = exports.GEARBOX_UPDATE_QUOTA_PERMISSION = exports.GEARBOX_WITHDRAW_COLLATERAL_PERMISSION = exports.GEARBOX_DECREASE_DEBT_PERMISSION = exports.GEARBOX_INCREASE_DEBT_PERMISSION = exports.GEARBOX_ADD_COLLATERAL_PERMISSION = exports.GEARBOX_WITHDRAW_ALL = exports.GEARBOX_REPAY_ALL = exports.FLUID_SMART_USE_BALANCE = exports.FLUID_MAX_AMOUNT = exports.FLUID_USE_BALANCE = exports.FLUID_ALL = exports.UPPER_128BITS = exports.USE_SHARES_FLAG = exports.NATIVE_FLAG = exports.LISTA_BROKER_DYNAMIC_LOAN = exports.SiloV2CollateralType = exports.CompoundV2Selector = exports.BridgeIds = exports.ComposerCommands = exports.Gen2025ActionIds = exports.ERC4626Ids = exports.FlashLoanIds = exports.LenderOps = exports.LenderIds = exports.PermitIds = exports.TransferIds = exports.SweepType = void 0;
-exports.COLLATERAL = exports.PROTECTED = exports.REDEEM_ITOKEN = exports.REDEEM_BEHALF = exports.REDEEM = exports.MINT_ITOKEN = exports.MINT = exports.MINT_BEHALF = exports.GASZIP = exports.SQUID_ROUTER = exports.ACROSS = exports.STARGATE_V2 = exports.BRIDGING = exports.GEN_2025_SINGELTONS = exports.ERC4626 = exports.FLASH_LOAN = exports.PERMIT = exports.TRANSFERS = exports.LENDING = exports.EXT_TRY_CALL_WITH_REPLACE = exports.EXT_CALL_WITH_REPLACE = exports.EXT_TRY_CALL = exports.EXT_CALL = exports.BAL_V3_SETTLE = exports.BAL_V3_TAKE = exports.UNI_V4_SYNC = exports.UNI_V4_SETTLE = exports.UNI_V4_TAKE = exports.UNLOCK = exports.AAVE_V2 = exports.AAVE_V3 = exports.MORPHO = exports.GEARBOX_MULTICALL = exports.FLUID_OPERATE_T1 = exports.FLUID_OPERATE_PERFECT = exports.FLUID_OPERATE = exports.LISTA_BROKER_REPAY = exports.LISTA_BROKER_BORROW = exports.SET_COLLATERAL = exports.WITHDRAW_LENDING_TOKEN = exports.DEPOSIT_LENDING_TOKEN = exports.WITHDRAW = exports.REPAY = exports.BORROW = exports.DEPOSIT = exports.UP_TO_GEARBOX_V3 = exports.UP_TO_FLUID_SMART = void 0;
+exports.COLLATERAL = exports.PROTECTED = exports.REDEEM_ITOKEN = exports.REDEEM_BEHALF = exports.REDEEM = exports.MINT_ITOKEN = exports.MINT = exports.MINT_BEHALF = exports.GASZIP = exports.SQUID_ROUTER = exports.ACROSS = exports.STARGATE_V2 = exports.BRIDGING = exports.GEN_2025_SINGELTONS = exports.ERC4626 = exports.FLASH_LOAN = exports.PERMIT = exports.TRANSFERS = exports.LENDING = exports.EXT_TRY_CALL_WITH_REPLACE = exports.EXT_CALL_WITH_REPLACE = exports.EXT_TRY_CALL = exports.EXT_CALL = exports.BAL_V3_SETTLE = exports.BAL_V3_TAKE = exports.UNI_V4_SYNC = exports.UNI_V4_SETTLE = exports.UNI_V4_TAKE = exports.UNLOCK = exports.AAVE_V2 = exports.AAVE_V3 = exports.UNISWAP_V3 = exports.MORPHO = exports.GEARBOX_MULTICALL = exports.FLUID_OPERATE_T1 = exports.FLUID_OPERATE_PERFECT = exports.FLUID_OPERATE = exports.LISTA_BROKER_REPAY = exports.LISTA_BROKER_BORROW = exports.SET_COLLATERAL = exports.WITHDRAW_LENDING_TOKEN = exports.DEPOSIT_LENDING_TOKEN = exports.WITHDRAW = exports.REPAY = exports.BORROW = exports.DEPOSIT = exports.UP_TO_GEARBOX_V3 = exports.UP_TO_FLUID_SMART = void 0;
 exports.encodeExternalCall = encodeExternalCall;
 exports.encodeTryExternalCall = encodeTryExternalCall;
 exports.encodeExternalCallWithReplace = encodeExternalCallWithReplace;
@@ -39,6 +39,7 @@ exports.encodeSweepNft = encodeSweepNft;
 exports.encodeUnwrap = encodeUnwrap;
 exports.encodeFlashLoan = encodeFlashLoan;
 exports.encodeUint8AndBytes = encodeUint8AndBytes;
+exports.encodeUniswapV3FlashLoan = encodeUniswapV3FlashLoan;
 exports.encodeMorphoMarket = encodeMorphoMarket;
 exports.encodeMorphoDepositCollateral = encodeMorphoDepositCollateral;
 exports.encodeListaSupplyCollateralViaProvider = encodeListaSupplyCollateralViaProvider;
@@ -171,6 +172,7 @@ var LenderOps;
 var FlashLoanIds;
 (function (FlashLoanIds) {
     FlashLoanIds[FlashLoanIds["MORPHO"] = 0] = "MORPHO";
+    FlashLoanIds[FlashLoanIds["UNISWAP_V3"] = 1] = "UNISWAP_V3";
     FlashLoanIds[FlashLoanIds["AAVE_V3"] = 2] = "AAVE_V3";
     FlashLoanIds[FlashLoanIds["AAVE_V2"] = 3] = "AAVE_V2";
 })(FlashLoanIds || (exports.FlashLoanIds = FlashLoanIds = {}));
@@ -277,6 +279,7 @@ exports.FLUID_OPERATE_PERFECT = 11n;
 exports.FLUID_OPERATE_T1 = 12n;
 exports.GEARBOX_MULTICALL = 13n;
 exports.MORPHO = 0n;
+exports.UNISWAP_V3 = 1n;
 exports.AAVE_V3 = 2n;
 exports.AAVE_V2 = 3n;
 exports.UNLOCK = 0n;
@@ -591,6 +594,21 @@ function encodeFlashLoan(asset, amount, pool, poolType, poolId, data) {
 }
 function encodeUint8AndBytes(poolId, data) {
     return (0, utils_js_1.encodePacked)(["uint8", "bytes"], [(0, utils_js_1.uint8)(poolId), data]);
+}
+function encodeUniswapV3FlashLoan(forkId, pool, tokenIn, tokenOut, fee, amount0, amount1, data) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint8", "address", "address", "address", "uint16", "uint128", "uint128", "uint16", "bytes"], [
+        (0, utils_js_1.uint8)(ComposerCommands.FLASH_LOAN),
+        (0, utils_js_1.uint8)(FlashLoanIds.UNISWAP_V3),
+        forkId,
+        pool,
+        tokenIn,
+        tokenOut,
+        fee,
+        amount0,
+        amount1,
+        (0, utils_js_1.uint16)(data.length / 2 - 1),
+        data,
+    ]);
 }
 function encodeMorphoMarket(loanToken, collateralToken, oracle, irm, lltv) {
     return (0, utils_js_1.encodePacked)(["address", "address", "address", "address", "uint128"], [loanToken, collateralToken, oracle, irm, (0, utils_js_1.uint128)(lltv)]);

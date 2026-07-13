@@ -82,6 +82,7 @@ export enum LenderOps {
 
 export enum FlashLoanIds {
   MORPHO = 0,
+  UNISWAP_V3 = 1,
   AAVE_V3 = 2,
   AAVE_V2 = 3,
 }
@@ -242,6 +243,8 @@ export const FLUID_OPERATE_T1: bigint = 12n
 export const GEARBOX_MULTICALL: bigint = 13n
 
 export const MORPHO: bigint = 0n
+
+export const UNISWAP_V3: bigint = 1n
 
 export const AAVE_V3: bigint = 2n
 
@@ -1147,6 +1150,46 @@ export function encodeFlashLoan(
 
 export function encodeUint8AndBytes(poolId: number, data: Hex): Hex {
   return encodePacked(['uint8', 'bytes'], [uint8(poolId), data])
+}
+
+export function encodeUniswapV3FlashLoan(
+  forkId: number,
+  pool: Address,
+  tokenIn: Address,
+  tokenOut: Address,
+  fee: number,
+  amount0: bigint,
+  amount1: bigint,
+  data: Hex,
+): Hex {
+  return encodePacked(
+    [
+      'uint8',
+      'uint8',
+      'uint8',
+      'address',
+      'address',
+      'address',
+      'uint16',
+      'uint128',
+      'uint128',
+      'uint16',
+      'bytes',
+    ],
+    [
+      uint8(ComposerCommands.FLASH_LOAN),
+      uint8(FlashLoanIds.UNISWAP_V3),
+      forkId,
+      pool,
+      tokenIn,
+      tokenOut,
+      fee,
+      amount0,
+      amount1,
+      uint16(data.length / 2 - 1),
+      data,
+    ],
+  )
 }
 
 export function encodeMorphoMarket(

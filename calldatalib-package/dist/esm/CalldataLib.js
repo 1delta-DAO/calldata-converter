@@ -59,6 +59,7 @@ export var LenderOps;
 export var FlashLoanIds;
 (function (FlashLoanIds) {
     FlashLoanIds[FlashLoanIds["MORPHO"] = 0] = "MORPHO";
+    FlashLoanIds[FlashLoanIds["UNISWAP_V3"] = 1] = "UNISWAP_V3";
     FlashLoanIds[FlashLoanIds["AAVE_V3"] = 2] = "AAVE_V3";
     FlashLoanIds[FlashLoanIds["AAVE_V2"] = 3] = "AAVE_V2";
 })(FlashLoanIds || (FlashLoanIds = {}));
@@ -165,6 +166,7 @@ export const FLUID_OPERATE_PERFECT = 11n;
 export const FLUID_OPERATE_T1 = 12n;
 export const GEARBOX_MULTICALL = 13n;
 export const MORPHO = 0n;
+export const UNISWAP_V3 = 1n;
 export const AAVE_V3 = 2n;
 export const AAVE_V2 = 3n;
 export const UNLOCK = 0n;
@@ -479,6 +481,21 @@ export function encodeFlashLoan(asset, amount, pool, poolType, poolId, data) {
 }
 export function encodeUint8AndBytes(poolId, data) {
     return encodePacked(["uint8", "bytes"], [uint8(poolId), data]);
+}
+export function encodeUniswapV3FlashLoan(forkId, pool, tokenIn, tokenOut, fee, amount0, amount1, data) {
+    return encodePacked(["uint8", "uint8", "uint8", "address", "address", "address", "uint16", "uint128", "uint128", "uint16", "bytes"], [
+        uint8(ComposerCommands.FLASH_LOAN),
+        uint8(FlashLoanIds.UNISWAP_V3),
+        forkId,
+        pool,
+        tokenIn,
+        tokenOut,
+        fee,
+        amount0,
+        amount1,
+        uint16(data.length / 2 - 1),
+        data,
+    ]);
 }
 export function encodeMorphoMarket(loanToken, collateralToken, oracle, irm, lltv) {
     return encodePacked(["address", "address", "address", "address", "uint128"], [loanToken, collateralToken, oracle, irm, uint128(lltv)]);

@@ -51,6 +51,7 @@ export declare enum LenderOps {
 }
 export declare enum FlashLoanIds {
     MORPHO = 0,
+    UNISWAP_V3 = 1,
     AAVE_V3 = 2,
     AAVE_V2 = 3
 }
@@ -151,6 +152,7 @@ export declare const FLUID_OPERATE_PERFECT: bigint;
 export declare const FLUID_OPERATE_T1: bigint;
 export declare const GEARBOX_MULTICALL: bigint;
 export declare const MORPHO: bigint;
+export declare const UNISWAP_V3: bigint;
 export declare const AAVE_V3: bigint;
 export declare const AAVE_V2: bigint;
 export declare const UNLOCK: bigint;
@@ -219,6 +221,7 @@ export declare function encodeSweepNft(collection: Address, receiver: Address, t
 export declare function encodeUnwrap(target: Address, receiver: Address, amount: bigint, sweepType: any): Hex;
 export declare function encodeFlashLoan(asset: Address, amount: bigint, pool: Address, poolType: number, poolId: number, data: Hex): Hex;
 export declare function encodeUint8AndBytes(poolId: number, data: Hex): Hex;
+export declare function encodeUniswapV3FlashLoan(forkId: number, pool: Address, tokenIn: Address, tokenOut: Address, fee: number, amount0: bigint, amount1: bigint, data: Hex): Hex;
 export declare function encodeMorphoMarket(loanToken: Address, collateralToken: Address, oracle: Address, irm: Address, lltv: bigint): Hex;
 export declare function encodeMorphoDepositCollateral(market: Hex, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
 export declare function encodeListaSupplyCollateralViaProvider(market: Hex, assets: bigint, receiver: Address, data: Hex, provider: Address, pId: bigint): Hex;
