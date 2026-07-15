@@ -16,6 +16,11 @@ export const HARDCODED_FUNCTIONS = [
   'encodeCompoundV2SelectorId',
   'encodeSiloV2CollateralMode',
   'encodeAaveV4PmsBatchPermit',
+  // Overloaded + array/loop bodies the regex transpiler cannot express;
+  // hand-written in utils.ts (see encodeAaveV4PmsBatchPermit for precedent).
+  'encodeMidnightFlashLoan',
+  'encodeMidnightFlashLoanTokens',
+  'encodeMidnightFlashLoanApprovals',
 ]
 
 export const LIB_NAME = path.basename(CALLDATA_LIB_PATH, '.sol')

@@ -541,7 +541,7 @@ export function convertToTS(
 
   output += `
   import { type Hex, type Address, zeroAddress } from "viem";
-  import { encodePacked, uint128, uint8, uint112, uint16, uint256, int8, int16, int32, int64, int128, int256, _SHARES_MASK, _UNSAFE_AMOUNT, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, rightPadZero, encodeCompoundV2SelectorId, encodeSiloV2CollateralMode, encodeAaveV4PmsBatchPermit } from "../../src/utils.ts";
+  import { encodePacked, uint128, uint8, uint112, uint16, uint256, int8, int16, int32, int64, int128, int256, _SHARES_MASK, _UNSAFE_AMOUNT, generateAmountBitmap, newbytes, bytes, getMorphoCollateral, getMorphoLoanAsset, rightPadZero, encodeCompoundV2SelectorId, encodeSiloV2CollateralMode, encodeAaveV4PmsBatchPermit, encodeMidnightFlashLoan, encodeMidnightFlashLoanTokens, encodeMidnightFlashLoanApprovals } from "../../src/utils.ts";
   `
 
   // Add enum definitions
