@@ -27,3 +27,7 @@ export declare function bytes(value: Hex): Hex;
 export declare function encodeCompoundV2SelectorId(amount: bigint, selectorId: number): bigint;
 export declare function encodeSiloV2CollateralMode(amount: bigint, mode: number): bigint;
 export declare function encodeAaveV4PmsBatchPermit(spoke: Address, pms: Address[], approvals: boolean[], nonce: bigint, deadlinePlusOne: number, r: Hex, vs: Hex): Hex;
+export declare function encodeMidnightFlashLoanTokens(tokens: Address[], amounts: bigint[]): Hex;
+export declare function encodeMidnightFlashLoanApprovals(pool: Address, tokens: Address[]): Hex;
+export declare function encodeMidnightFlashLoan(asset: Address, amount: bigint, pool: Address, poolId: number, data: Hex): Hex;
+export declare function encodeMidnightFlashLoan(pool: Address, tokens: Address[], amounts: bigint[], poolId: number, data: Hex): Hex;

@@ -32,7 +32,8 @@ export declare enum LenderIds {
     UP_TO_AAVE_V4 = 7000,
     UP_TO_FLUID = 8000,
     UP_TO_FLUID_SMART = 9000,
-    UP_TO_GEARBOX_V3 = 10000
+    UP_TO_GEARBOX_V3 = 10000,
+    UP_TO_MORPHO_MIDNIGHT = 11000
 }
 export declare enum LenderOps {
     DEPOSIT = 0,
@@ -47,13 +48,15 @@ export declare enum LenderOps {
     FLUID_OPERATE = 10,
     FLUID_OPERATE_PERFECT = 11,
     FLUID_OPERATE_T1 = 12,
-    GEARBOX_MULTICALL = 13
+    GEARBOX_MULTICALL = 13,
+    MIDNIGHT_TAKE = 14
 }
 export declare enum FlashLoanIds {
     MORPHO = 0,
     UNISWAP_V3 = 1,
     AAVE_V3 = 2,
-    AAVE_V2 = 3
+    AAVE_V2 = 3,
+    MORPHO_MIDNIGHT = 4
 }
 export declare enum ERC4626Ids {
     DEPOSIT = 0,
@@ -98,6 +101,7 @@ export declare enum SiloV2CollateralType {
     PROTECTED = 0,
     COLLATERAL = 1
 }
+export declare const MIDNIGHT_ID: number;
 export declare const LISTA_BROKER_DYNAMIC_LOAN: bigint;
 export declare const NATIVE_FLAG: bigint;
 export declare const USE_SHARES_FLAG: bigint;
@@ -138,6 +142,7 @@ export declare const UP_TO_AAVE_V4: bigint;
 export declare const UP_TO_FLUID: bigint;
 export declare const UP_TO_FLUID_SMART: bigint;
 export declare const UP_TO_GEARBOX_V3: bigint;
+export declare const UP_TO_MORPHO_MIDNIGHT: bigint;
 export declare const DEPOSIT: bigint;
 export declare const BORROW: bigint;
 export declare const REPAY: bigint;
@@ -151,10 +156,12 @@ export declare const FLUID_OPERATE: bigint;
 export declare const FLUID_OPERATE_PERFECT: bigint;
 export declare const FLUID_OPERATE_T1: bigint;
 export declare const GEARBOX_MULTICALL: bigint;
+export declare const MIDNIGHT_TAKE: bigint;
 export declare const MORPHO: bigint;
 export declare const UNISWAP_V3: bigint;
 export declare const AAVE_V3: bigint;
 export declare const AAVE_V2: bigint;
+export declare const MORPHO_MIDNIGHT: bigint;
 export declare const UNLOCK: bigint;
 export declare const UNI_V4_TAKE: bigint;
 export declare const UNI_V4_SETTLE: bigint;
@@ -234,6 +241,11 @@ export declare function encodeListaWithdrawCollateralViaProvider(market: Hex, as
 export declare function encodeMorphoBorrow(market: Hex, isShares: boolean, assets: bigint, receiver: Address, morphoB: Address): Hex;
 export declare function encodeMorphoRepay(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
 export declare function encodeListaRepayViaProvider(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
+export declare function encodeMidnightSupplyCollateral(midnight: Address, collateralToken: Address, amount: bigint, args: Hex): Hex;
+export declare function encodeMidnightWithdrawCollateral(midnight: Address, args: Hex): Hex;
+export declare function encodeMidnightRepay(midnight: Address, loanToken: Address, amount: bigint, args: Hex): Hex;
+export declare function encodeMidnightWithdraw(midnight: Address, args: Hex): Hex;
+export declare function encodeMidnightTake(midnight: Address, args: Hex): Hex;
 export declare function encodeListaBrokerBorrow(assets: bigint, broker: Address, receiver: Address, termId: bigint): Hex;
 export declare function encodeListaBrokerRepay(loanToken: Address, assets: bigint, native: boolean, broker: Address, loanId: bigint, onBehalf: Address): Hex;
 export declare function encodeAaveDeposit(token: Address, amount: bigint, receiver: Address, pool: Address): Hex;

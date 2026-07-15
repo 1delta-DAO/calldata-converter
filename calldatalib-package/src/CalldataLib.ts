@@ -24,6 +24,9 @@ import {
   encodeCompoundV2SelectorId,
   encodeSiloV2CollateralMode,
   encodeAaveV4PmsBatchPermit,
+  encodeMidnightFlashLoan,
+  encodeMidnightFlashLoanTokens,
+  encodeMidnightFlashLoanApprovals,
 } from './utils.js'
 export enum SweepType {
   VALIDATE = 0,
@@ -62,6 +65,7 @@ export enum LenderIds {
   UP_TO_FLUID = 8000,
   UP_TO_FLUID_SMART = 9000,
   UP_TO_GEARBOX_V3 = 10000,
+  UP_TO_MORPHO_MIDNIGHT = 11000,
 }
 
 export enum LenderOps {
@@ -78,6 +82,7 @@ export enum LenderOps {
   FLUID_OPERATE_PERFECT = 11,
   FLUID_OPERATE_T1 = 12,
   GEARBOX_MULTICALL = 13,
+  MIDNIGHT_TAKE = 14,
 }
 
 export enum FlashLoanIds {
@@ -85,6 +90,7 @@ export enum FlashLoanIds {
   UNISWAP_V3 = 1,
   AAVE_V3 = 2,
   AAVE_V2 = 3,
+  MORPHO_MIDNIGHT = 4,
 }
 
 export enum ERC4626Ids {
@@ -135,6 +141,8 @@ export enum SiloV2CollateralType {
   PROTECTED = 0,
   COLLATERAL = 1,
 }
+
+export const MIDNIGHT_ID: number = uint16(LenderIds.UP_TO_MORPHO_MIDNIGHT - 1)
 
 export const LISTA_BROKER_DYNAMIC_LOAN: bigint = (1n << 128n) - 1n
 
@@ -216,6 +224,8 @@ export const UP_TO_FLUID_SMART: bigint = 9000n
 
 export const UP_TO_GEARBOX_V3: bigint = 10000n
 
+export const UP_TO_MORPHO_MIDNIGHT: bigint = 11000n
+
 export const DEPOSIT: bigint = 0n
 
 export const BORROW: bigint = 1n
@@ -242,6 +252,8 @@ export const FLUID_OPERATE_T1: bigint = 12n
 
 export const GEARBOX_MULTICALL: bigint = 13n
 
+export const MIDNIGHT_TAKE: bigint = 14n
+
 export const MORPHO: bigint = 0n
 
 export const UNISWAP_V3: bigint = 1n
@@ -249,6 +261,8 @@ export const UNISWAP_V3: bigint = 1n
 export const AAVE_V3: bigint = 2n
 
 export const AAVE_V2: bigint = 3n
+
+export const MORPHO_MIDNIGHT: bigint = 4n
 
 export const UNLOCK: bigint = 0n
 
@@ -1511,6 +1525,115 @@ export function encodeListaRepayViaProvider(
       data.length / 2 - 1 === 0
         ? newbytes(0)
         : encodeUint8AndBytes(uint8(pId), data),
+    ],
+  )
+}
+
+export function encodeMidnightSupplyCollateral(
+  midnight: Address,
+  collateralToken: Address,
+  amount: bigint,
+  args: Hex,
+): Hex {
+  return encodePacked(
+    [
+      'bytes',
+      'uint8',
+      'uint8',
+      'uint16',
+      'address',
+      'address',
+      'uint128',
+      'uint16',
+      'bytes',
+    ],
+    [
+      encodeApprove(collateralToken, midnight),
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.DEPOSIT),
+      MIDNIGHT_ID,
+      midnight,
+      collateralToken,
+      uint128(amount),
+      uint16(args.length / 2 - 1),
+      args,
+    ],
+  )
+}
+
+export function encodeMidnightWithdrawCollateral(
+  midnight: Address,
+  args: Hex,
+): Hex {
+  return encodePacked(
+    ['uint8', 'uint8', 'uint16', 'address', 'uint16', 'bytes'],
+    [
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.WITHDRAW),
+      MIDNIGHT_ID,
+      midnight,
+      uint16(args.length / 2 - 1),
+      args,
+    ],
+  )
+}
+
+export function encodeMidnightRepay(
+  midnight: Address,
+  loanToken: Address,
+  amount: bigint,
+  args: Hex,
+): Hex {
+  return encodePacked(
+    [
+      'bytes',
+      'uint8',
+      'uint8',
+      'uint16',
+      'address',
+      'address',
+      'uint128',
+      'uint16',
+      'bytes',
+    ],
+    [
+      encodeApprove(loanToken, midnight),
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.REPAY),
+      MIDNIGHT_ID,
+      midnight,
+      loanToken,
+      uint128(amount),
+      uint16(args.length / 2 - 1),
+      args,
+    ],
+  )
+}
+
+export function encodeMidnightWithdraw(midnight: Address, args: Hex): Hex {
+  return encodePacked(
+    ['uint8', 'uint8', 'uint16', 'address', 'uint16', 'bytes'],
+    [
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.WITHDRAW_LENDING_TOKEN),
+      MIDNIGHT_ID,
+      midnight,
+      uint16(args.length / 2 - 1),
+      args,
+    ],
+  )
+}
+
+export function encodeMidnightTake(midnight: Address, args: Hex): Hex {
+  return encodePacked(
+    ['uint8', 'uint8', 'uint16', 'address', 'uint16', 'bytes'],
+    [
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.MIDNIGHT_TAKE),
+      MIDNIGHT_ID,
+      midnight,
+      uint16(args.length / 2 - 1),
+      args,
     ],
   )
 }

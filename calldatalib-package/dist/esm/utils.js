@@ -103,3 +103,59 @@ export function encodeAaveV4PmsBatchPermit(spoke, pms, approvals, nonce, deadlin
     const data = encodePacked(['uint8', 'bytes', 'uint256', 'uint32', 'bytes32', 'bytes32'], [uint8(pms.length), updates, nonce, deadlinePlusOne, r, vs]);
     return encodePacked(['uint8', 'uint8', 'address', 'uint16', 'bytes'], [uint8(0x50), uint8(6), spoke, uint16(data.length / 2 - 1), data]);
 }
+// --- Midnight flash-loan encoders --------------------------------------------
+// Hand-written because the regex transpiler cannot express overloads, dynamic
+// array locals (`new address[](n)`) or `for`-loop accumulators. Enum values are
+// inlined to mirror the Solidity source (ComposerCommands / FlashLoanIds /
+// TransferIds), matching the encodeAaveV4PmsBatchPermit precedent above.
+// ComposerCommands.TRANSFERS
+const _COMMAND_TRANSFERS = 0x40;
+// TransferIds.APPROVE
+const _TRANSFER_ID_APPROVE = 5;
+// ComposerCommands.FLASH_LOAN
+const _COMMAND_FLASH_LOAN = 0x60;
+// FlashLoanIds.MORPHO_MIDNIGHT
+const _FLASH_LOAN_ID_MORPHO_MIDNIGHT = 4;
+// CalldataLib.encodeApprove
+function encodeApprove(asset, target) {
+    return encodePacked(['uint8', 'uint8', 'address', 'address'], [uint8(_COMMAND_TRANSFERS), uint8(_TRANSFER_ID_APPROVE), asset, target]);
+}
+// CalldataLib.encodeUint8AndBytes
+function encodeUint8AndBytes(poolId, data) {
+    return encodePacked(['uint8', 'bytes'], [uint8(poolId), data]);
+}
+export function encodeMidnightFlashLoanTokens(tokens, amounts) {
+    let result = '0x';
+    for (let i = 0; i < tokens.length; i++) {
+        result = encodePacked(['bytes', 'address', 'uint128'], [result, tokens[i], uint128(amounts[i])]);
+    }
+    return result;
+}
+export function encodeMidnightFlashLoanApprovals(pool, tokens) {
+    let result = '0x';
+    for (let i = 0; i < tokens.length; i++) {
+        result = encodePacked(['bytes', 'bytes'], [result, encodeApprove(tokens[i], pool)]);
+    }
+    return result;
+}
+export function encodeMidnightFlashLoan(a, b, c, poolId, data) {
+    // Single (asset, amount) form wraps into length-1 arrays and delegates.
+    if (!Array.isArray(b)) {
+        return encodeMidnightFlashLoan(c, [a], [b], poolId, data);
+    }
+    const pool = a;
+    const tokens = b;
+    const amounts = c;
+    return encodePacked(['bytes', 'uint8', 'uint8', 'address', 'uint8', 'bytes', 'uint16', 'bytes'], [
+        encodeMidnightFlashLoanApprovals(pool, tokens),
+        uint8(_COMMAND_FLASH_LOAN),
+        uint8(_FLASH_LOAN_ID_MORPHO_MIDNIGHT),
+        pool,
+        uint8(tokens.length),
+        encodeMidnightFlashLoanTokens(tokens, amounts),
+        // Solidity: uint16(data.length + 1); data.length is the byte length,
+        // which for a Hex string is `data.length / 2 - 1`.
+        uint16(data.length / 2 - 1 + 1),
+        encodeUint8AndBytes(poolId, data),
+    ]);
+}

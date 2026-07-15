@@ -1,7 +1,8 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.UP_TO_FLUID = exports.UP_TO_AAVE_V4 = exports.UP_TO_SILO_V2 = exports.UP_TO_MORPHO = exports.UP_TO_COMPOUND_V2 = exports.UP_TO_COMPOUND_V3 = exports.UP_TO_AAVE_V2 = exports.UP_TO_AAVE_V3 = exports.AAVE_V4_PMS_BATCH_PERMIT = exports.AAVE_V4_CONFIG_PERMIT = exports.AAVE_V4_WITHDRAW_PERMIT = exports.AAVE_V4_BORROW_PERMIT = exports.ALLOW_CREDIT_PERMIT = exports.AAVE_V3_CREDIT_PERMIT = exports.TOKEN_PERMIT = exports.SWEEP_NFT = exports.WRAP = exports.APPROVE = exports.PERMIT2_TRANSFER_FROM = exports.UNWRAP_WNATIVE = exports.WRAP_NATIVE = exports.SWEEP = exports.TRANSFER_FROM = exports.GEARBOX_UPDATE_QUOTA_PERMISSION = exports.GEARBOX_WITHDRAW_COLLATERAL_PERMISSION = exports.GEARBOX_DECREASE_DEBT_PERMISSION = exports.GEARBOX_INCREASE_DEBT_PERMISSION = exports.GEARBOX_ADD_COLLATERAL_PERMISSION = exports.GEARBOX_WITHDRAW_ALL = exports.GEARBOX_REPAY_ALL = exports.FLUID_SMART_USE_BALANCE = exports.FLUID_MAX_AMOUNT = exports.FLUID_USE_BALANCE = exports.FLUID_ALL = exports.UPPER_128BITS = exports.USE_SHARES_FLAG = exports.NATIVE_FLAG = exports.LISTA_BROKER_DYNAMIC_LOAN = exports.SiloV2CollateralType = exports.CompoundV2Selector = exports.BridgeIds = exports.ComposerCommands = exports.Gen2025ActionIds = exports.ERC4626Ids = exports.FlashLoanIds = exports.LenderOps = exports.LenderIds = exports.PermitIds = exports.TransferIds = exports.SweepType = void 0;
-exports.COLLATERAL = exports.PROTECTED = exports.REDEEM_ITOKEN = exports.REDEEM_BEHALF = exports.REDEEM = exports.MINT_ITOKEN = exports.MINT = exports.MINT_BEHALF = exports.GASZIP = exports.SQUID_ROUTER = exports.ACROSS = exports.STARGATE_V2 = exports.BRIDGING = exports.GEN_2025_SINGELTONS = exports.ERC4626 = exports.FLASH_LOAN = exports.PERMIT = exports.TRANSFERS = exports.LENDING = exports.EXT_TRY_CALL_WITH_REPLACE = exports.EXT_CALL_WITH_REPLACE = exports.EXT_TRY_CALL = exports.EXT_CALL = exports.BAL_V3_SETTLE = exports.BAL_V3_TAKE = exports.UNI_V4_SYNC = exports.UNI_V4_SETTLE = exports.UNI_V4_TAKE = exports.UNLOCK = exports.AAVE_V2 = exports.AAVE_V3 = exports.UNISWAP_V3 = exports.MORPHO = exports.GEARBOX_MULTICALL = exports.FLUID_OPERATE_T1 = exports.FLUID_OPERATE_PERFECT = exports.FLUID_OPERATE = exports.LISTA_BROKER_REPAY = exports.LISTA_BROKER_BORROW = exports.SET_COLLATERAL = exports.WITHDRAW_LENDING_TOKEN = exports.DEPOSIT_LENDING_TOKEN = exports.WITHDRAW = exports.REPAY = exports.BORROW = exports.DEPOSIT = exports.UP_TO_GEARBOX_V3 = exports.UP_TO_FLUID_SMART = void 0;
+exports.UP_TO_AAVE_V4 = exports.UP_TO_SILO_V2 = exports.UP_TO_MORPHO = exports.UP_TO_COMPOUND_V2 = exports.UP_TO_COMPOUND_V3 = exports.UP_TO_AAVE_V2 = exports.UP_TO_AAVE_V3 = exports.AAVE_V4_PMS_BATCH_PERMIT = exports.AAVE_V4_CONFIG_PERMIT = exports.AAVE_V4_WITHDRAW_PERMIT = exports.AAVE_V4_BORROW_PERMIT = exports.ALLOW_CREDIT_PERMIT = exports.AAVE_V3_CREDIT_PERMIT = exports.TOKEN_PERMIT = exports.SWEEP_NFT = exports.WRAP = exports.APPROVE = exports.PERMIT2_TRANSFER_FROM = exports.UNWRAP_WNATIVE = exports.WRAP_NATIVE = exports.SWEEP = exports.TRANSFER_FROM = exports.GEARBOX_UPDATE_QUOTA_PERMISSION = exports.GEARBOX_WITHDRAW_COLLATERAL_PERMISSION = exports.GEARBOX_DECREASE_DEBT_PERMISSION = exports.GEARBOX_INCREASE_DEBT_PERMISSION = exports.GEARBOX_ADD_COLLATERAL_PERMISSION = exports.GEARBOX_WITHDRAW_ALL = exports.GEARBOX_REPAY_ALL = exports.FLUID_SMART_USE_BALANCE = exports.FLUID_MAX_AMOUNT = exports.FLUID_USE_BALANCE = exports.FLUID_ALL = exports.UPPER_128BITS = exports.USE_SHARES_FLAG = exports.NATIVE_FLAG = exports.LISTA_BROKER_DYNAMIC_LOAN = exports.MIDNIGHT_ID = exports.SiloV2CollateralType = exports.CompoundV2Selector = exports.BridgeIds = exports.ComposerCommands = exports.Gen2025ActionIds = exports.ERC4626Ids = exports.FlashLoanIds = exports.LenderOps = exports.LenderIds = exports.PermitIds = exports.TransferIds = exports.SweepType = void 0;
+exports.REDEEM_ITOKEN = exports.REDEEM_BEHALF = exports.REDEEM = exports.MINT_ITOKEN = exports.MINT = exports.MINT_BEHALF = exports.GASZIP = exports.SQUID_ROUTER = exports.ACROSS = exports.STARGATE_V2 = exports.BRIDGING = exports.GEN_2025_SINGELTONS = exports.ERC4626 = exports.FLASH_LOAN = exports.PERMIT = exports.TRANSFERS = exports.LENDING = exports.EXT_TRY_CALL_WITH_REPLACE = exports.EXT_CALL_WITH_REPLACE = exports.EXT_TRY_CALL = exports.EXT_CALL = exports.BAL_V3_SETTLE = exports.BAL_V3_TAKE = exports.UNI_V4_SYNC = exports.UNI_V4_SETTLE = exports.UNI_V4_TAKE = exports.UNLOCK = exports.MORPHO_MIDNIGHT = exports.AAVE_V2 = exports.AAVE_V3 = exports.UNISWAP_V3 = exports.MORPHO = exports.MIDNIGHT_TAKE = exports.GEARBOX_MULTICALL = exports.FLUID_OPERATE_T1 = exports.FLUID_OPERATE_PERFECT = exports.FLUID_OPERATE = exports.LISTA_BROKER_REPAY = exports.LISTA_BROKER_BORROW = exports.SET_COLLATERAL = exports.WITHDRAW_LENDING_TOKEN = exports.DEPOSIT_LENDING_TOKEN = exports.WITHDRAW = exports.REPAY = exports.BORROW = exports.DEPOSIT = exports.UP_TO_MORPHO_MIDNIGHT = exports.UP_TO_GEARBOX_V3 = exports.UP_TO_FLUID_SMART = exports.UP_TO_FLUID = void 0;
+exports.COLLATERAL = exports.PROTECTED = void 0;
 exports.encodeExternalCall = encodeExternalCall;
 exports.encodeTryExternalCall = encodeTryExternalCall;
 exports.encodeExternalCallWithReplace = encodeExternalCallWithReplace;
@@ -52,6 +53,11 @@ exports.encodeListaWithdrawCollateralViaProvider = encodeListaWithdrawCollateral
 exports.encodeMorphoBorrow = encodeMorphoBorrow;
 exports.encodeMorphoRepay = encodeMorphoRepay;
 exports.encodeListaRepayViaProvider = encodeListaRepayViaProvider;
+exports.encodeMidnightSupplyCollateral = encodeMidnightSupplyCollateral;
+exports.encodeMidnightWithdrawCollateral = encodeMidnightWithdrawCollateral;
+exports.encodeMidnightRepay = encodeMidnightRepay;
+exports.encodeMidnightWithdraw = encodeMidnightWithdraw;
+exports.encodeMidnightTake = encodeMidnightTake;
 exports.encodeListaBrokerBorrow = encodeListaBrokerBorrow;
 exports.encodeListaBrokerRepay = encodeListaBrokerRepay;
 exports.encodeAaveDeposit = encodeAaveDeposit;
@@ -152,6 +158,7 @@ var LenderIds;
     LenderIds[LenderIds["UP_TO_FLUID"] = 8000] = "UP_TO_FLUID";
     LenderIds[LenderIds["UP_TO_FLUID_SMART"] = 9000] = "UP_TO_FLUID_SMART";
     LenderIds[LenderIds["UP_TO_GEARBOX_V3"] = 10000] = "UP_TO_GEARBOX_V3";
+    LenderIds[LenderIds["UP_TO_MORPHO_MIDNIGHT"] = 11000] = "UP_TO_MORPHO_MIDNIGHT";
 })(LenderIds || (exports.LenderIds = LenderIds = {}));
 var LenderOps;
 (function (LenderOps) {
@@ -168,6 +175,7 @@ var LenderOps;
     LenderOps[LenderOps["FLUID_OPERATE_PERFECT"] = 11] = "FLUID_OPERATE_PERFECT";
     LenderOps[LenderOps["FLUID_OPERATE_T1"] = 12] = "FLUID_OPERATE_T1";
     LenderOps[LenderOps["GEARBOX_MULTICALL"] = 13] = "GEARBOX_MULTICALL";
+    LenderOps[LenderOps["MIDNIGHT_TAKE"] = 14] = "MIDNIGHT_TAKE";
 })(LenderOps || (exports.LenderOps = LenderOps = {}));
 var FlashLoanIds;
 (function (FlashLoanIds) {
@@ -175,6 +183,7 @@ var FlashLoanIds;
     FlashLoanIds[FlashLoanIds["UNISWAP_V3"] = 1] = "UNISWAP_V3";
     FlashLoanIds[FlashLoanIds["AAVE_V3"] = 2] = "AAVE_V3";
     FlashLoanIds[FlashLoanIds["AAVE_V2"] = 3] = "AAVE_V2";
+    FlashLoanIds[FlashLoanIds["MORPHO_MIDNIGHT"] = 4] = "MORPHO_MIDNIGHT";
 })(FlashLoanIds || (exports.FlashLoanIds = FlashLoanIds = {}));
 var ERC4626Ids;
 (function (ERC4626Ids) {
@@ -225,6 +234,7 @@ var SiloV2CollateralType;
     SiloV2CollateralType[SiloV2CollateralType["PROTECTED"] = 0] = "PROTECTED";
     SiloV2CollateralType[SiloV2CollateralType["COLLATERAL"] = 1] = "COLLATERAL";
 })(SiloV2CollateralType || (exports.SiloV2CollateralType = SiloV2CollateralType = {}));
+exports.MIDNIGHT_ID = (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO_MIDNIGHT - 1);
 exports.LISTA_BROKER_DYNAMIC_LOAN = (1n << 128n) - 1n;
 exports.NATIVE_FLAG = 1n << 127n;
 exports.USE_SHARES_FLAG = 1n << 126n;
@@ -265,6 +275,7 @@ exports.UP_TO_AAVE_V4 = 7000n;
 exports.UP_TO_FLUID = 8000n;
 exports.UP_TO_FLUID_SMART = 9000n;
 exports.UP_TO_GEARBOX_V3 = 10000n;
+exports.UP_TO_MORPHO_MIDNIGHT = 11000n;
 exports.DEPOSIT = 0n;
 exports.BORROW = 1n;
 exports.REPAY = 2n;
@@ -278,10 +289,12 @@ exports.FLUID_OPERATE = 10n;
 exports.FLUID_OPERATE_PERFECT = 11n;
 exports.FLUID_OPERATE_T1 = 12n;
 exports.GEARBOX_MULTICALL = 13n;
+exports.MIDNIGHT_TAKE = 14n;
 exports.MORPHO = 0n;
 exports.UNISWAP_V3 = 1n;
 exports.AAVE_V3 = 2n;
 exports.AAVE_V2 = 3n;
+exports.MORPHO_MIDNIGHT = 4n;
 exports.UNLOCK = 0n;
 exports.UNI_V4_TAKE = 1n;
 exports.UNI_V4_SETTLE = 2n;
@@ -743,6 +756,62 @@ function encodeListaRepayViaProvider(market, isShares, assets, receiver, data, m
         morphoB,
         (0, utils_js_1.uint16)(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0),
         data.length / 2 - 1 === 0 ? (0, utils_js_1.newbytes)(0) : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
+    ]);
+}
+function encodeMidnightSupplyCollateral(midnight, collateralToken, amount, args) {
+    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "address", "uint128", "uint16", "bytes"], [
+        encodeApprove(collateralToken, midnight),
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
+        exports.MIDNIGHT_ID,
+        midnight,
+        collateralToken,
+        (0, utils_js_1.uint128)(amount),
+        (0, utils_js_1.uint16)(args.length / 2 - 1),
+        args,
+    ]);
+}
+function encodeMidnightWithdrawCollateral(midnight, args) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
+        exports.MIDNIGHT_ID,
+        midnight,
+        (0, utils_js_1.uint16)(args.length / 2 - 1),
+        args,
+    ]);
+}
+function encodeMidnightRepay(midnight, loanToken, amount, args) {
+    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "address", "uint128", "uint16", "bytes"], [
+        encodeApprove(loanToken, midnight),
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.REPAY),
+        exports.MIDNIGHT_ID,
+        midnight,
+        loanToken,
+        (0, utils_js_1.uint128)(amount),
+        (0, utils_js_1.uint16)(args.length / 2 - 1),
+        args,
+    ]);
+}
+function encodeMidnightWithdraw(midnight, args) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.WITHDRAW_LENDING_TOKEN),
+        exports.MIDNIGHT_ID,
+        midnight,
+        (0, utils_js_1.uint16)(args.length / 2 - 1),
+        args,
+    ]);
+}
+function encodeMidnightTake(midnight, args) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.MIDNIGHT_TAKE),
+        exports.MIDNIGHT_ID,
+        midnight,
+        (0, utils_js_1.uint16)(args.length / 2 - 1),
+        args,
     ]);
 }
 function encodeListaBrokerBorrow(assets, broker, receiver, termId) {

@@ -39,6 +39,7 @@ export var LenderIds;
     LenderIds[LenderIds["UP_TO_FLUID"] = 8000] = "UP_TO_FLUID";
     LenderIds[LenderIds["UP_TO_FLUID_SMART"] = 9000] = "UP_TO_FLUID_SMART";
     LenderIds[LenderIds["UP_TO_GEARBOX_V3"] = 10000] = "UP_TO_GEARBOX_V3";
+    LenderIds[LenderIds["UP_TO_MORPHO_MIDNIGHT"] = 11000] = "UP_TO_MORPHO_MIDNIGHT";
 })(LenderIds || (LenderIds = {}));
 export var LenderOps;
 (function (LenderOps) {
@@ -55,6 +56,7 @@ export var LenderOps;
     LenderOps[LenderOps["FLUID_OPERATE_PERFECT"] = 11] = "FLUID_OPERATE_PERFECT";
     LenderOps[LenderOps["FLUID_OPERATE_T1"] = 12] = "FLUID_OPERATE_T1";
     LenderOps[LenderOps["GEARBOX_MULTICALL"] = 13] = "GEARBOX_MULTICALL";
+    LenderOps[LenderOps["MIDNIGHT_TAKE"] = 14] = "MIDNIGHT_TAKE";
 })(LenderOps || (LenderOps = {}));
 export var FlashLoanIds;
 (function (FlashLoanIds) {
@@ -62,6 +64,7 @@ export var FlashLoanIds;
     FlashLoanIds[FlashLoanIds["UNISWAP_V3"] = 1] = "UNISWAP_V3";
     FlashLoanIds[FlashLoanIds["AAVE_V3"] = 2] = "AAVE_V3";
     FlashLoanIds[FlashLoanIds["AAVE_V2"] = 3] = "AAVE_V2";
+    FlashLoanIds[FlashLoanIds["MORPHO_MIDNIGHT"] = 4] = "MORPHO_MIDNIGHT";
 })(FlashLoanIds || (FlashLoanIds = {}));
 export var ERC4626Ids;
 (function (ERC4626Ids) {
@@ -112,6 +115,7 @@ export var SiloV2CollateralType;
     SiloV2CollateralType[SiloV2CollateralType["PROTECTED"] = 0] = "PROTECTED";
     SiloV2CollateralType[SiloV2CollateralType["COLLATERAL"] = 1] = "COLLATERAL";
 })(SiloV2CollateralType || (SiloV2CollateralType = {}));
+export const MIDNIGHT_ID = uint16(LenderIds.UP_TO_MORPHO_MIDNIGHT - 1);
 export const LISTA_BROKER_DYNAMIC_LOAN = (1n << 128n) - 1n;
 export const NATIVE_FLAG = 1n << 127n;
 export const USE_SHARES_FLAG = 1n << 126n;
@@ -152,6 +156,7 @@ export const UP_TO_AAVE_V4 = 7000n;
 export const UP_TO_FLUID = 8000n;
 export const UP_TO_FLUID_SMART = 9000n;
 export const UP_TO_GEARBOX_V3 = 10000n;
+export const UP_TO_MORPHO_MIDNIGHT = 11000n;
 export const DEPOSIT = 0n;
 export const BORROW = 1n;
 export const REPAY = 2n;
@@ -165,10 +170,12 @@ export const FLUID_OPERATE = 10n;
 export const FLUID_OPERATE_PERFECT = 11n;
 export const FLUID_OPERATE_T1 = 12n;
 export const GEARBOX_MULTICALL = 13n;
+export const MIDNIGHT_TAKE = 14n;
 export const MORPHO = 0n;
 export const UNISWAP_V3 = 1n;
 export const AAVE_V3 = 2n;
 export const AAVE_V2 = 3n;
+export const MORPHO_MIDNIGHT = 4n;
 export const UNLOCK = 0n;
 export const UNI_V4_TAKE = 1n;
 export const UNI_V4_SETTLE = 2n;
@@ -630,6 +637,62 @@ export function encodeListaRepayViaProvider(market, isShares, assets, receiver, 
         morphoB,
         uint16(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0),
         data.length / 2 - 1 === 0 ? newbytes(0) : encodeUint8AndBytes(uint8(pId), data),
+    ]);
+}
+export function encodeMidnightSupplyCollateral(midnight, collateralToken, amount, args) {
+    return encodePacked(["bytes", "uint8", "uint8", "uint16", "address", "address", "uint128", "uint16", "bytes"], [
+        encodeApprove(collateralToken, midnight),
+        uint8(ComposerCommands.LENDING),
+        uint8(LenderOps.DEPOSIT),
+        MIDNIGHT_ID,
+        midnight,
+        collateralToken,
+        uint128(amount),
+        uint16(args.length / 2 - 1),
+        args,
+    ]);
+}
+export function encodeMidnightWithdrawCollateral(midnight, args) {
+    return encodePacked(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+        uint8(ComposerCommands.LENDING),
+        uint8(LenderOps.WITHDRAW),
+        MIDNIGHT_ID,
+        midnight,
+        uint16(args.length / 2 - 1),
+        args,
+    ]);
+}
+export function encodeMidnightRepay(midnight, loanToken, amount, args) {
+    return encodePacked(["bytes", "uint8", "uint8", "uint16", "address", "address", "uint128", "uint16", "bytes"], [
+        encodeApprove(loanToken, midnight),
+        uint8(ComposerCommands.LENDING),
+        uint8(LenderOps.REPAY),
+        MIDNIGHT_ID,
+        midnight,
+        loanToken,
+        uint128(amount),
+        uint16(args.length / 2 - 1),
+        args,
+    ]);
+}
+export function encodeMidnightWithdraw(midnight, args) {
+    return encodePacked(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+        uint8(ComposerCommands.LENDING),
+        uint8(LenderOps.WITHDRAW_LENDING_TOKEN),
+        MIDNIGHT_ID,
+        midnight,
+        uint16(args.length / 2 - 1),
+        args,
+    ]);
+}
+export function encodeMidnightTake(midnight, args) {
+    return encodePacked(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+        uint8(ComposerCommands.LENDING),
+        uint8(LenderOps.MIDNIGHT_TAKE),
+        MIDNIGHT_ID,
+        midnight,
+        uint16(args.length / 2 - 1),
+        args,
     ]);
 }
 export function encodeListaBrokerBorrow(assets, broker, receiver, termId) {
