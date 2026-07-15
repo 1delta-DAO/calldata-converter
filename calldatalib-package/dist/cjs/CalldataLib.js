@@ -325,7 +325,7 @@ exports.REDEEM_ITOKEN = 2n;
 exports.PROTECTED = 0n;
 exports.COLLATERAL = 1n;
 function encodeExternalCall(target, value, useSelfBalance, data) {
-    return (0, utils_js_1.encodePacked)(["uint8", "address", "uint128", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'address', 'uint128', 'uint16', 'bytes'], [
         (0, utils_js_1.uint8)(ComposerCommands.EXT_CALL),
         target,
         (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(value), false, useSelfBalance),
@@ -334,7 +334,16 @@ function encodeExternalCall(target, value, useSelfBalance, data) {
     ]);
 }
 function encodeTryExternalCall(target, value, useSelfBalance, rOnFailure, data, catchData) {
-    return (0, utils_js_1.encodePacked)(["uint8", "address", "uint128", "uint16", "bytes", "uint8", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'address',
+        'uint128',
+        'uint16',
+        'bytes',
+        'uint8',
+        'uint16',
+        'bytes',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.EXT_TRY_CALL),
         target,
         (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(value), false, useSelfBalance),
@@ -346,7 +355,7 @@ function encodeTryExternalCall(target, value, useSelfBalance, rOnFailure, data, 
     ]);
 }
 function encodeExternalCallWithReplace(target, value, useSelfBalance, token, replaceOffset, data) {
-    return (0, utils_js_1.encodePacked)(["uint8", "address", "uint128", "address", "uint16", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'address', 'uint128', 'address', 'uint16', 'uint16', 'bytes'], [
         (0, utils_js_1.uint8)(ComposerCommands.EXT_CALL_WITH_REPLACE),
         target,
         (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(value), false, useSelfBalance),
@@ -357,7 +366,18 @@ function encodeExternalCallWithReplace(target, value, useSelfBalance, token, rep
     ]);
 }
 function encodeTryExternalCallWithReplace(target, value, useSelfBalance, token, replaceOffset, data, rOnFailure, catchData) {
-    return (0, utils_js_1.encodePacked)(["uint8", "address", "uint128", "address", "uint16", "uint16", "uint8", "uint16", "bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'address',
+        'uint128',
+        'address',
+        'uint16',
+        'uint16',
+        'uint8',
+        'uint16',
+        'bytes',
+        'bytes',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.EXT_TRY_CALL_WITH_REPLACE),
         target,
         (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(value), false, useSelfBalance),
@@ -372,7 +392,16 @@ function encodeTryExternalCallWithReplace(target, value, useSelfBalance, token, 
 }
 function encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, refundReceiver, amount, slippage, fee, isBusMode, isNative, composeMsg, extraOptions) {
     const partialData = encodeStargateV2BridgePartial(amount, slippage, fee, isBusMode, isNative, composeMsg, extraOptions);
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint32", "bytes32", "address", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'address',
+        'address',
+        'uint32',
+        'bytes32',
+        'address',
+        'bytes',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.BRIDGING),
         (0, utils_js_1.uint8)(BridgeIds.STARGATE_V2),
         asset,
@@ -384,10 +413,25 @@ function encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, refundRec
     ]);
 }
 function encodePermit(permitId, target, data) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "uint16", "bytes"], [(0, utils_js_1.uint8)(ComposerCommands.PERMIT), (0, utils_js_1.uint8)(permitId), target, (0, utils_js_1.uint16)(data.length / 2 - 1), data]);
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'uint16', 'bytes'], [
+        (0, utils_js_1.uint8)(ComposerCommands.PERMIT),
+        (0, utils_js_1.uint8)(permitId),
+        target,
+        (0, utils_js_1.uint16)(data.length / 2 - 1),
+        data,
+    ]);
 }
 function encodeStargateV2BridgePartial(amount, slippage, fee, isBusMode, isNative, composeMsg, extraOptions) {
-    return (0, utils_js_1.encodePacked)(["uint128", "uint32", "uint128", "uint8", "uint16", "uint16", "bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint128',
+        'uint32',
+        'uint128',
+        'uint8',
+        'uint16',
+        'uint16',
+        'bytes',
+        'bytes',
+    ], [
         (0, utils_js_1.generateAmountBitmap)((0, utils_js_1.uint128)(amount), false, isNative),
         slippage,
         (0, utils_js_1.uint128)(fee),
@@ -405,19 +449,19 @@ function encodeStargateV2BridgeSimpleBus(asset, stargatePool, dstEid, receiver, 
     return encodeStargateV2Bridge(asset, stargatePool, dstEid, receiver, refundReceiver, amount, slippage, fee, true, isNative, (0, utils_js_1.newbytes)(0), (0, utils_js_1.newbytes)(0));
 }
 function encodeAcrossBridgeToken(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message) {
-    return (0, utils_js_1.encodePacked)(["bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['bytes', 'bytes'], [
         encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, false),
         encodeAcrossParams(fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message),
     ]);
 }
 function encodeAcrossBridgeNative(spokePool, depositor, sendingAssetId, receivingAssetId, amount, fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message) {
-    return (0, utils_js_1.encodePacked)(["bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['bytes', 'bytes'], [
         encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, true),
         encodeAcrossParams(fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message),
     ]);
 }
 function encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAssetId, amount, isNative) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "address", "bytes32", "uint128"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'address', 'bytes32', 'uint128'], [
         (0, utils_js_1.uint8)(ComposerCommands.BRIDGING),
         (0, utils_js_1.uint8)(BridgeIds.ACROSS),
         spokePool,
@@ -428,7 +472,17 @@ function encodeAcrossHeader(spokePool, depositor, sendingAssetId, receivingAsset
     ]);
 }
 function encodeAcrossParams(fixedFee, feePercentage, destinationChainId, fromTokenDecimals, toTokenDecimals, receiver, deadline, message) {
-    return (0, utils_js_1.encodePacked)(["uint128", "uint32", "uint32", "uint8", "uint8", "bytes32", "uint32", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint128',
+        'uint32',
+        'uint32',
+        'uint8',
+        'uint8',
+        'bytes32',
+        'uint32',
+        'uint16',
+        'bytes',
+    ], [
         fixedFee,
         feePercentage,
         destinationChainId,
@@ -442,7 +496,16 @@ function encodeAcrossParams(fixedFee, feePercentage, destinationChainId, fromTok
 }
 function encodeSquidRouterCall(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload, gasRefundRecipient, enableExpress, nativeAmount) {
     const partialData = encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload);
-    return (0, utils_js_1.encodePacked)(["bytes", "uint128", "address", "uint8", "bytes", "bytes", "bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint128',
+        'address',
+        'uint8',
+        'bytes',
+        'bytes',
+        'bytes',
+        'bytes',
+    ], [
         partialData,
         (0, utils_js_1.uint128)(nativeAmount),
         gasRefundRecipient,
@@ -454,7 +517,17 @@ function encodeSquidRouterCall(asset, gateway, bridgedTokenSymbol, amount, desti
     ]);
 }
 function encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol, amount, destinationChain, destinationAddress, payload) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint16", "uint16", "uint16", "uint16", "uint128"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'address',
+        'address',
+        'uint16',
+        'uint16',
+        'uint16',
+        'uint16',
+        'uint128',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.BRIDGING),
         (0, utils_js_1.uint8)(BridgeIds.SQUID_ROUTER),
         gateway,
@@ -467,7 +540,7 @@ function encodeSquidRouterCallPartial(asset, gateway, bridgedTokenSymbol, amount
     ]);
 }
 function encodeGasZipBridge(gasZipRouter, receiver, amount, destinationChainId) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "bytes32", "uint128", "uint256"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'bytes32', 'uint128', 'uint256'], [
         (0, utils_js_1.uint8)(ComposerCommands.BRIDGING),
         (0, utils_js_1.uint8)(BridgeIds.GASZIP),
         gasZipRouter,
@@ -477,7 +550,7 @@ function encodeGasZipBridge(gasZipRouter, receiver, amount, destinationChainId) 
     ]);
 }
 function encodeGasZipEvmBridge(gasZipRouter, receiver, amount, destinationChainId) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "bytes32", "uint128", "uint256"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'bytes32', 'uint128', 'uint256'], [
         (0, utils_js_1.uint8)(ComposerCommands.BRIDGING),
         (0, utils_js_1.uint8)(BridgeIds.GASZIP),
         gasZipRouter,
@@ -487,10 +560,16 @@ function encodeGasZipEvmBridge(gasZipRouter, receiver, amount, destinationChainI
     ]);
 }
 function encodePermit2TransferFrom(token, receiver, amount) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint128"], [(0, utils_js_1.uint8)(ComposerCommands.TRANSFERS), (0, utils_js_1.uint8)(TransferIds.PERMIT2_TRANSFER_FROM), token, receiver, (0, utils_js_1.uint128)(amount)]);
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'uint128'], [
+        (0, utils_js_1.uint8)(ComposerCommands.TRANSFERS),
+        (0, utils_js_1.uint8)(TransferIds.PERMIT2_TRANSFER_FROM),
+        token,
+        receiver,
+        (0, utils_js_1.uint128)(amount),
+    ]);
 }
 function encodeNextGenDexUnlock(singleton, id, d) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "uint16", "uint8", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'uint16', 'uint8', 'bytes'], [
         (0, utils_js_1.uint8)(ComposerCommands.GEN_2025_SINGELTONS),
         (0, utils_js_1.uint8)(Gen2025ActionIds.UNLOCK),
         singleton,
@@ -505,7 +584,7 @@ function encodeBalancerV3FlashLoan(singleton, poolId, asset, receiver, amount, f
     return encodeNextGenDexUnlock(singleton, poolId, encodeBalancerV3FlashLoanData(take, flashData, settle));
 }
 function encodeBalancerV3FlashLoanData(take, flashData, settle) {
-    return (0, utils_js_1.encodePacked)(["bytes", "bytes", "bytes"], [take, flashData, settle]);
+    return (0, utils_js_1.encodePacked)(['bytes', 'bytes', 'bytes'], [take, flashData, settle]);
 }
 function encodeUniswapV4FlashLoan(singleton, poolId, asset, receiver, amount, flashData) {
     const take = encodeUniswapV4Take(singleton, asset, receiver, amount);
@@ -514,10 +593,10 @@ function encodeUniswapV4FlashLoan(singleton, poolId, asset, receiver, amount, fl
     return encodeNextGenDexUnlock(singleton, poolId, encodeUniswapV4FlashLoanData(take, sync, flashData, settle));
 }
 function encodeUniswapV4FlashLoanData(take, sync, flashData, settle) {
-    return (0, utils_js_1.encodePacked)(["bytes", "bytes", "bytes", "bytes"], [take, sync, flashData, settle]);
+    return (0, utils_js_1.encodePacked)(['bytes', 'bytes', 'bytes', 'bytes'], [take, sync, flashData, settle]);
 }
 function encodeBalancerV3Take(singleton, asset, receiver, amount) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "address", "uint128"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'address', 'uint128'], [
         (0, utils_js_1.uint8)(ComposerCommands.GEN_2025_SINGELTONS),
         (0, utils_js_1.uint8)(Gen2025ActionIds.BAL_V3_TAKE),
         singleton,
@@ -529,10 +608,15 @@ function encodeBalancerV3Take(singleton, asset, receiver, amount) {
 function encodeUniswapV4Sync(singleton, asset) {
     if (asset === viem_1.zeroAddress)
         return `0x0`;
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address"], [(0, utils_js_1.uint8)(ComposerCommands.GEN_2025_SINGELTONS), (0, utils_js_1.uint8)(Gen2025ActionIds.UNI_V4_SYNC), singleton, asset]);
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address'], [
+        (0, utils_js_1.uint8)(ComposerCommands.GEN_2025_SINGELTONS),
+        (0, utils_js_1.uint8)(Gen2025ActionIds.UNI_V4_SYNC),
+        singleton,
+        asset,
+    ]);
 }
 function encodeUniswapV4Take(singleton, asset, receiver, amount) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "address", "uint128"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'address', 'uint128'], [
         (0, utils_js_1.uint8)(ComposerCommands.GEN_2025_SINGELTONS),
         (0, utils_js_1.uint8)(Gen2025ActionIds.UNI_V4_TAKE),
         singleton,
@@ -542,7 +626,7 @@ function encodeUniswapV4Take(singleton, asset, receiver, amount) {
     ]);
 }
 function encodeNextGenDexSettle(singleton, nativeAmount) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "uint128"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'uint128'], [
         (0, utils_js_1.uint8)(ComposerCommands.GEN_2025_SINGELTONS),
         (0, utils_js_1.uint8)(Gen2025ActionIds.UNI_V4_SETTLE),
         singleton,
@@ -550,7 +634,7 @@ function encodeNextGenDexSettle(singleton, nativeAmount) {
     ]);
 }
 function encodeNextGenDexSettleBalancer(singleton, asset, amountHint) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint128"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'uint128'], [
         (0, utils_js_1.uint8)(ComposerCommands.GEN_2025_SINGELTONS),
         (0, utils_js_1.uint8)(Gen2025ActionIds.BAL_V3_SETTLE),
         singleton,
@@ -559,13 +643,26 @@ function encodeNextGenDexSettleBalancer(singleton, asset, amountHint) {
     ]);
 }
 function encodeTransferIn(asset, receiver, amount) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint128"], [(0, utils_js_1.uint8)(ComposerCommands.TRANSFERS), (0, utils_js_1.uint8)(TransferIds.TRANSFER_FROM), asset, receiver, (0, utils_js_1.uint128)(amount)]);
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'uint128'], [
+        (0, utils_js_1.uint8)(ComposerCommands.TRANSFERS),
+        (0, utils_js_1.uint8)(TransferIds.TRANSFER_FROM),
+        asset,
+        receiver,
+        (0, utils_js_1.uint128)(amount),
+    ]);
 }
 function encodeSweep(asset, receiver, amount, sweepType) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint8", "uint128"], [(0, utils_js_1.uint8)(ComposerCommands.TRANSFERS), (0, utils_js_1.uint8)(TransferIds.SWEEP), asset, receiver, sweepType, (0, utils_js_1.uint128)(amount)]);
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'uint8', 'uint128'], [
+        (0, utils_js_1.uint8)(ComposerCommands.TRANSFERS),
+        (0, utils_js_1.uint8)(TransferIds.SWEEP),
+        asset,
+        receiver,
+        sweepType,
+        (0, utils_js_1.uint128)(amount),
+    ]);
 }
 function encodeWrap(amount, wrapTarget) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint8", "uint128"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'uint8', 'uint128'], [
         (0, utils_js_1.uint8)(ComposerCommands.TRANSFERS),
         (0, utils_js_1.uint8)(TransferIds.SWEEP),
         viem_1.zeroAddress,
@@ -575,16 +672,33 @@ function encodeWrap(amount, wrapTarget) {
     ]);
 }
 function encodeWrapWithReceiver(amount, weth, receiver) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint128"], [(0, utils_js_1.uint8)(ComposerCommands.TRANSFERS), (0, utils_js_1.uint8)(TransferIds.WRAP), weth, receiver, (0, utils_js_1.uint128)(amount)]);
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'uint128'], [
+        (0, utils_js_1.uint8)(ComposerCommands.TRANSFERS),
+        (0, utils_js_1.uint8)(TransferIds.WRAP),
+        weth,
+        receiver,
+        (0, utils_js_1.uint128)(amount),
+    ]);
 }
 function encodeApprove(asset, target) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address"], [(0, utils_js_1.uint8)(ComposerCommands.TRANSFERS), (0, utils_js_1.uint8)(TransferIds.APPROVE), asset, target]);
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address'], [
+        (0, utils_js_1.uint8)(ComposerCommands.TRANSFERS),
+        (0, utils_js_1.uint8)(TransferIds.APPROVE),
+        asset,
+        target,
+    ]);
 }
 function encodeSweepNft(collection, receiver, tokenId) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint256"], [(0, utils_js_1.uint8)(ComposerCommands.TRANSFERS), (0, utils_js_1.uint8)(TransferIds.SWEEP_NFT), collection, receiver, tokenId]);
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'uint256'], [
+        (0, utils_js_1.uint8)(ComposerCommands.TRANSFERS),
+        (0, utils_js_1.uint8)(TransferIds.SWEEP_NFT),
+        collection,
+        receiver,
+        tokenId,
+    ]);
 }
 function encodeUnwrap(target, receiver, amount, sweepType) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "address", "uint8", "uint128"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'address', 'uint8', 'uint128'], [
         (0, utils_js_1.uint8)(ComposerCommands.TRANSFERS),
         (0, utils_js_1.uint8)(TransferIds.UNWRAP_WNATIVE),
         target,
@@ -594,7 +708,16 @@ function encodeUnwrap(target, receiver, amount, sweepType) {
     ]);
 }
 function encodeFlashLoan(asset, amount, pool, poolType, poolId, data) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "address", "address", "uint128", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'address',
+        'address',
+        'uint128',
+        'uint16',
+        'bytes',
+    ], [
         encodeApprove(asset, pool),
         (0, utils_js_1.uint8)(ComposerCommands.FLASH_LOAN),
         poolType,
@@ -606,10 +729,22 @@ function encodeFlashLoan(asset, amount, pool, poolType, poolId, data) {
     ]);
 }
 function encodeUint8AndBytes(poolId, data) {
-    return (0, utils_js_1.encodePacked)(["uint8", "bytes"], [(0, utils_js_1.uint8)(poolId), data]);
+    return (0, utils_js_1.encodePacked)(['uint8', 'bytes'], [(0, utils_js_1.uint8)(poolId), data]);
 }
 function encodeUniswapV3FlashLoan(forkId, pool, tokenIn, tokenOut, fee, amount0, amount1, data) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint8", "address", "address", "address", "uint16", "uint128", "uint128", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint8',
+        'address',
+        'address',
+        'address',
+        'uint16',
+        'uint128',
+        'uint128',
+        'uint16',
+        'bytes',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.FLASH_LOAN),
         (0, utils_js_1.uint8)(FlashLoanIds.UNISWAP_V3),
         forkId,
@@ -624,10 +759,21 @@ function encodeUniswapV3FlashLoan(forkId, pool, tokenIn, tokenOut, fee, amount0,
     ]);
 }
 function encodeMorphoMarket(loanToken, collateralToken, oracle, irm, lltv) {
-    return (0, utils_js_1.encodePacked)(["address", "address", "address", "address", "uint128"], [loanToken, collateralToken, oracle, irm, (0, utils_js_1.uint128)(lltv)]);
+    return (0, utils_js_1.encodePacked)(['address', 'address', 'address', 'address', 'uint128'], [loanToken, collateralToken, oracle, irm, (0, utils_js_1.uint128)(lltv)]);
 }
 function encodeMorphoDepositCollateral(market, assets, receiver, data, morphoB, pId) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "bytes", "uint128", "address", "address", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'bytes',
+        'uint128',
+        'address',
+        'address',
+        'uint16',
+        'bytes',
+    ], [
         encodeApprove((0, utils_js_1.getMorphoCollateral)(market), morphoB),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
@@ -637,11 +783,23 @@ function encodeMorphoDepositCollateral(market, assets, receiver, data, morphoB, 
         receiver,
         morphoB,
         (0, utils_js_1.uint16)(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0),
-        data.length / 2 - 1 === 0 ? (0, utils_js_1.newbytes)(0) : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
+        data.length / 2 - 1 === 0
+            ? (0, utils_js_1.newbytes)(0)
+            : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
     ]);
 }
 function encodeListaSupplyCollateralViaProvider(market, assets, receiver, data, provider, pId) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "bytes", "uint128", "address", "address", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'bytes',
+        'uint128',
+        'address',
+        'address',
+        'uint16',
+        'bytes',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
@@ -650,11 +808,24 @@ function encodeListaSupplyCollateralViaProvider(market, assets, receiver, data, 
         receiver,
         provider,
         (0, utils_js_1.uint16)(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0),
-        data.length / 2 - 1 === 0 ? (0, utils_js_1.newbytes)(0) : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
+        data.length / 2 - 1 === 0
+            ? (0, utils_js_1.newbytes)(0)
+            : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
     ]);
 }
 function encodeMorphoDeposit(market, isShares, assets, receiver, data, morphoB, pId) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "bytes", "uint128", "address", "address", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'bytes',
+        'uint128',
+        'address',
+        'address',
+        'uint16',
+        'bytes',
+    ], [
         encodeApprove((0, utils_js_1.getMorphoLoanAsset)(market), morphoB),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT_LENDING_TOKEN),
@@ -664,11 +835,13 @@ function encodeMorphoDeposit(market, isShares, assets, receiver, data, morphoB, 
         receiver,
         morphoB,
         (0, utils_js_1.uint16)(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0),
-        data.length / 2 - 1 === 0 ? (0, utils_js_1.newbytes)(0) : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
+        data.length / 2 - 1 === 0
+            ? (0, utils_js_1.newbytes)(0)
+            : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
     ]);
 }
 function encodeErc4626Deposit(asset, vault, isShares, assets, receiver) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "address", "address", "uint128", "address"], [
+    return (0, utils_js_1.encodePacked)(['bytes', 'uint8', 'uint8', 'address', 'address', 'uint128', 'address'], [
         encodeApprove(asset, vault),
         (0, utils_js_1.uint8)(ComposerCommands.ERC4626),
         (0, utils_js_1.uint8)(0),
@@ -679,7 +852,7 @@ function encodeErc4626Deposit(asset, vault, isShares, assets, receiver) {
     ]);
 }
 function encodeErc4646Withdraw(vault, isShares, assets, receiver) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "address", "uint128", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'address', 'uint128', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.ERC4626),
         (0, utils_js_1.uint8)(1),
         vault,
@@ -688,7 +861,7 @@ function encodeErc4646Withdraw(vault, isShares, assets, receiver) {
     ]);
 }
 function encodeMorphoWithdraw(market, isShares, assets, receiver, morphoB) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "bytes", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW_LENDING_TOKEN),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
@@ -699,7 +872,7 @@ function encodeMorphoWithdraw(market, isShares, assets, receiver, morphoB) {
     ]);
 }
 function encodeMorphoWithdrawCollateral(market, assets, receiver, morphoB) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "bytes", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
@@ -710,7 +883,7 @@ function encodeMorphoWithdrawCollateral(market, assets, receiver, morphoB) {
     ]);
 }
 function encodeListaWithdrawCollateralViaProvider(market, assets, receiver, provider) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "bytes", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
@@ -721,7 +894,7 @@ function encodeListaWithdrawCollateralViaProvider(market, assets, receiver, prov
     ]);
 }
 function encodeMorphoBorrow(market, isShares, assets, receiver, morphoB) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "bytes", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'bytes', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.BORROW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
@@ -732,7 +905,18 @@ function encodeMorphoBorrow(market, isShares, assets, receiver, morphoB) {
     ]);
 }
 function encodeMorphoRepay(market, isShares, assets, receiver, data, morphoB, pId) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "bytes", "uint128", "address", "address", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'bytes',
+        'uint128',
+        'address',
+        'address',
+        'uint16',
+        'bytes',
+    ], [
         encodeApprove((0, utils_js_1.getMorphoLoanAsset)(market), morphoB),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -742,11 +926,23 @@ function encodeMorphoRepay(market, isShares, assets, receiver, data, morphoB, pI
         receiver,
         morphoB,
         (0, utils_js_1.uint16)(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0),
-        data.length / 2 - 1 === 0 ? (0, utils_js_1.newbytes)(0) : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
+        data.length / 2 - 1 === 0
+            ? (0, utils_js_1.newbytes)(0)
+            : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
     ]);
 }
 function encodeListaRepayViaProvider(market, isShares, assets, receiver, data, morphoB, pId) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "bytes", "uint128", "address", "address", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'bytes',
+        'uint128',
+        'address',
+        'address',
+        'uint16',
+        'bytes',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
@@ -755,11 +951,23 @@ function encodeListaRepayViaProvider(market, isShares, assets, receiver, data, m
         receiver,
         morphoB,
         (0, utils_js_1.uint16)(data.length / 2 - 1 > 0 ? data.length / 2 - 1 + 1 : 0),
-        data.length / 2 - 1 === 0 ? (0, utils_js_1.newbytes)(0) : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
+        data.length / 2 - 1 === 0
+            ? (0, utils_js_1.newbytes)(0)
+            : encodeUint8AndBytes((0, utils_js_1.uint8)(pId), data),
     ]);
 }
 function encodeMidnightSupplyCollateral(midnight, collateralToken, amount, args) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "address", "uint128", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'address',
+        'uint128',
+        'uint16',
+        'bytes',
+    ], [
         encodeApprove(collateralToken, midnight),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
@@ -772,7 +980,7 @@ function encodeMidnightSupplyCollateral(midnight, collateralToken, amount, args)
     ]);
 }
 function encodeMidnightWithdrawCollateral(midnight, args) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint16', 'bytes'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         exports.MIDNIGHT_ID,
@@ -782,7 +990,17 @@ function encodeMidnightWithdrawCollateral(midnight, args) {
     ]);
 }
 function encodeMidnightRepay(midnight, loanToken, amount, args) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "address", "uint128", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'address',
+        'uint128',
+        'uint16',
+        'bytes',
+    ], [
         encodeApprove(loanToken, midnight),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -795,7 +1013,7 @@ function encodeMidnightRepay(midnight, loanToken, amount, args) {
     ]);
 }
 function encodeMidnightWithdraw(midnight, args) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint16', 'bytes'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW_LENDING_TOKEN),
         exports.MIDNIGHT_ID,
@@ -805,7 +1023,7 @@ function encodeMidnightWithdraw(midnight, args) {
     ]);
 }
 function encodeMidnightTake(midnight, args) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint16', 'bytes'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.MIDNIGHT_TAKE),
         exports.MIDNIGHT_ID,
@@ -815,7 +1033,7 @@ function encodeMidnightTake(midnight, args) {
     ]);
 }
 function encodeListaBrokerBorrow(assets, broker, receiver, termId) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "uint128", "address", "address", "uint128"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'uint128', 'address', 'address', 'uint128'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.LISTA_BROKER_BORROW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_MORPHO - 1),
@@ -829,7 +1047,17 @@ function encodeListaBrokerRepay(loanToken, assets, native, broker, loanId, onBeh
     let amountWord = (0, utils_js_1.uint128)(assets);
     if (native)
         amountWord = amountWord | exports.NATIVE_FLAG;
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "uint128", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint128',
+        'address',
+    ], [
         native ? (0, utils_js_1.newbytes)(0) : encodeApprove(loanToken, broker),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.LISTA_BROKER_REPAY),
@@ -842,7 +1070,16 @@ function encodeListaBrokerRepay(loanToken, assets, native, broker, loanId, onBeh
     ]);
 }
 function encodeAaveDeposit(token, amount, receiver, pool) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+    ], [
         encodeApprove(token, pool),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
@@ -854,7 +1091,16 @@ function encodeAaveDeposit(token, amount, receiver, pool) {
     ]);
 }
 function encodeAaveBorrow(token, amount, receiver, mode, pool) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "uint8", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint8',
+        'address',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.BORROW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V3 - 1),
@@ -866,7 +1112,18 @@ function encodeAaveBorrow(token, amount, receiver, mode, pool) {
     ]);
 }
 function encodeAaveRepay(token, amount, receiver, mode, dToken, pool) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "uint8", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint8',
+        'address',
+        'address',
+    ], [
         encodeApprove(token, pool),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -880,7 +1137,16 @@ function encodeAaveRepay(token, amount, receiver, mode, dToken, pool) {
     ]);
 }
 function encodeAaveWithdraw(token, amount, receiver, aToken, pool) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+        'address',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V3 - 1),
@@ -892,7 +1158,16 @@ function encodeAaveWithdraw(token, amount, receiver, aToken, pool) {
     ]);
 }
 function encodeAaveV2Deposit(token, amount, receiver, pool) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+    ], [
         encodeApprove(token, pool),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
@@ -904,7 +1179,16 @@ function encodeAaveV2Deposit(token, amount, receiver, pool) {
     ]);
 }
 function encodeAaveV2Borrow(token, amount, receiver, mode, pool) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "uint8", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint8',
+        'address',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.BORROW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V2 - 1),
@@ -916,7 +1200,18 @@ function encodeAaveV2Borrow(token, amount, receiver, mode, pool) {
     ]);
 }
 function encodeAaveV2Repay(token, amount, receiver, mode, dToken, pool) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "uint8", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint8',
+        'address',
+        'address',
+    ], [
         encodeApprove(token, pool),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -930,7 +1225,16 @@ function encodeAaveV2Repay(token, amount, receiver, mode, dToken, pool) {
     ]);
 }
 function encodeAaveV2Withdraw(token, amount, receiver, aToken, pool) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+        'address',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V2 - 1),
@@ -942,7 +1246,16 @@ function encodeAaveV2Withdraw(token, amount, receiver, aToken, pool) {
     ]);
 }
 function encodeCompoundV3Deposit(token, amount, receiver, comet) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+    ], [
         encodeApprove(token, comet),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
@@ -954,7 +1267,7 @@ function encodeCompoundV3Deposit(token, amount, receiver, comet) {
     ]);
 }
 function encodeCompoundV3Borrow(token, amount, receiver, comet) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.BORROW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_COMPOUND_V3 - 1),
@@ -965,7 +1278,16 @@ function encodeCompoundV3Borrow(token, amount, receiver, comet) {
     ]);
 }
 function encodeCompoundV3Repay(token, amount, receiver, comet) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+    ], [
         encodeApprove(token, comet),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -977,7 +1299,16 @@ function encodeCompoundV3Repay(token, amount, receiver, comet) {
     ]);
 }
 function encodeCompoundV3Withdraw(token, amount, receiver, comet, isBase) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "uint8", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint8',
+        'address',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_COMPOUND_V3 - 1),
@@ -989,7 +1320,16 @@ function encodeCompoundV3Withdraw(token, amount, receiver, comet, isBase) {
     ]);
 }
 function encodeCompoundV2Deposit(token, amount, receiver, cToken, selectorId) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+    ], [
         token === viem_1.zeroAddress ? (0, utils_js_1.newbytes)(0) : encodeApprove(token, cToken),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
@@ -1001,7 +1341,16 @@ function encodeCompoundV2Deposit(token, amount, receiver, cToken, selectorId) {
     ]);
 }
 function encodeSiloV2Deposit(token, amount, receiver, silo, collateralMode) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+    ], [
         token === viem_1.zeroAddress ? (0, utils_js_1.newbytes)(0) : encodeApprove(token, silo),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
@@ -1013,7 +1362,7 @@ function encodeSiloV2Deposit(token, amount, receiver, silo, collateralMode) {
     ]);
 }
 function encodeSiloV2Borrow(amount, receiver, silo) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.BORROW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_SILO_V2 - 1),
@@ -1023,7 +1372,7 @@ function encodeSiloV2Borrow(amount, receiver, silo) {
     ]);
 }
 function encodeCompoundV2Borrow(token, amount, receiver, cToken) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.BORROW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_COMPOUND_V2 - 1),
@@ -1034,7 +1383,16 @@ function encodeCompoundV2Borrow(token, amount, receiver, cToken) {
     ]);
 }
 function encodeCompoundV2Repay(token, amount, receiver, cToken) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+    ], [
         token === viem_1.zeroAddress ? (0, utils_js_1.newbytes)(0) : encodeApprove(token, cToken),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -1046,7 +1404,7 @@ function encodeCompoundV2Repay(token, amount, receiver, cToken) {
     ]);
 }
 function encodeCompoundV2Withdraw(token, amount, receiver, cToken, selectorId) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_COMPOUND_V2 - 1),
@@ -1057,7 +1415,7 @@ function encodeCompoundV2Withdraw(token, amount, receiver, cToken, selectorId) {
     ]);
 }
 function encodeSiloV2Withdraw(amount, receiver, silo, collateralMode) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_SILO_V2 - 1),
@@ -1067,7 +1425,16 @@ function encodeSiloV2Withdraw(amount, receiver, silo, collateralMode) {
     ]);
 }
 function encodeSiloV2Repay(token, amount, receiver, silo) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+    ], [
         token === viem_1.zeroAddress ? (0, utils_js_1.newbytes)(0) : encodeApprove(token, silo),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -1079,7 +1446,18 @@ function encodeSiloV2Repay(token, amount, receiver, silo) {
     ]);
 }
 function encodeAaveV4Deposit(underlying, amount, receiver, reserveId, spoke, positionManager) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "uint256", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint256',
+        'address',
+        'address',
+    ], [
         encodeApprove(underlying, positionManager),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
@@ -1093,7 +1471,17 @@ function encodeAaveV4Deposit(underlying, amount, receiver, reserveId, spoke, pos
     ]);
 }
 function encodeAaveV4Borrow(underlying, amount, receiver, reserveId, spoke, positionManager) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "uint256", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint256',
+        'address',
+        'address',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.BORROW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V4 - 1),
@@ -1106,7 +1494,18 @@ function encodeAaveV4Borrow(underlying, amount, receiver, reserveId, spoke, posi
     ]);
 }
 function encodeAaveV4Repay(underlying, amount, receiver, reserveId, spoke, positionManager) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "uint256", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint256',
+        'address',
+        'address',
+    ], [
         encodeApprove(underlying, positionManager),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -1120,7 +1519,17 @@ function encodeAaveV4Repay(underlying, amount, receiver, reserveId, spoke, posit
     ]);
 }
 function encodeAaveV4Withdraw(underlying, amount, receiver, reserveId, spoke, positionManager) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "uint256", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint256',
+        'address',
+        'address',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V4 - 1),
@@ -1133,7 +1542,7 @@ function encodeAaveV4Withdraw(underlying, amount, receiver, reserveId, spoke, po
     ]);
 }
 function encodeAaveV4SetCollateral(reserveId, enable, spoke, configPositionManager) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "uint256", "uint8", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'uint256', 'uint8', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.SET_COLLATERAL),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_AAVE_V4 - 1),
@@ -1144,27 +1553,61 @@ function encodeAaveV4SetCollateral(reserveId, enable, spoke, configPositionManag
     ]);
 }
 function encodeAaveV4BorrowPermit(takerPM, spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs) {
-    const data = (0, utils_js_1.encodePacked)(["address", "uint256", "uint256", "uint256", "uint32", "bytes32", "bytes32"], [spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs]);
+    const data = (0, utils_js_1.encodePacked)([
+        'address',
+        'uint256',
+        'uint256',
+        'uint256',
+        'uint32',
+        'bytes32',
+        'bytes32',
+    ], [spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs]);
     return encodePermit(PermitIds.AAVE_V4_BORROW_PERMIT, takerPM, data);
 }
 function encodeAaveV4WithdrawPermit(takerPM, spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs) {
-    const data = (0, utils_js_1.encodePacked)(["address", "uint256", "uint256", "uint256", "uint32", "bytes32", "bytes32"], [spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs]);
+    const data = (0, utils_js_1.encodePacked)([
+        'address',
+        'uint256',
+        'uint256',
+        'uint256',
+        'uint32',
+        'bytes32',
+        'bytes32',
+    ], [spoke, reserveId, amount, nonce, deadlinePlusOne, r, vs]);
     return encodePermit(PermitIds.AAVE_V4_WITHDRAW_PERMIT, takerPM, data);
 }
 function encodeAaveV4ConfigPermit(configPM, spoke, status, nonce, deadlinePlusOne, r, vs) {
-    const data = (0, utils_js_1.encodePacked)(["address", "uint8", "uint256", "uint32", "bytes32", "bytes32"], [spoke, (0, utils_js_1.uint8)(status ? 1 : 0), nonce, deadlinePlusOne, r, vs]);
+    const data = (0, utils_js_1.encodePacked)(['address', 'uint8', 'uint256', 'uint32', 'bytes32', 'bytes32'], [spoke, (0, utils_js_1.uint8)(status ? 1 : 0), nonce, deadlinePlusOne, r, vs]);
     return encodePermit(PermitIds.AAVE_V4_CONFIG_PERMIT, configPM, data);
 }
 function encodeFluidT1Operate(colUnderlying, debtUnderlying, colAmount, debtAmount, nftId, receiver, nftReceiver, vault) {
-    let approvals = "0x";
+    let approvals = '0x';
     if (colUnderlying !== viem_1.zeroAddress && _fluidIsDepositAmount(colAmount)) {
-        approvals = (0, utils_js_1.encodePacked)(["bytes", "bytes"], [approvals, encodeApprove(colUnderlying, vault)]);
+        approvals = (0, utils_js_1.encodePacked)(['bytes', 'bytes'], [approvals, encodeApprove(colUnderlying, vault)]);
     }
     if (debtUnderlying !== viem_1.zeroAddress && _fluidIsRepayAmount(debtAmount)) {
-        approvals = (0, utils_js_1.encodePacked)(["bytes", "bytes"], [approvals, encodeApprove(debtUnderlying, vault)]);
+        approvals = (0, utils_js_1.encodePacked)(['bytes', 'bytes'], [approvals, encodeApprove(debtUnderlying, vault)]);
     }
-    const body = (0, utils_js_1.encodePacked)(["address", "address", "int128", "int128", "uint256", "address", "address", "address"], [colUnderlying, debtUnderlying, colAmount, debtAmount, nftId, receiver, nftReceiver, vault]);
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "bytes"], [
+    const body = (0, utils_js_1.encodePacked)([
+        'address',
+        'address',
+        'int128',
+        'int128',
+        'uint256',
+        'address',
+        'address',
+        'address',
+    ], [
+        colUnderlying,
+        debtUnderlying,
+        colAmount,
+        debtAmount,
+        nftId,
+        receiver,
+        nftReceiver,
+        vault,
+    ]);
+    return (0, utils_js_1.encodePacked)(['bytes', 'uint8', 'uint8', 'uint16', 'bytes'], [
         approvals,
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.FLUID_OPERATE_T1),
@@ -1186,7 +1629,9 @@ function encodeFluidBorrow(underlying, amount, nftId, receiver, vault) {
     return encodeFluidT1Operate(viem_1.zeroAddress, underlying, 0, (0, utils_js_1.int128)(amount), nftId, receiver, viem_1.zeroAddress, vault);
 }
 function encodeFluidRepay(underlying, amount, nftId, receiver, vault) {
-    let debtAmount = amount === 0n || amount === (1n << 112n) - 1n ? -(1n << 127n) : -(0, utils_js_1.int128)(amount);
+    let debtAmount = amount === 0n || amount === (1n << 112n) - 1n
+        ? -(1n << 127n)
+        : -(0, utils_js_1.int128)(amount);
     return encodeFluidT1Operate(viem_1.zeroAddress, underlying, 0, debtAmount, nftId, receiver, viem_1.zeroAddress, vault);
 }
 function encodeFluidWithdraw(underlying, amount, nftId, receiver, vault) {
@@ -1194,9 +1639,21 @@ function encodeFluidWithdraw(underlying, amount, nftId, receiver, vault) {
     return encodeFluidT1Operate(underlying, viem_1.zeroAddress, colAmount, 0, nftId, receiver, viem_1.zeroAddress, vault);
 }
 function _fluidSmartHeader(vaultType, callValue, nftId, receiver, nftReceiver, vault, isPerfect) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "uint8", "uint128", "uint256", "address", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'uint8',
+        'uint128',
+        'uint256',
+        'address',
+        'address',
+        'address',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
-        isPerfect ? (0, utils_js_1.uint8)(LenderOps.FLUID_OPERATE_PERFECT) : (0, utils_js_1.uint8)(LenderOps.FLUID_OPERATE),
+        isPerfect
+            ? (0, utils_js_1.uint8)(LenderOps.FLUID_OPERATE_PERFECT)
+            : (0, utils_js_1.uint8)(LenderOps.FLUID_OPERATE),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_FLUID_SMART - 1),
         vaultType,
         callValue,
@@ -1207,61 +1664,70 @@ function _fluidSmartHeader(vaultType, callValue, nftId, receiver, nftReceiver, v
     ]);
 }
 function _fluidSmartTokens4(t) {
-    return (0, utils_js_1.encodePacked)(["address", "address", "address", "address"], [t[0], t[1], t[2], t[3]]);
+    return (0, utils_js_1.encodePacked)(['address', 'address', 'address', 'address'], [t[0], t[1], t[2], t[3]]);
 }
 function _fluidSmartTokens6(t) {
-    return (0, utils_js_1.encodePacked)(["address", "address", "address", "address", "address", "address"], [t[0], t[1], t[2], t[3], t[4], t[5]]);
+    return (0, utils_js_1.encodePacked)(['address', 'address', 'address', 'address', 'address', 'address'], [t[0], t[1], t[2], t[3], t[4], t[5]]);
 }
 function _fluidSmartAmounts4(a) {
-    return (0, utils_js_1.encodePacked)(["int256", "int256", "int256", "int256"], [a[0], a[1], a[2], a[3]]);
+    return (0, utils_js_1.encodePacked)(['int256', 'int256', 'int256', 'int256'], [a[0], a[1], a[2], a[3]]);
 }
 function _fluidSmartAmounts6(a) {
-    return (0, utils_js_1.encodePacked)(["int256", "int256", "int256", "int256", "int256", "int256"], [a[0], a[1], a[2], a[3], a[4], a[5]]);
+    return (0, utils_js_1.encodePacked)(['int256', 'int256', 'int256', 'int256', 'int256', 'int256'], [a[0], a[1], a[2], a[3], a[4], a[5]]);
 }
 function encodeFluidSmartOperateT2(callValue, nftId, receiver, nftReceiver, vault, tokens, amounts) {
-    return (0, utils_js_1.encodePacked)(["bytes", "bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['bytes', 'bytes', 'bytes'], [
         _fluidSmartHeader(2, callValue, nftId, receiver, nftReceiver, vault, false),
         _fluidSmartTokens4(tokens),
         _fluidSmartAmounts4(amounts),
     ]);
 }
 function encodeFluidSmartOperateT3(callValue, nftId, receiver, nftReceiver, vault, tokens, amounts) {
-    return (0, utils_js_1.encodePacked)(["bytes", "bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['bytes', 'bytes', 'bytes'], [
         _fluidSmartHeader(3, callValue, nftId, receiver, nftReceiver, vault, false),
         _fluidSmartTokens4(tokens),
         _fluidSmartAmounts4(amounts),
     ]);
 }
 function encodeFluidSmartOperateT4(callValue, nftId, receiver, nftReceiver, vault, tokens, amounts) {
-    return (0, utils_js_1.encodePacked)(["bytes", "bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['bytes', 'bytes', 'bytes'], [
         _fluidSmartHeader(4, callValue, nftId, receiver, nftReceiver, vault, false),
         _fluidSmartTokens6(tokens),
         _fluidSmartAmounts6(amounts),
     ]);
 }
 function encodeFluidSmartOperatePerfectT2(callValue, nftId, receiver, nftReceiver, vault, tokens, amounts) {
-    return (0, utils_js_1.encodePacked)(["bytes", "bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['bytes', 'bytes', 'bytes'], [
         _fluidSmartHeader(2, callValue, nftId, receiver, nftReceiver, vault, true),
         _fluidSmartTokens4(tokens),
         _fluidSmartAmounts4(amounts),
     ]);
 }
 function encodeFluidSmartOperatePerfectT3(callValue, nftId, receiver, nftReceiver, vault, tokens, amounts) {
-    return (0, utils_js_1.encodePacked)(["bytes", "bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['bytes', 'bytes', 'bytes'], [
         _fluidSmartHeader(3, callValue, nftId, receiver, nftReceiver, vault, true),
         _fluidSmartTokens4(tokens),
         _fluidSmartAmounts4(amounts),
     ]);
 }
 function encodeFluidSmartOperatePerfectT4(callValue, nftId, receiver, nftReceiver, vault, tokens, amounts) {
-    return (0, utils_js_1.encodePacked)(["bytes", "bytes", "bytes"], [
+    return (0, utils_js_1.encodePacked)(['bytes', 'bytes', 'bytes'], [
         _fluidSmartHeader(4, callValue, nftId, receiver, nftReceiver, vault, true),
         _fluidSmartTokens6(tokens),
         _fluidSmartAmounts6(amounts),
     ]);
 }
 function encodeFluidFTokenDeposit(underlying, amount, receiver, fToken) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'address',
+    ], [
         encodeApprove(underlying, fToken),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT_LENDING_TOKEN),
@@ -1273,7 +1739,7 @@ function encodeFluidFTokenDeposit(underlying, amount, receiver, fToken) {
     ]);
 }
 function encodeFluidFTokenWithdraw(underlying, amount, receiver, fToken) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW_LENDING_TOKEN),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_FLUID - 1),
@@ -1284,7 +1750,7 @@ function encodeFluidFTokenWithdraw(underlying, amount, receiver, fToken) {
     ]);
 }
 function encodeGearboxV3Supply(token, amount, creditAccount, creditManager) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address"], [
+    return (0, utils_js_1.encodePacked)(['bytes', 'uint8', 'uint8', 'uint16', 'address', 'uint128', 'address'], [
         encodeApprove(token, creditManager),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.DEPOSIT),
@@ -1295,7 +1761,7 @@ function encodeGearboxV3Supply(token, amount, creditAccount, creditManager) {
     ]);
 }
 function encodeGearboxV3Borrow(underlying, amount, receiver, creditAccount) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.BORROW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_GEARBOX_V3 - 1),
@@ -1307,8 +1773,17 @@ function encodeGearboxV3Borrow(underlying, amount, receiver, creditAccount) {
 }
 function encodeGearboxV3RepayPartial(underlying, amount, creditAccount, creditManager) {
     if (amount === 0n || amount === exports.GEARBOX_REPAY_ALL)
-        throw new Error("CL:gearboxpartialrepayneedsliteralamount");
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "uint8"], [
+        throw new Error('CL:gearboxpartialrepayneedsliteralamount');
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint8',
+    ], [
         encodeApprove(underlying, creditManager),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -1321,12 +1796,22 @@ function encodeGearboxV3RepayPartial(underlying, amount, creditAccount, creditMa
 }
 function encodeGearboxV3RepayAll(underlying, creditAccount, creditManager, quotedTokens) {
     if (quotedTokens.length > 255)
-        throw new Error("CL:gearboxtoomanyquotedtokens");
-    let quotedBlob = "0x";
+        throw new Error('CL:gearboxtoomanyquotedtokens');
+    let quotedBlob = '0x';
     for (let i = 0n; i < quotedTokens.length; i++) {
-        quotedBlob = (0, utils_js_1.encodePacked)(["bytes", "address"], [quotedBlob, quotedTokens[i]]);
+        quotedBlob = (0, utils_js_1.encodePacked)(['bytes', 'address'], [quotedBlob, quotedTokens[i]]);
     }
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "uint8", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint8',
+        'bytes',
+    ], [
         encodeApprove(underlying, creditManager),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -1339,7 +1824,16 @@ function encodeGearboxV3RepayAll(underlying, creditAccount, creditManager, quote
     ]);
 }
 function encodeGearboxV3RepayPartialMax(underlying, creditAccount, creditManager) {
-    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "uint128", "address", "uint8"], [
+    return (0, utils_js_1.encodePacked)([
+        'bytes',
+        'uint8',
+        'uint8',
+        'uint16',
+        'address',
+        'uint128',
+        'address',
+        'uint8',
+    ], [
         encodeApprove(underlying, creditManager),
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.REPAY),
@@ -1351,7 +1845,7 @@ function encodeGearboxV3RepayPartialMax(underlying, creditAccount, creditManager
     ]);
 }
 function encodeGearboxV3Withdraw(token, amount, receiver, creditAccount) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "address", "address"], [
+    return (0, utils_js_1.encodePacked)(['uint8', 'uint8', 'uint16', 'address', 'uint128', 'address', 'address'], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_GEARBOX_V3 - 1),
@@ -1363,24 +1857,44 @@ function encodeGearboxV3Withdraw(token, amount, receiver, creditAccount) {
 }
 function encodeGearboxV3FacadeCall(innerCallData) {
     if (innerCallData.length / 2 - 1 > (1n << 16n) - 1n)
-        throw new Error("CL:gearboxsub-calltoolong");
-    return (0, utils_js_1.encodePacked)(["uint16", "bytes"], [(0, utils_js_1.uint16)(innerCallData.length / 2 - 1), innerCallData]);
+        throw new Error('CL:gearboxsub-calltoolong');
+    return (0, utils_js_1.encodePacked)(['uint16', 'bytes'], [(0, utils_js_1.uint16)(innerCallData.length / 2 - 1), innerCallData]);
 }
 function encodeGearboxV3BotMulticall(creditAccount, numCalls, calls) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "uint8", "address", "address", "bytes32", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'uint8',
+        'address',
+        'address',
+        'bytes32',
+        'uint16',
+        'bytes',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.GEARBOX_MULTICALL),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_GEARBOX_V3 - 1),
         (0, utils_js_1.uint8)(0),
         creditAccount,
         viem_1.zeroAddress,
-        ("0x" + "0".repeat(64)),
+        ('0x' + '0'.repeat(64)),
         numCalls,
         calls,
     ]);
 }
 function encodeGearboxV3OpenCreditAccount(creditFacade, referralCode, numCalls, calls) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "uint8", "address", "address", "uint256", "uint16", "bytes"], [
+    return (0, utils_js_1.encodePacked)([
+        'uint8',
+        'uint8',
+        'uint16',
+        'uint8',
+        'address',
+        'address',
+        'uint256',
+        'uint16',
+        'bytes',
+    ], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.GEARBOX_MULTICALL),
         (0, utils_js_1.uint16)(LenderIds.UP_TO_GEARBOX_V3 - 1),
