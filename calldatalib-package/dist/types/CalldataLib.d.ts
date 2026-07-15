@@ -1,4 +1,4 @@
-import { type Hex, type Address } from 'viem';
+import { type Hex, type Address } from "viem";
 export declare enum SweepType {
     VALIDATE = 0,
     AMOUNT = 1
