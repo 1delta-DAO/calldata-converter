@@ -242,9 +242,12 @@ export declare function encodeMorphoBorrow(market: Hex, isShares: boolean, asset
 export declare function encodeMorphoRepay(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
 export declare function encodeListaRepayViaProvider(market: Hex, isShares: boolean, assets: bigint, receiver: Address, data: Hex, morphoB: Address, pId: bigint): Hex;
 export declare function encodeMidnightSupplyCollateral(midnight: Address, collateralToken: Address, amount: bigint, args: Hex): Hex;
-export declare function encodeMidnightWithdrawCollateral(midnight: Address, args: Hex): Hex;
+export declare function encodeMidnightWithdrawCollateral(midnight: Address, amount: bigint, args: Hex): Hex;
+export declare function encodeMidnightWithdrawCollateralMax(midnight: Address, id: Hex, args: Hex): Hex;
 export declare function encodeMidnightRepay(midnight: Address, loanToken: Address, amount: bigint, args: Hex): Hex;
-export declare function encodeMidnightWithdraw(midnight: Address, args: Hex): Hex;
+export declare function encodeMidnightRepayExactDebt(midnight: Address, loanToken: Address, id: Hex, args: Hex): Hex;
+export declare function encodeMidnightWithdraw(midnight: Address, amount: bigint, args: Hex): Hex;
+export declare function encodeMidnightWithdrawMax(midnight: Address, id: Hex, args: Hex): Hex;
 export declare function encodeMidnightTake(midnight: Address, args: Hex): Hex;
 export declare function encodeListaBrokerBorrow(assets: bigint, broker: Address, receiver: Address, termId: bigint): Hex;
 export declare function encodeListaBrokerRepay(loanToken: Address, assets: bigint, native: boolean, broker: Address, loanId: bigint, onBehalf: Address): Hex;

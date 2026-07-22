@@ -55,8 +55,11 @@ exports.encodeMorphoRepay = encodeMorphoRepay;
 exports.encodeListaRepayViaProvider = encodeListaRepayViaProvider;
 exports.encodeMidnightSupplyCollateral = encodeMidnightSupplyCollateral;
 exports.encodeMidnightWithdrawCollateral = encodeMidnightWithdrawCollateral;
+exports.encodeMidnightWithdrawCollateralMax = encodeMidnightWithdrawCollateralMax;
 exports.encodeMidnightRepay = encodeMidnightRepay;
+exports.encodeMidnightRepayExactDebt = encodeMidnightRepayExactDebt;
 exports.encodeMidnightWithdraw = encodeMidnightWithdraw;
+exports.encodeMidnightWithdrawMax = encodeMidnightWithdrawMax;
 exports.encodeMidnightTake = encodeMidnightTake;
 exports.encodeListaBrokerBorrow = encodeListaBrokerBorrow;
 exports.encodeListaBrokerRepay = encodeListaBrokerRepay;
@@ -771,12 +774,25 @@ function encodeMidnightSupplyCollateral(midnight, collateralToken, amount, args)
         args,
     ]);
 }
-function encodeMidnightWithdrawCollateral(midnight, args) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+function encodeMidnightWithdrawCollateral(midnight, amount, args) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "uint16", "bytes"], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
         exports.MIDNIGHT_ID,
         midnight,
+        amount,
+        (0, utils_js_1.uint16)(args.length / 2 - 1),
+        args,
+    ]);
+}
+function encodeMidnightWithdrawCollateralMax(midnight, id, args) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "bytes32", "uint16", "bytes"], [
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.WITHDRAW),
+        exports.MIDNIGHT_ID,
+        midnight,
+        (0, utils_js_1.uint128)((1n << 112n) - 1n),
+        id,
         (0, utils_js_1.uint16)(args.length / 2 - 1),
         args,
     ]);
@@ -794,12 +810,39 @@ function encodeMidnightRepay(midnight, loanToken, amount, args) {
         args,
     ]);
 }
-function encodeMidnightWithdraw(midnight, args) {
-    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint16", "bytes"], [
+function encodeMidnightRepayExactDebt(midnight, loanToken, id, args) {
+    return (0, utils_js_1.encodePacked)(["bytes", "uint8", "uint8", "uint16", "address", "address", "uint128", "bytes32", "uint16", "bytes"], [
+        encodeApprove(loanToken, midnight),
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.REPAY),
+        exports.MIDNIGHT_ID,
+        midnight,
+        loanToken,
+        (0, utils_js_1.uint128)((1n << 112n) - 1n),
+        id,
+        (0, utils_js_1.uint16)(args.length / 2 - 1),
+        args,
+    ]);
+}
+function encodeMidnightWithdraw(midnight, amount, args) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "uint16", "bytes"], [
         (0, utils_js_1.uint8)(ComposerCommands.LENDING),
         (0, utils_js_1.uint8)(LenderOps.WITHDRAW_LENDING_TOKEN),
         exports.MIDNIGHT_ID,
         midnight,
+        amount,
+        (0, utils_js_1.uint16)(args.length / 2 - 1),
+        args,
+    ]);
+}
+function encodeMidnightWithdrawMax(midnight, id, args) {
+    return (0, utils_js_1.encodePacked)(["uint8", "uint8", "uint16", "address", "uint128", "bytes32", "uint16", "bytes"], [
+        (0, utils_js_1.uint8)(ComposerCommands.LENDING),
+        (0, utils_js_1.uint8)(LenderOps.WITHDRAW_LENDING_TOKEN),
+        exports.MIDNIGHT_ID,
+        midnight,
+        (0, utils_js_1.uint128)((1n << 112n) - 1n),
+        id,
         (0, utils_js_1.uint16)(args.length / 2 - 1),
         args,
     ]);

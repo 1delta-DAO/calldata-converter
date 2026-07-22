@@ -1563,15 +1563,46 @@ export function encodeMidnightSupplyCollateral(
 
 export function encodeMidnightWithdrawCollateral(
   midnight: Address,
+  amount: bigint,
   args: Hex,
 ): Hex {
   return encodePacked(
-    ['uint8', 'uint8', 'uint16', 'address', 'uint16', 'bytes'],
+    ['uint8', 'uint8', 'uint16', 'address', 'uint128', 'uint16', 'bytes'],
     [
       uint8(ComposerCommands.LENDING),
       uint8(LenderOps.WITHDRAW),
       MIDNIGHT_ID,
       midnight,
+      amount,
+      uint16(args.length / 2 - 1),
+      args,
+    ],
+  )
+}
+
+export function encodeMidnightWithdrawCollateralMax(
+  midnight: Address,
+  id: Hex,
+  args: Hex,
+): Hex {
+  return encodePacked(
+    [
+      'uint8',
+      'uint8',
+      'uint16',
+      'address',
+      'uint128',
+      'bytes32',
+      'uint16',
+      'bytes',
+    ],
+    [
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.WITHDRAW),
+      MIDNIGHT_ID,
+      midnight,
+      uint128((1n << 112n) - 1n),
+      id,
       uint16(args.length / 2 - 1),
       args,
     ],
@@ -1610,14 +1641,82 @@ export function encodeMidnightRepay(
   )
 }
 
-export function encodeMidnightWithdraw(midnight: Address, args: Hex): Hex {
+export function encodeMidnightRepayExactDebt(
+  midnight: Address,
+  loanToken: Address,
+  id: Hex,
+  args: Hex,
+): Hex {
   return encodePacked(
-    ['uint8', 'uint8', 'uint16', 'address', 'uint16', 'bytes'],
+    [
+      'bytes',
+      'uint8',
+      'uint8',
+      'uint16',
+      'address',
+      'address',
+      'uint128',
+      'bytes32',
+      'uint16',
+      'bytes',
+    ],
+    [
+      encodeApprove(loanToken, midnight),
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.REPAY),
+      MIDNIGHT_ID,
+      midnight,
+      loanToken,
+      uint128((1n << 112n) - 1n),
+      id,
+      uint16(args.length / 2 - 1),
+      args,
+    ],
+  )
+}
+
+export function encodeMidnightWithdraw(
+  midnight: Address,
+  amount: bigint,
+  args: Hex,
+): Hex {
+  return encodePacked(
+    ['uint8', 'uint8', 'uint16', 'address', 'uint128', 'uint16', 'bytes'],
     [
       uint8(ComposerCommands.LENDING),
       uint8(LenderOps.WITHDRAW_LENDING_TOKEN),
       MIDNIGHT_ID,
       midnight,
+      amount,
+      uint16(args.length / 2 - 1),
+      args,
+    ],
+  )
+}
+
+export function encodeMidnightWithdrawMax(
+  midnight: Address,
+  id: Hex,
+  args: Hex,
+): Hex {
+  return encodePacked(
+    [
+      'uint8',
+      'uint8',
+      'uint16',
+      'address',
+      'uint128',
+      'bytes32',
+      'uint16',
+      'bytes',
+    ],
+    [
+      uint8(ComposerCommands.LENDING),
+      uint8(LenderOps.WITHDRAW_LENDING_TOKEN),
+      MIDNIGHT_ID,
+      midnight,
+      uint128((1n << 112n) - 1n),
+      id,
       uint16(args.length / 2 - 1),
       args,
     ],
